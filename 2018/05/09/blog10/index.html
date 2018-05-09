@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="iOS布局从Frame到Autosizing，再到Autolayout。Storyboard上使用Autolayout对于层级不深的页面来说比较方便，大大提升了开发速度，但App体积也会增加不少，用代码写Autolayout就不是那么方便了。如 123456789101112// view1已经使用Autolayout布好局了let view0 = UIView()view0.ba">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS SnapKit源码解析">
+<meta property="og:url" content="https://blog.msrily.com/2018/05/09/blog10/index.html">
+<meta property="og:site_name" content="静谧星空的博客">
+<meta property="og:description" content="iOS布局从Frame到Autosizing，再到Autolayout。Storyboard上使用Autolayout对于层级不深的页面来说比较方便，大大提升了开发速度，但App体积也会增加不少，用代码写Autolayout就不是那么方便了。如 123456789101112// view1已经使用Autolayout布好局了let view0 = UIView()view0.ba">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://blog.msrily.com/images/1525858507.png">
+<meta property="og:image" content="https://blog.msrily.com/images/1525872713.png">
+<meta property="og:updated_time" content="2018-05-09T13:45:57.712Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS SnapKit源码解析">
+<meta name="twitter:description" content="iOS布局从Frame到Autosizing，再到Autolayout。Storyboard上使用Autolayout对于层级不深的页面来说比较方便，大大提升了开发速度，但App体积也会增加不少，用代码写Autolayout就不是那么方便了。如 123456789101112// view1已经使用Autolayout布好局了let view0 = UIView()view0.ba">
+<meta name="twitter:image" content="https://blog.msrily.com/images/1525858507.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://blog.msrily.com/2018/05/09/blog10/"/>
+
+
+
+
+
+  <title>iOS SnapKit源码解析 | 静谧星空的博客</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">静谧星空的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://blog.msrily.com/2018/05/09/blog10/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="静谧星空">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="静谧星空的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">iOS SnapKit源码解析</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-09T15:50:02+08:00">
+                2018-05-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>iOS布局从Frame到Autosizing，再到Autolayout。Storyboard上使用Autolayout对于层级不深的页面来说比较方便，大大提升了开发速度，但App体积也会增加不少，用代码写Autolayout就不是那么方便了。如</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// view1已经使用Autolayout布好局了</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> view0 = <span class="type">UIView</span>()</span><br><span class="line">view0.backgroundColor = <span class="type">UIColor</span>.gray</span><br><span class="line">view0.translatesAutoresizingMaskIntoConstraints = <span class="literal">false</span></span><br><span class="line"><span class="keyword">self</span>.view.addSubview(view0)</span><br><span class="line"><span class="keyword">let</span> leftConstraint = <span class="type">NSLayoutConstraint</span>(item: view0, attribute: <span class="type">NSLayoutAttribute</span>.<span class="keyword">left</span>, relatedBy: <span class="type">NSLayoutRelation</span>.<span class="built_in">equal</span>, toItem: view1, attribute: <span class="type">NSLayoutAttribute</span>.<span class="keyword">left</span>, multiplier: <span class="number">1</span>, constant: <span class="number">100</span>)</span><br><span class="line"><span class="keyword">let</span> topConstraint = <span class="type">NSLayoutConstraint</span>(item: view0, attribute: <span class="type">NSLayoutAttribute</span>.top, relatedBy: <span class="type">NSLayoutRelation</span>.<span class="built_in">equal</span>, toItem: <span class="keyword">self</span>.view, attribute: <span class="type">NSLayoutAttribute</span>.top, multiplier: <span class="number">1</span>, constant: <span class="number">20</span>)</span><br><span class="line"><span class="keyword">let</span> widthConstraint = <span class="type">NSLayoutConstraint</span>(item: view0, attribute: <span class="type">NSLayoutAttribute</span>.width, relatedBy: <span class="type">NSLayoutRelation</span>.<span class="built_in">equal</span>, toItem: <span class="keyword">self</span>.view, attribute: <span class="type">NSLayoutAttribute</span>.width, multiplier: <span class="number">0.5</span>, constant: <span class="number">0</span>)</span><br><span class="line"><span class="keyword">let</span> heightConstraint = <span class="type">NSLayoutConstraint</span>(item: view0, attribute: <span class="type">NSLayoutAttribute</span>.height, relatedBy: <span class="type">NSLayoutRelation</span>.<span class="built_in">equal</span>, toItem: view0, attribute: <span class="type">NSLayoutAttribute</span>.width, multiplier: <span class="number">1</span>, constant: <span class="number">0</span>)</span><br><span class="line"><span class="keyword">let</span> constraints = [leftConstraint, topConstraint, widthConstraint, heightConstraint]</span><br><span class="line"><span class="type">NSLayoutConstraint</span>.activate(constraints)</span><br></pre></td></tr></table></figure>
+<p>布好一个控件就要写很长串，还怕写错，比较麻烦。<br><br>SnapKit是对Autolayout的封装，是Objective-C Masonry的同一个团体Swift版本。</p>
+<p>使用Swift先进语法以及拟多态的方法极大地简化了代码写Autolayout约束，如：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> view1 = <span class="type">UIView</span>()</span><br><span class="line">view1.backgroundColor = <span class="type">UIColor</span>.red</span><br><span class="line"><span class="keyword">self</span>.view.addSubview(view1)</span><br><span class="line">view1.snp.makeConstraints &#123; (make) <span class="keyword">in</span></span><br><span class="line">    make.<span class="keyword">left</span>.top.<span class="keyword">right</span>.bottom.equalTo(<span class="number">0</span>).offset(<span class="number">0</span>).multipliedBy(<span class="number">1</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>阅读起来很简单且使用方便</p>
+<p>声明ConstraintConstantTarget(ConstraintOffsetTarget、ConstraintInsetTarget)，然后通过extension对一些已经存在的或者自定义的类型通过NSLayoutAttribute来转换成NSLayoutConstraint的constant，ConstraintMultiplierTarget通过extension来改变NSLayoutConstraint的multiplier,ConstraintPriorityTarget通过extension来改变NSLayoutConstraint的priority等。</p>
+<p><img src="/images/1525858507.png" alt=""></p>
+<p>这种编程方法值得学习。</p>
+<p>声明ConstraintAttributes，将所有的属性都定义下来</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">internal</span> <span class="keyword">static</span> <span class="keyword">var</span> <span class="keyword">none</span>: <span class="type">ConstraintAttributes</span> &#123; <span class="keyword">return</span> <span class="keyword">self</span>.<span class="keyword">init</span>(<span class="number">0</span>) &#125;</span><br><span class="line"><span class="keyword">internal</span> <span class="keyword">static</span> <span class="keyword">var</span> <span class="keyword">left</span>: <span class="type">ConstraintAttributes</span> &#123; <span class="keyword">return</span> <span class="keyword">self</span>.<span class="keyword">init</span>(<span class="number">1</span>) &#125;</span><br><span class="line"><span class="keyword">internal</span> <span class="keyword">static</span> <span class="keyword">var</span> top: <span class="type">ConstraintAttributes</span> &#123;  <span class="keyword">return</span> <span class="keyword">self</span>.<span class="keyword">init</span>(<span class="number">2</span>) &#125;</span><br><span class="line"><span class="keyword">internal</span> <span class="keyword">static</span> <span class="keyword">var</span> <span class="keyword">right</span>: <span class="type">ConstraintAttributes</span> &#123; <span class="keyword">return</span> <span class="keyword">self</span>.<span class="keyword">init</span>(<span class="number">4</span>) &#125;</span><br><span class="line"><span class="keyword">internal</span> <span class="keyword">static</span> <span class="keyword">var</span> bottom: <span class="type">ConstraintAttributes</span> &#123; <span class="keyword">return</span> <span class="keyword">self</span>.<span class="keyword">init</span>(<span class="number">8</span>) &#125;</span><br><span class="line"><span class="keyword">internal</span> <span class="keyword">static</span> <span class="keyword">var</span> leading: <span class="type">ConstraintAttributes</span> &#123; <span class="keyword">return</span> <span class="keyword">self</span>.<span class="keyword">init</span>(<span class="number">16</span>) &#125;</span><br><span class="line"><span class="keyword">internal</span> <span class="keyword">static</span> <span class="keyword">var</span> trailing: <span class="type">ConstraintAttributes</span> &#123; <span class="keyword">return</span> <span class="keyword">self</span>.<span class="keyword">init</span>(<span class="number">32</span>) &#125;</span><br><span class="line"><span class="keyword">internal</span> <span class="keyword">static</span> <span class="keyword">var</span> width: <span class="type">ConstraintAttributes</span> &#123; <span class="keyword">return</span> <span class="keyword">self</span>.<span class="keyword">init</span>(<span class="number">64</span>) &#125;</span><br><span class="line"><span class="keyword">internal</span> <span class="keyword">static</span> <span class="keyword">var</span> height: <span class="type">ConstraintAttributes</span> &#123; <span class="keyword">return</span> <span class="keyword">self</span>.<span class="keyword">init</span>(<span class="number">128</span>) &#125;</span><br><span class="line"><span class="keyword">internal</span> <span class="keyword">static</span> <span class="keyword">var</span> centerX: <span class="type">ConstraintAttributes</span> &#123; <span class="keyword">return</span> <span class="keyword">self</span>.<span class="keyword">init</span>(<span class="number">256</span>) &#125;</span><br><span class="line"><span class="keyword">internal</span> <span class="keyword">static</span> <span class="keyword">var</span> centerY: <span class="type">ConstraintAttributes</span> &#123; <span class="keyword">return</span> <span class="keyword">self</span>.<span class="keyword">init</span>(<span class="number">512</span>) &#125;</span><br><span class="line"><span class="keyword">internal</span> <span class="keyword">static</span> <span class="keyword">var</span> lastBaseline: <span class="type">ConstraintAttributes</span> &#123; <span class="keyword">return</span> <span class="keyword">self</span>.<span class="keyword">init</span>(<span class="number">1024</span>) &#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@available</span>(iOS <span class="number">8.0</span>, <span class="type">OSX</span> <span class="number">10.11</span>, *)</span><br><span class="line"><span class="keyword">internal</span> <span class="keyword">static</span> <span class="keyword">var</span> firstBaseline: <span class="type">ConstraintAttributes</span> &#123; <span class="keyword">return</span> <span class="keyword">self</span>.<span class="keyword">init</span>(<span class="number">2048</span>) &#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@available</span>(iOS <span class="number">8.0</span>, *)</span><br><span class="line"><span class="keyword">internal</span> <span class="keyword">static</span> <span class="keyword">var</span> leftMargin: <span class="type">ConstraintAttributes</span> &#123; <span class="keyword">return</span> <span class="keyword">self</span>.<span class="keyword">init</span>(<span class="number">4096</span>) &#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@available</span>(iOS <span class="number">8.0</span>, *)</span><br><span class="line"><span class="keyword">internal</span> <span class="keyword">static</span> <span class="keyword">var</span> rightMargin: <span class="type">ConstraintAttributes</span> &#123; <span class="keyword">return</span> <span class="keyword">self</span>.<span class="keyword">init</span>(<span class="number">8192</span>) &#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@available</span>(iOS <span class="number">8.0</span>, *)</span><br><span class="line"><span class="keyword">internal</span> <span class="keyword">static</span> <span class="keyword">var</span> topMargin: <span class="type">ConstraintAttributes</span> &#123; <span class="keyword">return</span> <span class="keyword">self</span>.<span class="keyword">init</span>(<span class="number">16384</span>) &#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@available</span>(iOS <span class="number">8.0</span>, *)</span><br><span class="line"><span class="keyword">internal</span> <span class="keyword">static</span> <span class="keyword">var</span> bottomMargin: <span class="type">ConstraintAttributes</span> &#123; <span class="keyword">return</span> <span class="keyword">self</span>.<span class="keyword">init</span>(<span class="number">32768</span>) &#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@available</span>(iOS <span class="number">8.0</span>, *)</span><br><span class="line"><span class="keyword">internal</span> <span class="keyword">static</span> <span class="keyword">var</span> leadingMargin: <span class="type">ConstraintAttributes</span> &#123; <span class="keyword">return</span> <span class="keyword">self</span>.<span class="keyword">init</span>(<span class="number">65536</span>) &#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@available</span>(iOS <span class="number">8.0</span>, *)</span><br><span class="line"><span class="keyword">internal</span> <span class="keyword">static</span> <span class="keyword">var</span> trailingMargin: <span class="type">ConstraintAttributes</span> &#123; <span class="keyword">return</span> <span class="keyword">self</span>.<span class="keyword">init</span>(<span class="number">131072</span>) &#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@available</span>(iOS <span class="number">8.0</span>, *)</span><br><span class="line"><span class="keyword">internal</span> <span class="keyword">static</span> <span class="keyword">var</span> centerXWithinMargins: <span class="type">ConstraintAttributes</span> &#123; <span class="keyword">return</span> <span class="keyword">self</span>.<span class="keyword">init</span>(<span class="number">262144</span>) &#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@available</span>(iOS <span class="number">8.0</span>, *)</span><br><span class="line"><span class="keyword">internal</span> <span class="keyword">static</span> <span class="keyword">var</span> centerYWithinMargins: <span class="type">ConstraintAttributes</span> &#123; <span class="keyword">return</span> <span class="keyword">self</span>.<span class="keyword">init</span>(<span class="number">524288</span>) &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// aggregates</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">internal</span> <span class="keyword">static</span> <span class="keyword">var</span> edges: <span class="type">ConstraintAttributes</span> &#123; <span class="keyword">return</span> <span class="keyword">self</span>.<span class="keyword">init</span>(<span class="number">15</span>) &#125;</span><br><span class="line"><span class="keyword">internal</span> <span class="keyword">static</span> <span class="keyword">var</span> size: <span class="type">ConstraintAttributes</span> &#123; <span class="keyword">return</span> <span class="keyword">self</span>.<span class="keyword">init</span>(<span class="number">192</span>) &#125;</span><br><span class="line"><span class="keyword">internal</span> <span class="keyword">static</span> <span class="keyword">var</span> center: <span class="type">ConstraintAttributes</span> &#123; <span class="keyword">return</span> <span class="keyword">self</span>.<span class="keyword">init</span>(<span class="number">768</span>) &#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@available</span>(iOS <span class="number">8.0</span>, *)</span><br><span class="line"><span class="keyword">internal</span> <span class="keyword">static</span> <span class="keyword">var</span> margins: <span class="type">ConstraintAttributes</span> &#123; <span class="keyword">return</span> <span class="keyword">self</span>.<span class="keyword">init</span>(<span class="number">61440</span>) &#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@available</span>(iOS <span class="number">8.0</span>, *)</span><br><span class="line"><span class="keyword">internal</span> <span class="keyword">static</span> <span class="keyword">var</span> centerWithinMargins: <span class="type">ConstraintAttributes</span> &#123; <span class="keyword">return</span> <span class="keyword">self</span>.<span class="keyword">init</span>(<span class="number">786432</span>) &#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到每个属性都是2的n次方<br><br>通过<figure class="highlight plain"><figcaption><span>layoutAttributes:[LayoutAttribute] ```来获取NSLayoutAttribute集合，这里用到Swift OptionSet类的union、formUnion、subtract和contains语法</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">ConstraintView的extensions中snp变量返回ConstraintViewDSL对象,ConstraintLayoutGuideDSL是它的子类，提供prepareConstraints、makeConstraints、remakeConstraints、updateConstraints、removeConstraints等方法。&lt;br/&gt;</span><br><span class="line">可以看到这些方法都是通过使用工厂类ConstraintMaker来管理约束的。</span><br><span class="line"></span><br><span class="line">```Swift</span><br><span class="line">    internal static func makeConstraints(item: LayoutConstraintItem, closure: (_ make: ConstraintMaker) -&gt; Void) &#123;</span><br><span class="line">        let maker = ConstraintMaker(item: item)</span><br><span class="line">        closure(maker)</span><br><span class="line">        var constraints: [Constraint] = []</span><br><span class="line">        for description in maker.descriptions &#123;</span><br><span class="line">            guard let constraint = description.constraint else &#123;</span><br><span class="line">                continue</span><br><span class="line">            &#125;</span><br><span class="line">            constraints.append(constraint)</span><br><span class="line">        &#125;</span><br><span class="line">        for constraint in constraints &#123;</span><br><span class="line">            constraint.activateIfNeeded(updatingExisting: false)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>ConstraintMaker的init方法：<br><figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">internal</span> <span class="keyword">init</span>(item: <span class="type">LayoutConstraintItem</span>) &#123;</span><br><span class="line">    <span class="keyword">self</span>.item = item</span><br><span class="line">    <span class="keyword">self</span>.item.prepare()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>以left为例(同以上举例<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">```Swift</span><br><span class="line">    public var left: ConstraintMakerExtendable &#123;</span><br><span class="line">        return self.makeExtendableWithAttributes(.left)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    internal func makeExtendableWithAttributes(_ attributes: ConstraintAttributes) -&gt; ConstraintMakerExtendable &#123;</span><br><span class="line">        let description = ConstraintDescription(item: self.item, attributes: attributes)</span><br><span class="line">        self.descriptions.append(description)</span><br><span class="line">        return ConstraintMakerExtendable(description)</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>ConstraintDescription是对NSLayoutConstraint的描述，生成Constraint对象，Constraint对象最终生成约束。</p>
+<p>而之所以可以连着调用top、right、bottom得益于ConstraintMakerExtendable类：<figure class="highlight plain"><figcaption><span>self.makeExtendableWithAttributes(.left)```得到ConstraintMakerExtendable类，后面top</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line">```Swift</span><br><span class="line">    //ConstraintMakerExtendable</span><br><span class="line">    public var top: ConstraintMakerExtendable &#123;</span><br><span class="line">        self.description.attributes += .top</span><br><span class="line">        return self</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //ConstraintAttributes</span><br><span class="line">    internal func +=(left: inout ConstraintAttributes, right: ConstraintAttributes) &#123;</span><br><span class="line">        left.formUnion(right)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //ConstraintMakerExtendable</span><br><span class="line">    public func equalTo(_ other: ConstraintRelatableTarget, _ file: String = #file, _ line: UInt = #line) -&gt; ConstraintMakerEditable &#123;</span><br><span class="line">        return self.relatedTo(other, relation: .equal, file: file, line: line)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    internal func relatedTo(_ other: ConstraintRelatableTarget, relation: ConstraintRelation, file: String, line: UInt) -&gt; ConstraintMakerEditable &#123;</span><br><span class="line">        let related: ConstraintItem</span><br><span class="line">        let constant: ConstraintConstantTarget</span><br><span class="line">        </span><br><span class="line">        if let other = other as? ConstraintItem &#123;</span><br><span class="line">            guard other.attributes == ConstraintAttributes.none ||</span><br><span class="line">                  other.attributes.layoutAttributes.count &lt;= 1 ||</span><br><span class="line">                  other.attributes.layoutAttributes == self.description.attributes.layoutAttributes ||</span><br><span class="line">                  other.attributes == .edges &amp;&amp; self.description.attributes == .margins ||</span><br><span class="line">                  other.attributes == .margins &amp;&amp; self.description.attributes == .edges else &#123;</span><br><span class="line">                fatalError(&quot;Cannot constraint to multiple non identical attributes. (\(file), \(line))&quot;);</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            related = other</span><br><span class="line">            constant = 0.0</span><br><span class="line">        &#125; else if let other = other as? ConstraintView &#123;</span><br><span class="line">            related = ConstraintItem(target: other, attributes: ConstraintAttributes.none)</span><br><span class="line">            constant = 0.0</span><br><span class="line">        &#125; else if let other = other as? ConstraintConstantTarget &#123;</span><br><span class="line">            related = ConstraintItem(target: nil, attributes: ConstraintAttributes.none)</span><br><span class="line">            constant = other</span><br><span class="line">        &#125; else if #available(iOS 9.0, OSX 10.11, *), let other = other as? ConstraintLayoutGuide &#123;</span><br><span class="line">            related = ConstraintItem(target: other, attributes: ConstraintAttributes.none)</span><br><span class="line">            constant = 0.0</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            fatalError(&quot;Invalid constraint. (\(file), \(line))&quot;)</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        let editable = ConstraintMakerEditable(self.description)</span><br><span class="line">        editable.description.sourceLocation = (file, line)</span><br><span class="line">        editable.description.relation = relation</span><br><span class="line">        editable.description.related = related</span><br><span class="line">        editable.description.constant = constant</span><br><span class="line">        return editable</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">item1.attribute1 = multiplier × item2.attribute2 + constant</span><br><span class="line"></span><br><span class="line"><span class="type">NSLayoutConstraint</span>(item: from, attribute: from属性, relatedBy: related关系, toItem: to, attribute: to属性, multiplier: multiplier, constant: constant)</span><br></pre></td></tr></table></figure>
+<p>relatedTo这个方法生成related关系、“to”和“to”的属性和constant</p>
+<p>接下来的offset和multipliedBy都是ConstraintMakerEditable类的实例方法</p>
+<p><img src="/images/1525872713.png" alt=""></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">```Swift</span><br><span class="line">    let layoutConstraint = LayoutConstraint(</span><br><span class="line">                item: layoutFrom,</span><br><span class="line">                attribute: layoutFromAttribute,</span><br><span class="line">                relatedBy: layoutRelation,</span><br><span class="line">                toItem: layoutTo,</span><br><span class="line">                attribute: layoutToAttribute,</span><br><span class="line">                multiplier: self.multiplier.constraintMultiplierTargetValue,</span><br><span class="line">                constant: layoutConstant</span><br><span class="line">            )</span><br></pre></td></tr></table></figure>
+<p>生成了NSLayoutConstraint对象了,在Constraint类的方法activateIfNeeded中我们也发现了<code>NSLayoutConstraint.activate(layoutConstraints)</code>方法了。</p>
+
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+      
+    </div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/04/13/blog9/" rel="next" title="Today Extension和3D Touch">
+                <i class="fa fa-chevron-left"></i> Today Extension和3D Touch
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">静谧星空</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">静谧星空</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
