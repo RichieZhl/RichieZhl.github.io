@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Mach-O  Header 头部，包含可以执行的CPU架构，比如x86,x86_64,arm7s,arm64 Load commands 加载命令，包含文件的组织架构和在虚拟内存中的布局方式 Data，数据，包含load commands中需要的各个段(segment)的数据，每一个Segment都得大小是Page的整数倍。  1) TEXT 代码段，只读（通常使用于frameworks,bun">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS App启动过程">
+<meta property="og:url" content="https://blog.msrily.com/2018/05/17/blog11/index.html">
+<meta property="og:site_name" content="静谧星空的博客">
+<meta property="og:description" content="Mach-O  Header 头部，包含可以执行的CPU架构，比如x86,x86_64,arm7s,arm64 Load commands 加载命令，包含文件的组织架构和在虚拟内存中的布局方式 Data，数据，包含load commands中需要的各个段(segment)的数据，每一个Segment都得大小是Page的整数倍。  1) TEXT 代码段，只读（通常使用于frameworks,bun">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://blog.msrily.com/images/299fcf31-8662-4634-af54-b6b0ca50ab2d.png">
+<meta property="og:image" content="https://blog.msrily.com/images/20171023100523145.png">
+<meta property="og:image" content="https://blog.msrily.com/images/20171022203521690.png">
+<meta property="og:updated_time" content="2018-09-17T08:23:36.944Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS App启动过程">
+<meta name="twitter:description" content="Mach-O  Header 头部，包含可以执行的CPU架构，比如x86,x86_64,arm7s,arm64 Load commands 加载命令，包含文件的组织架构和在虚拟内存中的布局方式 Data，数据，包含load commands中需要的各个段(segment)的数据，每一个Segment都得大小是Page的整数倍。  1) TEXT 代码段，只读（通常使用于frameworks,bun">
+<meta name="twitter:image" content="https://blog.msrily.com/images/299fcf31-8662-4634-af54-b6b0ca50ab2d.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://blog.msrily.com/2018/05/17/blog11/"/>
+
+
+
+
+
+  <title>iOS App启动过程 | 静谧星空的博客</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">静谧星空的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://blog.msrily.com/2018/05/17/blog11/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="静谧星空">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="静谧星空的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">iOS App启动过程</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-17T13:57:39+08:00">
+                2018-05-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="Mach-O"><a href="#Mach-O" class="headerlink" title="Mach-O"></a>Mach-O</h2><p><img src="/images/299fcf31-8662-4634-af54-b6b0ca50ab2d.png" alt=""></p>
+<ul>
+<li>Header 头部，包含可以执行的CPU架构，比如x86,x86_64,arm7s,arm64</li>
+<li>Load commands 加载命令，包含文件的组织架构和在虚拟内存中的布局方式</li>
+<li>Data，数据，包含load commands中需要的各个段(segment)的数据，每一个Segment都得大小是Page的整数倍。<br>  1) <strong>TEXT 代码段，只读（通常使用于frameworks,bundles,shared libraries）<br>  2) </strong>DATA 数据段，读写<br>  3) <strong>OBJC OC动态语言支持相关的数据<br>  4) </strong>IMPORT 仅IA-32平台生成<br>  5) __LINKEDIT 动态链接器使用的元数据（符号、字符串、入口）</li>
+</ul>
+<h2 id="dyld"><a href="#dyld" class="headerlink" title="dyld"></a>dyld</h2><p>dyld的全称是<a href="https://developer.apple.com/library/archive/releasenotes/DeveloperTools/RN-dyld/" target="_blank" rel="noopener">dynamic loader</a>，它的作用是加载一个进程所需要的image，dyld是<a href="https://opensource.apple.com/source/dyld/dyld-421.2/" target="_blank" rel="noopener">开源的</a>。</p>
+<h2 id="启动过程"><a href="#启动过程" class="headerlink" title="启动过程"></a>启动过程</h2><ol>
+<li>加载dyld到App进程</li>
+<li>加载动态库（包括所依赖的所有动态库）</li>
+<li>Rebase </li>
+<li>Bind </li>
+<li>初始化Objective C Runtime </li>
+<li>其它的初始化代码</li>
+</ol>
+<h3 id="加载动态库"><a href="#加载动态库" class="headerlink" title="加载动态库"></a>加载动态库</h3><p>dyld会首先读取mach-o文件的Header和load commands。<br>接着就知道了这个可执行文件依赖的动态库。例如加载动态库A到内存，接着检查A所依赖的动态库，就这样的递归加载，直到所有的动态库加载完毕。通常一个App所依赖的动态库在100-400个左右，其中大多数都是系统的动态库，它们会被缓存到dyld shared cache，这样读取的效率会很高。</p>
+<p>查看mach-o文件所依赖的动态库，可以通过MachOView的图形化界面(展开Load Command就能看到)，也可以通过命令行otool。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">otool -L demo</span><br></pre></td></tr></table></figure>
+<h3 id="Rebase-amp-amp-Bind"><a href="#Rebase-amp-amp-Bind" class="headerlink" title="Rebase &amp;&amp; Bind"></a>Rebase &amp;&amp; Bind</h3><p>有两种主要的技术来保证应用的安全：ASLR和Code Sign。</p>
+<p>ASLR的全称是Address space layout randomization，翻译过来就是“地址空间布局随机化”。App被启动的时候，程序会被映射到逻辑的地址空间，这个逻辑的地址空间有一个起始地址，而ASLR技术使得这个起始地址是随机的。如果是固定的，那么黑客很容易就可以由起始地址+偏移量找到函数的地址。</p>
+<p>Code Sign相信大多数开发者都知晓，这里要提一点的是，在进行Code sign的时候，加密哈希不是针对于整个文件，而是针对于每一个Page的。这就保证了在dyld进行加载的时候，可以对每一个page进行独立的验证。</p>
+<p>mach-o中有很多符号，有指向当前mach-o的，也有指向其他dylib的，比如printf。那么，在运行时，代码如何准确的找到printf的地址呢？</p>
+<p>mach-o中采用了PIC技术，全称是Position Independ code。当你的程序要调用printf的时候，会先在__DATA段中建立一个指针指向printf，在通过这个指针实现间接调用。dyld这时候需要做一些fix-up工作，即帮助应用程序找到这些符号的实际地址。主要包括两部分:</p>
+<ul>
+<li>Rebase 修正内部(指向当前mach-o文件)的指针指向</li>
+<li>Bind 修正外部指针指向</li>
+</ul>
+<p><img src="/images/20171023100523145.png" alt=""></p>
+<p>之所以需要Rebase，是因为刚刚提到的ASLR使得地址随机化，导致起始地址不固定，另外由于Code Sign，导致不能直接修改Image。Rebase的时候只需要增加对应的偏移量即可。待Rebase的数据都存放在__LINKEDIT中。<br>可以通过MachOView查看：Dynamic Loader Info -&gt; Rebase Info</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xcrun dyldinfo -<span class="built_in">bind</span> demo</span><br></pre></td></tr></table></figure>
+<p>Rebase解决了内部的符号引用问题，而外部的符号引用则是由Bind解决。在解决Bind的时候，是根据字符串匹配的方式查找符号表，所以这个过程相对于Rebase来说是略慢的。</p>
+<h3 id="初始化Objective-C-Runtime"><a href="#初始化Objective-C-Runtime" class="headerlink" title="初始化Objective C Runtime"></a>初始化Objective C Runtime</h3><p>Objective C是动态语言，所以在执行main函数之前，需要把类的信息注册到一个全局的Table中。同时，Objective C支持Category，在初始化的时候，也会把Category中的方法注册到对应的类中，同时会唯一Selector，这也是为什么当你的Cagegory实现了类中同名的方法后，类中的方法会被覆盖。</p>
+<p>另外，由于iOS开发时基于Cocoa Touch的，所以绝大多数的类起始都是系统类，所以大多数的Runtime初始化起始在Rebase和Bind中已经完成。</p>
+<h3 id="Initializers"><a href="#Initializers" class="headerlink" title="Initializers"></a>Initializers</h3><p>主要包括几部分：</p>
+<ul>
+<li>+load方法。</li>
+<li>C／C++静态初始化对象和标记为<strong>attribute</strong>(constructor)的方法</li>
+</ul>
+<h4 id="注：-load方法已经被弃用了，如果你用Swift开发，你会发现根本无法去写这样一个方法，官方的建议是实用initialize。区别就是，load是在类装载的时候执行，而initialize是在类第一次收到message前调用。"><a href="#注：-load方法已经被弃用了，如果你用Swift开发，你会发现根本无法去写这样一个方法，官方的建议是实用initialize。区别就是，load是在类装载的时候执行，而initialize是在类第一次收到message前调用。" class="headerlink" title="注：+load方法已经被弃用了，如果你用Swift开发，你会发现根本无法去写这样一个方法，官方的建议是实用initialize。区别就是，load是在类装载的时候执行，而initialize是在类第一次收到message前调用。"></a>注：+load方法已经被弃用了，如果你用Swift开发，你会发现根本无法去写这样一个方法，官方的建议是实用initialize。区别就是，load是在类装载的时候执行，而initialize是在类第一次收到message前调用。</h4><h3 id="上文的讲解是dyld2的加载方式。而最新的是dyld3加载方式略有不同："><a href="#上文的讲解是dyld2的加载方式。而最新的是dyld3加载方式略有不同：" class="headerlink" title="上文的讲解是dyld2的加载方式。而最新的是dyld3加载方式略有不同："></a>上文的讲解是dyld2的加载方式。而最新的是dyld3加载方式略有不同：</h3><p><img src="/images/20171022203521690.png" alt=""></p>
+<p>dyld2是纯粹的in-process，也就是在程序进程内执行的，也就意味着只有当应用程序被启动的时候，dyld2才能开始执行任务。</p>
+<p>dyld3则是部分out-of-process，部分in-process。图中，虚线之上的部分是out-of-process的，在App下载安装和版本更新的时候会去执行，out-of-process会做如下事情：</p>
+<ul>
+<li>分析Mach-o Headers</li>
+<li>分析依赖的动态库</li>
+<li>查找需要Rebase &amp; Bind之类的符号</li>
+<li>把上述结果写入缓存</li>
+</ul>
+<p>这样，在应用启动的时候，就可以直接从缓存中读取数据，加快加载速度。</p>
+<p>启动时间在小于400ms是最佳的，因为从点击图标到显示Launch Screen，到Launch Screen消失这段时间是400ms。启动时间不可以大于20s，否则会被系统杀掉。</p>
+<p>在Xcode中，可以通过设置环境变量来查看App的启动时间，DYLD_PRINT_STATISTICS和DYLD_PRINT_STATISTICS_DETAILS。</p>
+<h3 id="优化启动时间"><a href="#优化启动时间" class="headerlink" title="优化启动时间"></a>优化启动时间</h3><h4 id="dylibs"><a href="#dylibs" class="headerlink" title="dylibs"></a>dylibs</h4><p>启动的第一步是加载动态库，加载系统的动态库使很快的，因为可以缓存，而加载内嵌的动态库速度较慢。所以，提高这一步的效率的关键是：减少动态库的数量。</p>
+<p>合并动态库.比如公司内部由私有Pod建立了如下动态库：XXTableView, XXHUD, XXLabel，强烈建议合并成一个XXUIKit来提高加载速度。</p>
+<h4 id="Rebase-amp-Bind-amp-Objective-C-Runtime"><a href="#Rebase-amp-Bind-amp-Objective-C-Runtime" class="headerlink" title="Rebase &amp; Bind &amp; Objective C Runtime"></a>Rebase &amp; Bind &amp; Objective C Runtime</h4><p>Rebase和Bind都是为了解决指针引用的问题。对于Objective C开发来说，主要的时间消耗在Class/Method的符号加载上，所以常见的优化方案是：</p>
+<ul>
+<li>减少__DATA段中的指针数量。</li>
+<li>合并Category和功能类似的类。比如：UIView+Frame,UIView+AutoLayout…合并为一个删除无用的方法和类。</li>
+<li>多用Swift Structs，因为Swfit Structs是静态分发的。</li>
+</ul>
+<h4 id="Initializers-1"><a href="#Initializers-1" class="headerlink" title="Initializers"></a>Initializers</h4><p>通常，我们会在+load方法中进行method-swizzling。</p>
+<ul>
+<li>用initialize替代load。不少同学喜欢用method-swizzling来实现AOP去做日志统计等内容，强烈建议改为在initialize进行初始化。</li>
+<li>减少<strong>atribute</strong>((constructor))的使用，而是在第一次访问的时候才用dispatch_once等方式初始化。</li>
+<li>不要创建线程</li>
+<li>使用Swfit重写代码。</li>
+</ul>
+<p>转自：<a href="https://blog.csdn.net/Hello_Hwc/article/details/78317863?locationNum=9&amp;fps=1" target="_blank" rel="noopener">深入理解iOS App的启动过程</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+      
+    </div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/05/09/blog10/" rel="next" title="iOS SnapKit源码解析">
+                <i class="fa fa-chevron-left"></i> iOS SnapKit源码解析
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/05/23/blog12/" rel="prev" title="Objective C 类crash预防">
+                Objective C 类crash预防 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">静谧星空</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Mach-O"><span class="nav-number">1.</span> <span class="nav-text">Mach-O</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dyld"><span class="nav-number">2.</span> <span class="nav-text">dyld</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启动过程"><span class="nav-number">3.</span> <span class="nav-text">启动过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#加载动态库"><span class="nav-number">3.1.</span> <span class="nav-text">加载动态库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Rebase-amp-amp-Bind"><span class="nav-number">3.2.</span> <span class="nav-text">Rebase &amp;&amp; Bind</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#初始化Objective-C-Runtime"><span class="nav-number">3.3.</span> <span class="nav-text">初始化Objective C Runtime</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Initializers"><span class="nav-number">3.4.</span> <span class="nav-text">Initializers</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#注：-load方法已经被弃用了，如果你用Swift开发，你会发现根本无法去写这样一个方法，官方的建议是实用initialize。区别就是，load是在类装载的时候执行，而initialize是在类第一次收到message前调用。"><span class="nav-number">3.4.1.</span> <span class="nav-text">注：+load方法已经被弃用了，如果你用Swift开发，你会发现根本无法去写这样一个方法，官方的建议是实用initialize。区别就是，load是在类装载的时候执行，而initialize是在类第一次收到message前调用。</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#上文的讲解是dyld2的加载方式。而最新的是dyld3加载方式略有不同："><span class="nav-number">3.5.</span> <span class="nav-text">上文的讲解是dyld2的加载方式。而最新的是dyld3加载方式略有不同：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#优化启动时间"><span class="nav-number">3.6.</span> <span class="nav-text">优化启动时间</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#dylibs"><span class="nav-number">3.6.1.</span> <span class="nav-text">dylibs</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Rebase-amp-Bind-amp-Objective-C-Runtime"><span class="nav-number">3.6.2.</span> <span class="nav-text">Rebase &amp; Bind &amp; Objective C Runtime</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Initializers-1"><span class="nav-number">3.6.3.</span> <span class="nav-text">Initializers</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">静谧星空</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

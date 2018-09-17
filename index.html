@@ -229,6 +229,451 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://blog.msrily.com/2018/05/24/blog13/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="静谧星空">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="静谧星空的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/05/24/blog13/" itemprop="url">GCD 队列探索</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-24T18:44:25+08:00">
+                2018-05-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>同步串行队列、异步串行队列和同步并行队列都只创建一个线程，而异步并行队列则创建多个线程。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line">dispatch_queue_t queue1 = dispatch_queue_create(&quot;com.demo.1&quot;, DISPATCH_QUEUE_SERIAL);</span><br><span class="line">    for (int i = 0; i &lt; 10; ++i) &#123;</span><br><span class="line">//        dispatch_sync(queue1, ^&#123;</span><br><span class="line">//            NSLog(@&quot;%p&quot;, [NSThread currentThread]);</span><br><span class="line">//        &#125;);</span><br><span class="line">        /*</span><br><span class="line">         2018-09-17 18:38:38.654309+0800 testUI[31197:422120] 0x60400006ac80</span><br><span class="line">         2018-09-17 18:38:38.654448+0800 testUI[31197:422120] 0x60400006ac80</span><br><span class="line">         2018-09-17 18:38:38.654543+0800 testUI[31197:422120] 0x60400006ac80</span><br><span class="line">         2018-09-17 18:38:38.654643+0800 testUI[31197:422120] 0x60400006ac80</span><br><span class="line">         2018-09-17 18:38:38.654729+0800 testUI[31197:422120] 0x60400006ac80</span><br><span class="line">         2018-09-17 18:38:38.654879+0800 testUI[31197:422120] 0x60400006ac80</span><br><span class="line">         2018-09-17 18:38:38.654974+0800 testUI[31197:422120] 0x60400006ac80</span><br><span class="line">         2018-09-17 18:38:38.655165+0800 testUI[31197:422120] 0x60400006ac80</span><br><span class="line">         2018-09-17 18:38:38.655250+0800 testUI[31197:422120] 0x60400006ac80</span><br><span class="line">         2018-09-17 18:38:38.655363+0800 testUI[31197:422120] 0x60400006ac80</span><br><span class="line">         */</span><br><span class="line">//        dispatch_async(queue1, ^&#123;</span><br><span class="line">//            NSLog(@&quot;%p&quot;, [NSThread currentThread]);</span><br><span class="line">//        &#125;);</span><br><span class="line">        /*</span><br><span class="line">         2018-09-17 18:40:02.443306+0800 testUI[31225:423440] 0x604000269740</span><br><span class="line">         2018-09-17 18:40:02.443462+0800 testUI[31225:423440] 0x604000269740</span><br><span class="line">         2018-09-17 18:40:02.443560+0800 testUI[31225:423440] 0x604000269740</span><br><span class="line">         2018-09-17 18:40:02.443660+0800 testUI[31225:423440] 0x604000269740</span><br><span class="line">         2018-09-17 18:40:02.443830+0800 testUI[31225:423440] 0x604000269740</span><br><span class="line">         2018-09-17 18:40:02.444017+0800 testUI[31225:423440] 0x604000269740</span><br><span class="line">         2018-09-17 18:40:02.444403+0800 testUI[31225:423440] 0x604000269740</span><br><span class="line">         2018-09-17 18:40:02.444509+0800 testUI[31225:423440] 0x604000269740</span><br><span class="line">         2018-09-17 18:40:02.444737+0800 testUI[31225:423440] 0x604000269740</span><br><span class="line">         2018-09-17 18:40:02.445109+0800 testUI[31225:423440] 0x604000269740</span><br><span class="line">         */</span><br><span class="line">    &#125;</span><br><span class="line">    dispatch_queue_t queue2 = dispatch_queue_create(&quot;com.demo.2&quot;, DISPATCH_QUEUE_CONCURRENT);</span><br><span class="line">    for (int i = 0; i &lt; 10; ++i) &#123;</span><br><span class="line">//        dispatch_sync(queue2, ^&#123;</span><br><span class="line">//            NSLog(@&quot;%p&quot;, [NSThread currentThread]);</span><br><span class="line">//        &#125;);</span><br><span class="line">        /*</span><br><span class="line">         2018-09-17 18:41:26.184301+0800 testUI[31260:424690] 0x600000063540</span><br><span class="line">         2018-09-17 18:41:26.184430+0800 testUI[31260:424690] 0x600000063540</span><br><span class="line">         2018-09-17 18:41:26.184519+0800 testUI[31260:424690] 0x600000063540</span><br><span class="line">         2018-09-17 18:41:26.184612+0800 testUI[31260:424690] 0x600000063540</span><br><span class="line">         2018-09-17 18:41:26.184721+0800 testUI[31260:424690] 0x600000063540</span><br><span class="line">         2018-09-17 18:41:26.184807+0800 testUI[31260:424690] 0x600000063540</span><br><span class="line">         2018-09-17 18:41:26.184906+0800 testUI[31260:424690] 0x600000063540</span><br><span class="line">         2018-09-17 18:41:26.185005+0800 testUI[31260:424690] 0x600000063540</span><br><span class="line">         2018-09-17 18:41:26.185111+0800 testUI[31260:424690] 0x600000063540</span><br><span class="line">         2018-09-17 18:41:26.185218+0800 testUI[31260:424690] 0x600000063540</span><br><span class="line">         */</span><br><span class="line">        dispatch_async(queue2, ^&#123;</span><br><span class="line">            NSLog(@&quot;%p&quot;, [NSThread currentThread]);</span><br><span class="line">        &#125;);</span><br><span class="line">        /*</span><br><span class="line">         2018-09-17 18:43:35.575104+0800 testUI[31313:426896] 0x604000469f40</span><br><span class="line">         2018-09-17 18:43:35.575104+0800 testUI[31313:426894] 0x600000271cc0</span><br><span class="line">         2018-09-17 18:43:35.575104+0800 testUI[31313:426895] 0x600000271bc0</span><br><span class="line">         2018-09-17 18:43:35.575126+0800 testUI[31313:426893] 0x600000272480</span><br><span class="line">         2018-09-17 18:43:35.575260+0800 testUI[31313:426894] 0x600000271cc0</span><br><span class="line">         2018-09-17 18:43:35.575270+0800 testUI[31313:426896] 0x604000469f40</span><br><span class="line">         2018-09-17 18:43:35.575304+0800 testUI[31313:426895] 0x600000271bc0</span><br><span class="line">         2018-09-17 18:43:35.575359+0800 testUI[31313:426893] 0x600000272480</span><br><span class="line">         2018-09-17 18:43:35.575386+0800 testUI[31313:426897] 0x600000271c40</span><br><span class="line">         2018-09-17 18:43:35.575394+0800 testUI[31313:426894] 0x600000271cc0</span><br><span class="line">         */</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>最后一个结果有点意思，事实上没有创建10个线程，推测应该是此时GCD实现线程池的能力，以减少创建线程的开销，提高性能。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://blog.msrily.com/2018/05/23/blog12/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="静谧星空">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="静谧星空的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/05/23/blog12/" itemprop="url">Objective C 类crash预防</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-23T16:29:23+08:00">
+                2018-05-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Persion类</p>
+<p><img src="/images/16a7155c-f0ff-47e9-bdca-47f517b30d1d.png" alt=""></p>
+<p><img src="/images/0235ad78-fb93-420a-9acf-b7f7076dfd46.png" alt=""></p>
+<p><img src="/images/93af98b9-0108-4069-a18b-579723fb30e7.png" alt=""></p>
+<p>运行结果：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">2018-09-17 18:07:47.368888+0800 demo11[30894:402677] 20</span><br><span class="line">2018-09-17 18:07:47.369026+0800 demo11[30894:402677] ---eat----</span><br><span class="line">2018-09-17 18:07:47.369233+0800 demo11[30894:402677] ---crash----</span><br></pre></td></tr></table></figure></p>
+<p>第三副图调用objc_msgSend方法直接绕过了这个预防机制。</p>
+<p>使用<code>[persion setValue:@(4) forKey:@&quot;_count&quot;];</code>可以给存在的属性赋值<b>（无论其属性是否可读或隐藏）</b>，走的消息转发。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://blog.msrily.com/2018/05/17/blog11/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="静谧星空">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="静谧星空的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/05/17/blog11/" itemprop="url">iOS App启动过程</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-17T13:57:39+08:00">
+                2018-05-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="Mach-O"><a href="#Mach-O" class="headerlink" title="Mach-O"></a>Mach-O</h2><p><img src="/images/299fcf31-8662-4634-af54-b6b0ca50ab2d.png" alt=""></p>
+<ul>
+<li>Header 头部，包含可以执行的CPU架构，比如x86,x86_64,arm7s,arm64</li>
+<li>Load commands 加载命令，包含文件的组织架构和在虚拟内存中的布局方式</li>
+<li>Data，数据，包含load commands中需要的各个段(segment)的数据，每一个Segment都得大小是Page的整数倍。<br>  1) <strong>TEXT 代码段，只读（通常使用于frameworks,bundles,shared libraries）<br>  2) </strong>DATA 数据段，读写<br>  3) <strong>OBJC OC动态语言支持相关的数据<br>  4) </strong>IMPORT 仅IA-32平台生成<br>  5) __LINKEDIT 动态链接器使用的元数据（符号、字符串、入口）</li>
+</ul>
+<h2 id="dyld"><a href="#dyld" class="headerlink" title="dyld"></a>dyld</h2><p>dyld的全称是<a href="https://developer.apple.com/library/archive/releasenotes/DeveloperTools/RN-dyld/" target="_blank" rel="noopener">dynamic loader</a>，它的作用是加载一个进程所需要的image，dyld是<a href="https://opensource.apple.com/source/dyld/dyld-421.2/" target="_blank" rel="noopener">开源的</a>。</p>
+<h2 id="启动过程"><a href="#启动过程" class="headerlink" title="启动过程"></a>启动过程</h2><ol>
+<li>加载dyld到App进程</li>
+<li>加载动态库（包括所依赖的所有动态库）</li>
+<li>Rebase </li>
+<li>Bind </li>
+<li>初始化Objective C Runtime </li>
+<li>其它的初始化代码</li>
+</ol>
+<h3 id="加载动态库"><a href="#加载动态库" class="headerlink" title="加载动态库"></a>加载动态库</h3><p>dyld会首先读取mach-o文件的Header和load commands。<br>接着就知道了这个可执行文件依赖的动态库。例如加载动态库A到内存，接着检查A所依赖的动态库，就这样的递归加载，直到所有的动态库加载完毕。通常一个App所依赖的动态库在100-400个左右，其中大多数都是系统的动态库，它们会被缓存到dyld shared cache，这样读取的效率会很高。</p>
+<p>查看mach-o文件所依赖的动态库，可以通过MachOView的图形化界面(展开Load Command就能看到)，也可以通过命令行otool。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">otool -L demo</span><br></pre></td></tr></table></figure>
+<h3 id="Rebase-amp-amp-Bind"><a href="#Rebase-amp-amp-Bind" class="headerlink" title="Rebase &amp;&amp; Bind"></a>Rebase &amp;&amp; Bind</h3><p>有两种主要的技术来保证应用的安全：ASLR和Code Sign。</p>
+<p>ASLR的全称是Address space layout randomization，翻译过来就是“地址空间布局随机化”。App被启动的时候，程序会被映射到逻辑的地址空间，这个逻辑的地址空间有一个起始地址，而ASLR技术使得这个起始地址是随机的。如果是固定的，那么黑客很容易就可以由起始地址+偏移量找到函数的地址。</p>
+<p>Code Sign相信大多数开发者都知晓，这里要提一点的是，在进行Code sign的时候，加密哈希不是针对于整个文件，而是针对于每一个Page的。这就保证了在dyld进行加载的时候，可以对每一个page进行独立的验证。</p>
+<p>mach-o中有很多符号，有指向当前mach-o的，也有指向其他dylib的，比如printf。那么，在运行时，代码如何准确的找到printf的地址呢？</p>
+<p>mach-o中采用了PIC技术，全称是Position Independ code。当你的程序要调用printf的时候，会先在__DATA段中建立一个指针指向printf，在通过这个指针实现间接调用。dyld这时候需要做一些fix-up工作，即帮助应用程序找到这些符号的实际地址。主要包括两部分:</p>
+<ul>
+<li>Rebase 修正内部(指向当前mach-o文件)的指针指向</li>
+<li>Bind 修正外部指针指向</li>
+</ul>
+<p><img src="/images/20171023100523145.png" alt=""></p>
+<p>之所以需要Rebase，是因为刚刚提到的ASLR使得地址随机化，导致起始地址不固定，另外由于Code Sign，导致不能直接修改Image。Rebase的时候只需要增加对应的偏移量即可。待Rebase的数据都存放在__LINKEDIT中。<br>可以通过MachOView查看：Dynamic Loader Info -&gt; Rebase Info</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xcrun dyldinfo -<span class="built_in">bind</span> demo</span><br></pre></td></tr></table></figure>
+<p>Rebase解决了内部的符号引用问题，而外部的符号引用则是由Bind解决。在解决Bind的时候，是根据字符串匹配的方式查找符号表，所以这个过程相对于Rebase来说是略慢的。</p>
+<h3 id="初始化Objective-C-Runtime"><a href="#初始化Objective-C-Runtime" class="headerlink" title="初始化Objective C Runtime"></a>初始化Objective C Runtime</h3><p>Objective C是动态语言，所以在执行main函数之前，需要把类的信息注册到一个全局的Table中。同时，Objective C支持Category，在初始化的时候，也会把Category中的方法注册到对应的类中，同时会唯一Selector，这也是为什么当你的Cagegory实现了类中同名的方法后，类中的方法会被覆盖。</p>
+<p>另外，由于iOS开发时基于Cocoa Touch的，所以绝大多数的类起始都是系统类，所以大多数的Runtime初始化起始在Rebase和Bind中已经完成。</p>
+<h3 id="Initializers"><a href="#Initializers" class="headerlink" title="Initializers"></a>Initializers</h3><p>主要包括几部分：</p>
+<ul>
+<li>+load方法。</li>
+<li>C／C++静态初始化对象和标记为<strong>attribute</strong>(constructor)的方法</li>
+</ul>
+<h4 id="注：-load方法已经被弃用了，如果你用Swift开发，你会发现根本无法去写这样一个方法，官方的建议是实用initialize。区别就是，load是在类装载的时候执行，而initialize是在类第一次收到message前调用。"><a href="#注：-load方法已经被弃用了，如果你用Swift开发，你会发现根本无法去写这样一个方法，官方的建议是实用initialize。区别就是，load是在类装载的时候执行，而initialize是在类第一次收到message前调用。" class="headerlink" title="注：+load方法已经被弃用了，如果你用Swift开发，你会发现根本无法去写这样一个方法，官方的建议是实用initialize。区别就是，load是在类装载的时候执行，而initialize是在类第一次收到message前调用。"></a>注：+load方法已经被弃用了，如果你用Swift开发，你会发现根本无法去写这样一个方法，官方的建议是实用initialize。区别就是，load是在类装载的时候执行，而initialize是在类第一次收到message前调用。</h4><h3 id="上文的讲解是dyld2的加载方式。而最新的是dyld3加载方式略有不同："><a href="#上文的讲解是dyld2的加载方式。而最新的是dyld3加载方式略有不同：" class="headerlink" title="上文的讲解是dyld2的加载方式。而最新的是dyld3加载方式略有不同："></a>上文的讲解是dyld2的加载方式。而最新的是dyld3加载方式略有不同：</h3><p><img src="/images/20171022203521690.png" alt=""></p>
+<p>dyld2是纯粹的in-process，也就是在程序进程内执行的，也就意味着只有当应用程序被启动的时候，dyld2才能开始执行任务。</p>
+<p>dyld3则是部分out-of-process，部分in-process。图中，虚线之上的部分是out-of-process的，在App下载安装和版本更新的时候会去执行，out-of-process会做如下事情：</p>
+<ul>
+<li>分析Mach-o Headers</li>
+<li>分析依赖的动态库</li>
+<li>查找需要Rebase &amp; Bind之类的符号</li>
+<li>把上述结果写入缓存</li>
+</ul>
+<p>这样，在应用启动的时候，就可以直接从缓存中读取数据，加快加载速度。</p>
+<p>启动时间在小于400ms是最佳的，因为从点击图标到显示Launch Screen，到Launch Screen消失这段时间是400ms。启动时间不可以大于20s，否则会被系统杀掉。</p>
+<p>在Xcode中，可以通过设置环境变量来查看App的启动时间，DYLD_PRINT_STATISTICS和DYLD_PRINT_STATISTICS_DETAILS。</p>
+<h3 id="优化启动时间"><a href="#优化启动时间" class="headerlink" title="优化启动时间"></a>优化启动时间</h3><h4 id="dylibs"><a href="#dylibs" class="headerlink" title="dylibs"></a>dylibs</h4><p>启动的第一步是加载动态库，加载系统的动态库使很快的，因为可以缓存，而加载内嵌的动态库速度较慢。所以，提高这一步的效率的关键是：减少动态库的数量。</p>
+<p>合并动态库.比如公司内部由私有Pod建立了如下动态库：XXTableView, XXHUD, XXLabel，强烈建议合并成一个XXUIKit来提高加载速度。</p>
+<h4 id="Rebase-amp-Bind-amp-Objective-C-Runtime"><a href="#Rebase-amp-Bind-amp-Objective-C-Runtime" class="headerlink" title="Rebase &amp; Bind &amp; Objective C Runtime"></a>Rebase &amp; Bind &amp; Objective C Runtime</h4><p>Rebase和Bind都是为了解决指针引用的问题。对于Objective C开发来说，主要的时间消耗在Class/Method的符号加载上，所以常见的优化方案是：</p>
+<ul>
+<li>减少__DATA段中的指针数量。</li>
+<li>合并Category和功能类似的类。比如：UIView+Frame,UIView+AutoLayout…合并为一个删除无用的方法和类。</li>
+<li>多用Swift Structs，因为Swfit Structs是静态分发的。</li>
+</ul>
+<h4 id="Initializers-1"><a href="#Initializers-1" class="headerlink" title="Initializers"></a>Initializers</h4><p>通常，我们会在+load方法中进行method-swizzling。</p>
+<ul>
+<li>用initialize替代load。不少同学喜欢用method-swizzling来实现AOP去做日志统计等内容，强烈建议改为在initialize进行初始化。</li>
+<li>减少<strong>atribute</strong>((constructor))的使用，而是在第一次访问的时候才用dispatch_once等方式初始化。</li>
+<li>不要创建线程</li>
+<li>使用Swfit重写代码。</li>
+</ul>
+<p>转自：<a href="https://blog.csdn.net/Hello_Hwc/article/details/78317863?locationNum=9&amp;fps=1" target="_blank" rel="noopener">深入理解iOS App的启动过程</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://blog.msrily.com/2018/05/09/blog10/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1212,442 +1657,13 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://blog.msrily.com/2018/03/27/blog3/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="静谧星空">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="静谧星空的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/03/27/blog3/" itemprop="url">MySQL大数据量分页性能优化</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-27T10:58:25+08:00">
-                2018-03-27
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h4 id="1-直接用limit-start-count分页语句，-也是我程序中用的方法："><a href="#1-直接用limit-start-count分页语句，-也是我程序中用的方法：" class="headerlink" title="1.直接用limit start, count分页语句， 也是我程序中用的方法："></a>1.直接用limit start, count分页语句， 也是我程序中用的方法：</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> product <span class="keyword">limit</span> <span class="keyword">start</span>, <span class="keyword">count</span></span><br></pre></td></tr></table></figure>
-<p>当起始页较小时，查询没有性能问题，我们分别看下从10， 100， 1000， 10000开始分页的执行时间（每页取20条）， 如下：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> product <span class="keyword">limit</span> <span class="number">10</span>, <span class="number">20</span>   <span class="number">0.016</span>秒</span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> product <span class="keyword">limit</span> <span class="number">100</span>, <span class="number">20</span>   <span class="number">0.016</span>秒</span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> product <span class="keyword">limit</span> <span class="number">1000</span>, <span class="number">20</span>   <span class="number">0.047</span>秒</span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> product <span class="keyword">limit</span> <span class="number">10000</span>, <span class="number">20</span>   <span class="number">0.094</span>秒</span><br></pre></td></tr></table></figure></p>
-<p>我们已经看出随着起始记录的增加，时间也随着增大， 这说明分页语句limit跟起始页码是有很大关系的，那么我们把起始记录改为40w看下（也就是记录的一般左右）<br><figure class="highlight sql"><figcaption><span>select * from product limit 400000, 20   3.229秒</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">```</span><br><span class="line">再看我们取最后一页记录的时间</span><br><span class="line">```sql</span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> product <span class="keyword">limit</span> <span class="number">866613</span>, <span class="number">20</span>   <span class="number">37.44</span>秒</span><br></pre></td></tr></table></figure></p>
-<p>难怪搜索引擎抓取我们页面的时候经常会报超时，像这种分页最大的页码页显然这种时间是无法忍受的。</p>
-<p>从中我们也能总结出两件事情：<br><br><br>1）limit语句的查询时间与起始记录的位置成正比<br><br><br>2）mysql的limit语句是很方便，但是对记录很多的表并不适合直接使用。</p>
-<h4 id="2-对limit分页问题的性能优化方法"><a href="#2-对limit分页问题的性能优化方法" class="headerlink" title="2.对limit分页问题的性能优化方法"></a>2.对limit分页问题的性能优化方法</h4><p>利用表的覆盖索引来加速分页查询<br>我们都知道，利用了索引查询的语句中如果只包含了那个索引列（覆盖索引），那么这种情况会查询很快。</p>
-<p>因为利用索引查找有优化算法，且数据就在查询索引上面，不用再去找相关的数据地址了，这样节省了很多时间。另外Mysql中也有相关的索引缓存，在并发高的时候利用缓存就效果更好了。</p>
-<p>在我们的例子中，我们知道id字段是主键，自然就包含了默认的主键索引。现在让我们看看利用覆盖索引的查询效果如何：</p>
-<p>这次我们之间查询最后一页的数据（利用覆盖索引，只包含id列），如下：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">id</span> <span class="keyword">from</span> product <span class="keyword">limit</span> <span class="number">866613</span>, <span class="number">20</span> <span class="number">0.2</span>秒</span><br></pre></td></tr></table></figure></p>
-<p>相对于查询了所有列的37.44秒，提升了大概100多倍的速度</p>
-<p>那么如果我们也要查询所有列，有两种方法，一种是id&gt;=的形式，另一种就是利用join，看下实际情况：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> product <span class="keyword">WHERE</span> <span class="keyword">ID</span> &gt; =(<span class="keyword">select</span> <span class="keyword">id</span> <span class="keyword">from</span> product <span class="keyword">limit</span> <span class="number">866613</span>, <span class="number">1</span>) <span class="keyword">limit</span> <span class="number">20</span></span><br></pre></td></tr></table></figure></p>
-<p>查询时间为0.2秒，简直是一个质的飞跃啊，哈哈</p>
-<p>另一种写法<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> product a <span class="keyword">JOIN</span> (<span class="keyword">select</span> <span class="keyword">id</span> <span class="keyword">from</span> product <span class="keyword">limit</span> <span class="number">866613</span>, <span class="number">20</span>) b <span class="keyword">ON</span> a.ID = b.id</span><br></pre></td></tr></table></figure></p>
-<p>查询时间也很短，赞！</p>
-<p>其实两者用的都是一个原理嘛，所以效果也差不多</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://blog.msrily.com/2018/03/27/blog2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="静谧星空">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="静谧星空的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/03/27/blog2/" itemprop="url">iOS开发- 相机(摄像头)获取到的图片自动旋转90度解决办法</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-27T10:55:34+08:00">
-                2018-03-27
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>用相机拍摄出来的照片含有EXIF信息，UIImage的imageOrientation属性指的就是EXIF中的orientation信息。</p>
-<p>如果我们忽略orientation信息，而直接对照片进行像素处理或者drawInRect等操作，得到的结果是翻转或者旋转90之后的样子。这是因为我们执行像素处理或者drawInRect等操作之后，imageOrientaion信息被删除了，imageOrientaion被重设为0，造成照片内容和imageOrientaion不匹配。</p>
-<p>所以，在对照片进行处理之前，先将照片旋转到正确的方向，并且返回的imageOrientaion为0。</p>
-<p>下面这个方法就是一个UIImage category中的方法，用它可以达到以上目的。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br></pre></td><td class="code"><pre><span class="line">- (UIImage *)fixOrientation:(UIImage *)aImage &#123;</span><br><span class="line">    </span><br><span class="line">    // No-op if the orientation is already correct</span><br><span class="line">    if (aImage.imageOrientation == UIImageOrientationUp) </span><br><span class="line">        return aImage;</span><br><span class="line">    </span><br><span class="line">    // We need to calculate the proper transformation to make the image upright.</span><br><span class="line">    // We do it in 2 steps: Rotate if Left/Right/Down, and then flip if Mirrored.</span><br><span class="line">    CGAffineTransform transform = CGAffineTransformIdentity;</span><br><span class="line">    </span><br><span class="line">    switch (aImage.imageOrientation) &#123;</span><br><span class="line">        case UIImageOrientationDown:</span><br><span class="line">        case UIImageOrientationDownMirrored:</span><br><span class="line">            transform = CGAffineTransformTranslate(transform, aImage.size.width, aImage.size.height);</span><br><span class="line">            transform = CGAffineTransformRotate(transform, M_PI);</span><br><span class="line">            break;</span><br><span class="line">            </span><br><span class="line">        case UIImageOrientationLeft:</span><br><span class="line">        case UIImageOrientationLeftMirrored:</span><br><span class="line">            transform = CGAffineTransformTranslate(transform, aImage.size.width, 0);</span><br><span class="line">            transform = CGAffineTransformRotate(transform, M_PI_2);</span><br><span class="line">            break;</span><br><span class="line">            </span><br><span class="line">        case UIImageOrientationRight:</span><br><span class="line">        case UIImageOrientationRightMirrored:</span><br><span class="line">            transform = CGAffineTransformTranslate(transform, 0, aImage.size.height);</span><br><span class="line">            transform = CGAffineTransformRotate(transform, -M_PI_2);</span><br><span class="line">            break;</span><br><span class="line">        default:</span><br><span class="line">            break;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    switch (aImage.imageOrientation) &#123;</span><br><span class="line">        case UIImageOrientationUpMirrored:</span><br><span class="line">        case UIImageOrientationDownMirrored:</span><br><span class="line">            transform = CGAffineTransformTranslate(transform, aImage.size.width, 0);</span><br><span class="line">            transform = CGAffineTransformScale(transform, -1, 1);</span><br><span class="line">            break;</span><br><span class="line">            </span><br><span class="line">        case UIImageOrientationLeftMirrored:</span><br><span class="line">        case UIImageOrientationRightMirrored:</span><br><span class="line">            transform = CGAffineTransformTranslate(transform, aImage.size.height, 0);</span><br><span class="line">            transform = CGAffineTransformScale(transform, -1, 1);</span><br><span class="line">            break;</span><br><span class="line">        default:</span><br><span class="line">            break;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    // Now we draw the underlying CGImage into a new context, applying the transform</span><br><span class="line">    // calculated above.</span><br><span class="line">    CGContextRef ctx = CGBitmapContextCreate(NULL, aImage.size.width, aImage.size.height,</span><br><span class="line">                                             CGImageGetBitsPerComponent(aImage.CGImage), 0,</span><br><span class="line">                                             CGImageGetColorSpace(aImage.CGImage),</span><br><span class="line">                                             CGImageGetBitmapInfo(aImage.CGImage));</span><br><span class="line">    CGContextConcatCTM(ctx, transform);</span><br><span class="line">    switch (aImage.imageOrientation) &#123;</span><br><span class="line">        case UIImageOrientationLeft:</span><br><span class="line">        case UIImageOrientationLeftMirrored:</span><br><span class="line">        case UIImageOrientationRight:</span><br><span class="line">        case UIImageOrientationRightMirrored:</span><br><span class="line">            // Grr...</span><br><span class="line">            CGContextDrawImage(ctx, CGRectMake(0,0,aImage.size.height,aImage.size.width), aImage.CGImage);</span><br><span class="line">            break;</span><br><span class="line">            </span><br><span class="line">        default:</span><br><span class="line">            CGContextDrawImage(ctx, CGRectMake(0,0,aImage.size.width,aImage.size.height), aImage.CGImage);</span><br><span class="line">            break;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    // And now we just create a new UIImage from the drawing context</span><br><span class="line">    CGImageRef cgimg = CGBitmapContextCreateImage(ctx);</span><br><span class="line">    UIImage *img = [UIImage imageWithCGImage:cgimg];</span><br><span class="line">    CGContextRelease(ctx);</span><br><span class="line">    CGImageRelease(cgimg);</span><br><span class="line">    return img;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://blog.msrily.com/2018/03/21/blog1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="静谧星空">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="静谧星空的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/03/21/blog1/" itemprop="url">centOS7 安装nginx php mysql</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-21T14:28:15+08:00">
-                2018-03-21
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="nginx安装"><a href="#nginx安装" class="headerlink" title="nginx安装"></a>nginx安装</h2><p>本文是介绍使用源码编译安装，包括具体的编译参数信息。</p>
-<p>正式开始前，编译环境gcc g++ 开发库之类的需要提前装好。</p>
-<p>安装make：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum -y install gcc automake autoconf libtool make</span><br></pre></td></tr></table></figure></p>
-<p>安装g++:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install gcc gcc-c++</span><br></pre></td></tr></table></figure></p>
-<h3 id="1-选定源码目录"><a href="#1-选定源码目录" class="headerlink" title="1.选定源码目录"></a>1.选定源码目录</h3><p>可以是任何目录，本文选定的是/root/<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /root/</span><br></pre></td></tr></table></figure></p>
-<h3 id="2-安装PCRE库"><a href="#2-安装PCRE库" class="headerlink" title="2.安装PCRE库"></a>2.安装PCRE库</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /root/</span><br><span class="line">wget ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-8.41.tar.gz</span><br><span class="line">tar -zxvf pcre-8.41.tar.gz</span><br><span class="line"><span class="built_in">cd</span> pcre-8.41</span><br><span class="line">./configure</span><br><span class="line">make &amp;&amp; make install</span><br></pre></td></tr></table></figure>
-<h3 id="3-安装zlib库"><a href="#3-安装zlib库" class="headerlink" title="3.安装zlib库"></a>3.安装zlib库</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /root/</span><br><span class="line">wget http://zlib.net/zlib-1.2.11.tar.gz</span><br><span class="line">tar -zxvf zlib-1.2.11.tar.gz </span><br><span class="line"><span class="built_in">cd</span> zlib-1.2.11</span><br><span class="line">./configure </span><br><span class="line">make &amp;&amp; make install</span><br></pre></td></tr></table></figure>
-<h3 id="4-安装ssl"><a href="#4-安装ssl" class="headerlink" title="4.安装ssl"></a>4.安装ssl</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /root/</span><br><span class="line">wget https://www.openssl.org/<span class="built_in">source</span>/openssl-1.1.0g.tar.gz</span><br><span class="line">tar -zxvf openssl-1.1.0g</span><br><span class="line"><span class="built_in">cd</span> openssl-1.1.0g</span><br><span class="line">./config </span><br><span class="line">make &amp;&amp; make install</span><br></pre></td></tr></table></figure>
-<h3 id="5-安装nginx"><a href="#5-安装nginx" class="headerlink" title="5.安装nginx"></a>5.安装nginx</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /root/</span><br><span class="line">wget http://nginx.org/download/nginx-1.13.9.tar.gz</span><br><span class="line">tar -zxvf nginx-1.13.9.tar.gz</span><br><span class="line"><span class="built_in">cd</span> nginx-1.13.9</span><br><span class="line">groupadd -r nginx</span><br><span class="line">useradd -r -g nginx nginx</span><br><span class="line">./configure \</span><br><span class="line">--prefix=/usr/<span class="built_in">local</span>/nginx \</span><br><span class="line">--sbin-path=/usr/<span class="built_in">local</span>/nginx/sbin/nginx \</span><br><span class="line">--conf-path=/usr/<span class="built_in">local</span>/nginx/nginx.conf \</span><br><span class="line">--pid-path=/usr/<span class="built_in">local</span>/nginx/nginx.pid \</span><br><span class="line">--user=nginx \</span><br><span class="line">--group=nginx \</span><br><span class="line">--with-http_ssl_module \</span><br><span class="line">--with-http_v2_module \</span><br><span class="line">--with-http_flv_module \</span><br><span class="line">--with-http_mp4_module  \</span><br><span class="line">--with-http_stub_status_module \</span><br><span class="line">--with-http_gzip_static_module \</span><br><span class="line">--http-client-body-temp-path=/var/tmp/nginx/client/ \</span><br><span class="line">--http-proxy-temp-path=/var/tmp/nginx/proxy/ \</span><br><span class="line">--http-fastcgi-temp-path=/var/tmp/nginx/fcgi/ \</span><br><span class="line">--http-uwsgi-temp-path=/var/tmp/nginx/uwsgi \</span><br><span class="line">--http-scgi-temp-path=/var/tmp/nginx/scgi \</span><br><span class="line">--with-pcre=/root/pcre-8.41 \</span><br><span class="line">--with-zlib=/root/zlib-1.2.11 \</span><br><span class="line">--with-openssl=/root/openssl-1.1.0g</span><br><span class="line">make &amp;&amp; make install</span><br></pre></td></tr></table></figure>
-<h2 id="php-fpm安装配置"><a href="#php-fpm安装配置" class="headerlink" title="php-fpm安装配置"></a>php-fpm安装配置</h2><p>nginx本身不能处理PHP，它只是个web服务器，当接收到请求后，如果是php请求，则发给php解释器处理，并把结果返回给客户端。</p>
-<p>nginx一般是把请求发fastcgi管理进程处理，fascgi管理进程选择cgi子进程处理结果并返回被nginx</p>
-<p>本文以php-fpm为例介绍如何使nginx支持PHP</p>
-<h3 id="一、编译安装php-fpm"><a href="#一、编译安装php-fpm" class="headerlink" title="一、编译安装php-fpm"></a>一、编译安装php-fpm</h3><p>什么是PHP-FPM</p>
-<p>PHP-FPM是一个PHP FastCGI管理器，是只用于PHP的,可以在 <a href="http://php-fpm.org/download下载得到" target="_blank" rel="noopener">http://php-fpm.org/download下载得到</a>.</p>
-<p>PHP-FPM其实是PHP源代码的一个补丁，旨在将FastCGI进程管理整合进PHP包中。必须将它patch到你的PHP源代码中，在编译安装PHP后才可以使用。</p>
-<p>新版PHP已经集成php-fpm了，不再是第三方的包了，推荐使用。PHP-FPM提供了更好的PHP进程管理方式，可以有效控制内存和进程、可以平滑重载PHP配置，比spawn-fcgi具有更多优点，所以被PHP官方收录了。在./configure的时候带 –enable-fpm参数即可开启PHP-FPM，其它参数都是配置php的，具体选项含义可以查看这里。</p>
-<h5 id="安装前准备"><a href="#安装前准备" class="headerlink" title="安装前准备"></a>安装前准备</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">yum -y install glibc libmcrypt-devel \ </span><br><span class="line">mhash-devel libxslt-devel libjpeg \</span><br><span class="line">libjpeg-devel libpng libpng-devel \ </span><br><span class="line">freetype freetype-devel libxml2 \ </span><br><span class="line">libxml2-devel zlib zlib-devel glibc \ </span><br><span class="line">glibc-devel glib2 glib2-devel bzip2 \</span><br><span class="line">bzip2-devel ncurses ncurses-devel curl \</span><br><span class="line">curl-devel e2fsprogs e2fsprogs-devel \</span><br><span class="line">krb5 krb5-devel libidn libidn-devel</span><br></pre></td></tr></table></figure>
-<h5 id="安装libiconv"><a href="#安装libiconv" class="headerlink" title="安装libiconv"></a>安装libiconv</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /root/</span><br><span class="line">wget http://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.14.tar.gz</span><br><span class="line">tar -zxvf libiconv-1.14.tar.gz</span><br><span class="line"><span class="built_in">cd</span> libiconv-1.14</span><br><span class="line">./configure</span><br><span class="line">make &amp;&amp; make install</span><br></pre></td></tr></table></figure>
-<h5 id="安装php"><a href="#安装php" class="headerlink" title="安装php"></a>安装php</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /root/</span><br><span class="line">wget http://am1.php.net/distributions/php-7.2.3.tar.gz</span><br><span class="line">tar -zxvf php-7.2.3.tar.gz </span><br><span class="line"><span class="built_in">cd</span> php-7.2.3</span><br><span class="line">./configure --with-curl \</span><br><span class="line">    --with-freetype-dir \</span><br><span class="line">    --with-gd \</span><br><span class="line">    --with-gettext \</span><br><span class="line">    --with-iconv-dir \</span><br><span class="line">    --with-kerberos \</span><br><span class="line">    --with-libdir=lib64 \</span><br><span class="line">    --with-libxml-dir \</span><br><span class="line">    --with-mysqli \</span><br><span class="line">    --with-openssl \</span><br><span class="line">    --with-pcre-regex \</span><br><span class="line">    --with-pdo-mysql \</span><br><span class="line">    --with-pdo-sqlite \</span><br><span class="line">    --with-pear \</span><br><span class="line">    --with-png-dir \</span><br><span class="line">    --with-xmlrpc \</span><br><span class="line">    --with-xsl \</span><br><span class="line">    --with-zlib \</span><br><span class="line">    --<span class="built_in">enable</span>-fpm \</span><br><span class="line">    --<span class="built_in">enable</span>-bcmath \</span><br><span class="line">    --<span class="built_in">enable</span>-libxml \</span><br><span class="line">    --<span class="built_in">enable</span>-inline-optimization \</span><br><span class="line">    --<span class="built_in">enable</span>-gd-native-ttf \</span><br><span class="line">    --<span class="built_in">enable</span>-mbregex \</span><br><span class="line">    --<span class="built_in">enable</span>-mbstring \</span><br><span class="line">    --<span class="built_in">enable</span>-opcache \</span><br><span class="line">    --<span class="built_in">enable</span>-pcntl \</span><br><span class="line">    --<span class="built_in">enable</span>-shmop \</span><br><span class="line">    --<span class="built_in">enable</span>-soap \</span><br><span class="line">    --<span class="built_in">enable</span>-sockets \</span><br><span class="line">    --<span class="built_in">enable</span>-sysvsem \</span><br><span class="line">    --<span class="built_in">enable</span>-xml \</span><br><span class="line">    --<span class="built_in">enable</span>-zip</span><br><span class="line">make ZEND_EXTRA_LIBS=<span class="string">'-liconv'</span> &amp;&amp; make install</span><br></pre></td></tr></table></figure>
-<p>PHP 编译安装时出现 undefined reference to `libiconv’ 错误的解决方法<br>在最后面添加 -liconv ，修改后如下<br>EXTRA_LIBS = -lcrypt -lz -lcrypt -lrt -lmysqlclient -lmcrypt -lldap -llber -lfreetype -lpng -lz -ljpeg -lcurl -lz -lrt -lm -ldl -lnsl -lrt -lxml2 -lz -lm -lssl -lcrypto -ldl -lz -lcurl -ldl -lgssapi_krb5 -lkrb5 -lk5crypto -lcom_err -lidn -lssl -lcrypto -lz -lxml2 -lz -lm -lssl -lcrypto -ldl -lz -lxml2 -lz -lm -lxml2 -lz -lm -lcrypt -lxml2 -lz -lm -lxml2 -lz -lm -lxml2 -lz -lm -lxml2 -lz -lm -lcrypt -liconv</p>
-<p>报错信息为：<br>configure: error: off_t undefined; check your library configuration</p>
-<p>在编译php时会遇到如上问题，这个问题一般在centos 64位系统中比较多见，解决如下<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">'/usr/local/lib64</span></span><br><span class="line"><span class="string">/usr/local/lib</span></span><br><span class="line"><span class="string">/usr/lib</span></span><br><span class="line"><span class="string">/usr/lib64'</span>&gt;&gt;/etc/ld.so.conf&amp;&amp;ldconfig -v</span><br></pre></td></tr></table></figure></p>
-<p>其实就是在这个库配置文件中加入64位库到默认库查找路径中，不然就会报错</p>
-<h3 id="1-配置："><a href="#1-配置：" class="headerlink" title="1.配置："></a>1.配置：</h3><h4 id="php配置"><a href="#php配置" class="headerlink" title="php配置"></a>php配置</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/php.ini</span><br></pre></td></tr></table></figure>
-<h4 id="php-fpm配置"><a href="#php-fpm配置" class="headerlink" title="php-fpm配置"></a>php-fpm配置</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /usr/<span class="built_in">local</span>/etc/</span><br><span class="line">cp php-fpm.conf.default php-fpm.conf</span><br><span class="line"><span class="built_in">cd</span> php-fpm.d</span><br><span class="line">cp www.conf.default www.conf</span><br></pre></td></tr></table></figure>
-<h6 id="修改"><a href="#修改" class="headerlink" title="修改"></a>修改</h6><figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">user = nginx</span><br><span class="line">group = nginx</span><br><span class="line">pm.max_children = <span class="number">150</span></span><br><span class="line">pm.start_servers = <span class="number">8</span></span><br><span class="line">pm.min_spare_servers = <span class="number">5</span></span><br><span class="line">pm.max_spare_servers = <span class="number">10</span></span><br></pre></td></tr></table></figure>
-<h3 id="2-运行php-fpm"><a href="#2-运行php-fpm" class="headerlink" title="2.运行php-fpm"></a>2.运行php-fpm</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/usr/<span class="built_in">local</span>/sbin/php-fpm</span><br></pre></td></tr></table></figure>
-<h3 id="3-nginx和php-fpm整合"><a href="#3-nginx和php-fpm整合" class="headerlink" title="3.nginx和php-fpm整合"></a>3.nginx和php-fpm整合</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim /usr/local/nginx/nginx.conf</span><br></pre></td></tr></table></figure>
-<p>修改如下：</p>
-<p><img src="/images/20180320.png" alt="" title="修改如下"></p>
-<p>重新载入nginx的配置文件：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/usr/local/nginx/sbin/nginx -s reload</span><br></pre></td></tr></table></figure>
-<h2 id="mysql安装"><a href="#mysql安装" class="headerlink" title="mysql安装"></a>mysql安装</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">wget -c https://dev.mysql.com/get/Downloads/MySQL-5.7/mysql-5.7.21-linux-glibc2.12-x86_64.tar.gz</span><br><span class="line">tar -zxvf mysql-5.7.21-linux-glibc2.12-x86_64.tar.gz </span><br><span class="line">mv mysql-5.7.21-linux-glibc2.12-x86_64 /usr/<span class="built_in">local</span>/mysql</span><br><span class="line"><span class="built_in">cd</span> /usr/<span class="built_in">local</span>/mysql/</span><br><span class="line"></span><br><span class="line">groupadd mysql</span><br><span class="line">useradd -r -g mysql mysql</span><br></pre></td></tr></table></figure>
-<p>数据库数据默认目录datadir=/var/lib/mysql，可通过vim /etc/my.cnf 查看<br>修改后的目录是 mkdir -p /usr/local/mysql/data<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chown -R mysql:mysql  ./</span><br></pre></td></tr></table></figure></p>
-<p>初始化数据库<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./bin/mysqld --initialize --user=mysql --basedir=/usr/<span class="built_in">local</span>/mysql --datadir=/usr/<span class="built_in">local</span>/mysql/data</span><br></pre></td></tr></table></figure></p>
-<p>会生成初始root密码，记下这个问题用于首次登录./bin/mysql -uroot -p mysql</p>
-<p><br></p>
-<p>修改权限为root<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">chown -R root:root .</span><br><span class="line">chown -R mysql:mysql data</span><br></pre></td></tr></table></figure></p>
-<h5 id="安装完mysql之后，登陆以后，不管运行任何命令，总是提示这个”ERROR-1820-HY000-You-must-reset-your-password-using-ALTER-USER-statement-before-executing-this-statement-”"><a href="#安装完mysql之后，登陆以后，不管运行任何命令，总是提示这个”ERROR-1820-HY000-You-must-reset-your-password-using-ALTER-USER-statement-before-executing-this-statement-”" class="headerlink" title="安装完mysql之后，登陆以后，不管运行任何命令，总是提示这个”ERROR 1820 (HY000): You must reset your password using ALTER USER statement before executing this statement.”"></a>安装完mysql之后，登陆以后，不管运行任何命令，总是提示这个”ERROR 1820 (HY000): You must reset your password using ALTER USER statement before executing this statement.”</h5><h6 id="step-1-SET-PASSWORD-PASSWORD-‘your-new-password’"><a href="#step-1-SET-PASSWORD-PASSWORD-‘your-new-password’" class="headerlink" title="step 1: SET PASSWORD = PASSWORD(‘your new password’);"></a>step 1: SET PASSWORD = PASSWORD(‘your new password’);</h6><h6 id="step-2-ALTER-USER-‘root‘-’localhost’-PASSWORD-EXPIRE-NEVER"><a href="#step-2-ALTER-USER-‘root‘-’localhost’-PASSWORD-EXPIRE-NEVER" class="headerlink" title="step 2: ALTER USER ‘root‘@’localhost’ PASSWORD EXPIRE NEVER;"></a>step 2: ALTER USER ‘root‘@’localhost’ PASSWORD EXPIRE NEVER;</h6><h6 id="step-3-flush-privileges"><a href="#step-3-flush-privileges" class="headerlink" title="step 3: flush privileges;"></a>step 3: flush privileges;</h6><h3 id="注："><a href="#注：" class="headerlink" title="注："></a>注：</h3><h4 id="修改root密码："><a href="#修改root密码：" class="headerlink" title="修改root密码："></a>修改root密码：</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">update</span> mysql.user <span class="keyword">set</span> authentication_string=<span class="keyword">password</span>(<span class="string">'123qwe'</span>) <span class="keyword">where</span> <span class="keyword">user</span>=<span class="string">'root'</span> <span class="keyword">and</span> Host = <span class="string">'localhost'</span>;</span><br></pre></td></tr></table></figure>
-<p><br></p>
-<h2 id="开机自启动"><a href="#开机自启动" class="headerlink" title="开机自启动"></a>开机自启动</h2><h4 id="在-usr-lib-systemd-system创建三个-service文件，内容如下："><a href="#在-usr-lib-systemd-system创建三个-service文件，内容如下：" class="headerlink" title="在/usr/lib/systemd/system创建三个.service文件，内容如下："></a>在/usr/lib/systemd/system创建三个.service文件，内容如下：</h4><h5 id="1-nginx-service"><a href="#1-nginx-service" class="headerlink" title="1.nginx.service"></a>1.nginx.service</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">[Unit]</span><br><span class="line">Description=nginx - high performance web server</span><br><span class="line">After=network.target remote-fs.target nss-lookup.target</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">Type=forking</span><br><span class="line">ExecStart=/usr/local/nginx/sbin/nginx -c /usr/local/nginx/conf/nginx.conf</span><br><span class="line">ExecReload=/usr/local/nginx/sbin/nginx -s reload</span><br><span class="line">ExecStop=/usr/local/nginx/sbin/nginx -s stop</span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br></pre></td></tr></table></figure>
-<h5 id="2-mysql-service"><a href="#2-mysql-service" class="headerlink" title="2.mysql.service"></a>2.mysql.service</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[Unit]</span><br><span class="line">Description=mysql</span><br><span class="line">After=network.target remote-fs.target nss-lookup.target</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">Type=forking</span><br><span class="line">ExecStart=/usr/local/mysql/support-files/mysql.server start</span><br><span class="line">#ExecReload=/usr/local/mysql/support-files/mysql.server restart</span><br><span class="line">#ExecStop=/usr/local/mysql/support-files/mysql.server stop</span><br><span class="line">#PrivateTmp=true</span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br></pre></td></tr></table></figure>
-<h5 id="3-php-fpm-service"><a href="#3-php-fpm-service" class="headerlink" title="3.php-fpm.service"></a>3.php-fpm.service</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[Unit]</span><br><span class="line">Description=php</span><br><span class="line">After=network.target remote-fs.target nss-lookup.target</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">Type=forking</span><br><span class="line">ExecStart=/usr/local/sbin/php-fpm</span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br></pre></td></tr></table></figure>
-<h5 id="4-注册service"><a href="#4-注册service" class="headerlink" title="4.注册service"></a>4.注册service</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">systemctl <span class="built_in">enable</span> nginx.service <span class="comment">#设置nginx服务为自启动服务</span></span><br><span class="line">systemctl <span class="built_in">enable</span> mysql.service</span><br><span class="line">systemctl <span class="built_in">enable</span> php-fpm.service</span><br></pre></td></tr></table></figure>
-<h5 id="5-启动service"><a href="#5-启动service" class="headerlink" title="5.启动service"></a>5.启动service</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">systemctl start nginx.service <span class="comment">#启动jenkins服务</span></span><br><span class="line">systemctl start mysql.service</span><br><span class="line">systemctl start php-fpm.service</span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
+  <nav class="pagination">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+  </nav>
+
 
 
           </div>
@@ -1691,7 +1707,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-count">13</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

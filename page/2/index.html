@@ -79,19 +79,13 @@
 
 
 
-<meta name="description" content="nginx安装本文是介绍使用源码编译安装，包括具体的编译参数信息。 正式开始前，编译环境gcc g++ 开发库之类的需要提前装好。 安装make：1yum -y install gcc automake autoconf libtool make 安装g++:1yum install gcc gcc-c++ 1.选定源码目录可以是任何目录，本文选定的是/root/1cd /root/ 2.安装PC">
-<meta property="og:type" content="article">
-<meta property="og:title" content="centOS7 安装nginx php mysql">
-<meta property="og:url" content="https://blog.msrily.com/2018/03/21/blog1/index.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="静谧星空的博客">
+<meta property="og:url" content="https://blog.msrily.com/page/2/index.html">
 <meta property="og:site_name" content="静谧星空的博客">
-<meta property="og:description" content="nginx安装本文是介绍使用源码编译安装，包括具体的编译参数信息。 正式开始前，编译环境gcc g++ 开发库之类的需要提前装好。 安装make：1yum -y install gcc automake autoconf libtool make 安装g++:1yum install gcc gcc-c++ 1.选定源码目录可以是任何目录，本文选定的是/root/1cd /root/ 2.安装PC">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://blog.msrily.com/images/20180320.png">
-<meta property="og:updated_time" content="2018-09-17T05:56:10.176Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="centOS7 安装nginx php mysql">
-<meta name="twitter:description" content="nginx安装本文是介绍使用源码编译安装，包括具体的编译参数信息。 正式开始前，编译环境gcc g++ 开发库之类的需要提前装好。 安装make：1yum -y install gcc automake autoconf libtool make 安装g++:1yum install gcc gcc-c++ 1.选定源码目录可以是任何目录，本文选定的是/root/1cd /root/ 2.安装PC">
-<meta name="twitter:image" content="https://blog.msrily.com/images/20180320.png">
+<meta name="twitter:title" content="静谧星空的博客">
 
 
 
@@ -121,13 +115,13 @@
 
 
 
-  <link rel="canonical" href="https://blog.msrily.com/2018/03/21/blog1/"/>
+  <link rel="canonical" href="https://blog.msrily.com/page/2/"/>
 
 
 
 
 
-  <title>centOS7 安装nginx php mysql | 静谧星空的博客</title>
+  <title>静谧星空的博客</title>
   
 
 
@@ -146,7 +140,8 @@
     
   
 
-  <div class="container sidebar-position-left page-post-detail">
+  <div class="container sidebar-position-left 
+  page-home">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -219,9 +214,274 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-
-  <div id="posts" class="posts-expand">
+  <section id="posts" class="posts-expand">
     
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://blog.msrily.com/2018/03/27/blog3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="静谧星空">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="静谧星空的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/03/27/blog3/" itemprop="url">MySQL大数据量分页性能优化</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-27T10:58:25+08:00">
+                2018-03-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h4 id="1-直接用limit-start-count分页语句，-也是我程序中用的方法："><a href="#1-直接用limit-start-count分页语句，-也是我程序中用的方法：" class="headerlink" title="1.直接用limit start, count分页语句， 也是我程序中用的方法："></a>1.直接用limit start, count分页语句， 也是我程序中用的方法：</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> product <span class="keyword">limit</span> <span class="keyword">start</span>, <span class="keyword">count</span></span><br></pre></td></tr></table></figure>
+<p>当起始页较小时，查询没有性能问题，我们分别看下从10， 100， 1000， 10000开始分页的执行时间（每页取20条）， 如下：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> product <span class="keyword">limit</span> <span class="number">10</span>, <span class="number">20</span>   <span class="number">0.016</span>秒</span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> product <span class="keyword">limit</span> <span class="number">100</span>, <span class="number">20</span>   <span class="number">0.016</span>秒</span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> product <span class="keyword">limit</span> <span class="number">1000</span>, <span class="number">20</span>   <span class="number">0.047</span>秒</span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> product <span class="keyword">limit</span> <span class="number">10000</span>, <span class="number">20</span>   <span class="number">0.094</span>秒</span><br></pre></td></tr></table></figure></p>
+<p>我们已经看出随着起始记录的增加，时间也随着增大， 这说明分页语句limit跟起始页码是有很大关系的，那么我们把起始记录改为40w看下（也就是记录的一般左右）<br><figure class="highlight sql"><figcaption><span>select * from product limit 400000, 20   3.229秒</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">```</span><br><span class="line">再看我们取最后一页记录的时间</span><br><span class="line">```sql</span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> product <span class="keyword">limit</span> <span class="number">866613</span>, <span class="number">20</span>   <span class="number">37.44</span>秒</span><br></pre></td></tr></table></figure></p>
+<p>难怪搜索引擎抓取我们页面的时候经常会报超时，像这种分页最大的页码页显然这种时间是无法忍受的。</p>
+<p>从中我们也能总结出两件事情：<br><br><br>1）limit语句的查询时间与起始记录的位置成正比<br><br><br>2）mysql的limit语句是很方便，但是对记录很多的表并不适合直接使用。</p>
+<h4 id="2-对limit分页问题的性能优化方法"><a href="#2-对limit分页问题的性能优化方法" class="headerlink" title="2.对limit分页问题的性能优化方法"></a>2.对limit分页问题的性能优化方法</h4><p>利用表的覆盖索引来加速分页查询<br>我们都知道，利用了索引查询的语句中如果只包含了那个索引列（覆盖索引），那么这种情况会查询很快。</p>
+<p>因为利用索引查找有优化算法，且数据就在查询索引上面，不用再去找相关的数据地址了，这样节省了很多时间。另外Mysql中也有相关的索引缓存，在并发高的时候利用缓存就效果更好了。</p>
+<p>在我们的例子中，我们知道id字段是主键，自然就包含了默认的主键索引。现在让我们看看利用覆盖索引的查询效果如何：</p>
+<p>这次我们之间查询最后一页的数据（利用覆盖索引，只包含id列），如下：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">id</span> <span class="keyword">from</span> product <span class="keyword">limit</span> <span class="number">866613</span>, <span class="number">20</span> <span class="number">0.2</span>秒</span><br></pre></td></tr></table></figure></p>
+<p>相对于查询了所有列的37.44秒，提升了大概100多倍的速度</p>
+<p>那么如果我们也要查询所有列，有两种方法，一种是id&gt;=的形式，另一种就是利用join，看下实际情况：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> product <span class="keyword">WHERE</span> <span class="keyword">ID</span> &gt; =(<span class="keyword">select</span> <span class="keyword">id</span> <span class="keyword">from</span> product <span class="keyword">limit</span> <span class="number">866613</span>, <span class="number">1</span>) <span class="keyword">limit</span> <span class="number">20</span></span><br></pre></td></tr></table></figure></p>
+<p>查询时间为0.2秒，简直是一个质的飞跃啊，哈哈</p>
+<p>另一种写法<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> product a <span class="keyword">JOIN</span> (<span class="keyword">select</span> <span class="keyword">id</span> <span class="keyword">from</span> product <span class="keyword">limit</span> <span class="number">866613</span>, <span class="number">20</span>) b <span class="keyword">ON</span> a.ID = b.id</span><br></pre></td></tr></table></figure></p>
+<p>查询时间也很短，赞！</p>
+<p>其实两者用的都是一个原理嘛，所以效果也差不多</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://blog.msrily.com/2018/03/27/blog2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="静谧星空">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="静谧星空的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/03/27/blog2/" itemprop="url">iOS开发- 相机(摄像头)获取到的图片自动旋转90度解决办法</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-27T10:55:34+08:00">
+                2018-03-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>用相机拍摄出来的照片含有EXIF信息，UIImage的imageOrientation属性指的就是EXIF中的orientation信息。</p>
+<p>如果我们忽略orientation信息，而直接对照片进行像素处理或者drawInRect等操作，得到的结果是翻转或者旋转90之后的样子。这是因为我们执行像素处理或者drawInRect等操作之后，imageOrientaion信息被删除了，imageOrientaion被重设为0，造成照片内容和imageOrientaion不匹配。</p>
+<p>所以，在对照片进行处理之前，先将照片旋转到正确的方向，并且返回的imageOrientaion为0。</p>
+<p>下面这个方法就是一个UIImage category中的方法，用它可以达到以上目的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br></pre></td><td class="code"><pre><span class="line">- (UIImage *)fixOrientation:(UIImage *)aImage &#123;</span><br><span class="line">    </span><br><span class="line">    // No-op if the orientation is already correct</span><br><span class="line">    if (aImage.imageOrientation == UIImageOrientationUp) </span><br><span class="line">        return aImage;</span><br><span class="line">    </span><br><span class="line">    // We need to calculate the proper transformation to make the image upright.</span><br><span class="line">    // We do it in 2 steps: Rotate if Left/Right/Down, and then flip if Mirrored.</span><br><span class="line">    CGAffineTransform transform = CGAffineTransformIdentity;</span><br><span class="line">    </span><br><span class="line">    switch (aImage.imageOrientation) &#123;</span><br><span class="line">        case UIImageOrientationDown:</span><br><span class="line">        case UIImageOrientationDownMirrored:</span><br><span class="line">            transform = CGAffineTransformTranslate(transform, aImage.size.width, aImage.size.height);</span><br><span class="line">            transform = CGAffineTransformRotate(transform, M_PI);</span><br><span class="line">            break;</span><br><span class="line">            </span><br><span class="line">        case UIImageOrientationLeft:</span><br><span class="line">        case UIImageOrientationLeftMirrored:</span><br><span class="line">            transform = CGAffineTransformTranslate(transform, aImage.size.width, 0);</span><br><span class="line">            transform = CGAffineTransformRotate(transform, M_PI_2);</span><br><span class="line">            break;</span><br><span class="line">            </span><br><span class="line">        case UIImageOrientationRight:</span><br><span class="line">        case UIImageOrientationRightMirrored:</span><br><span class="line">            transform = CGAffineTransformTranslate(transform, 0, aImage.size.height);</span><br><span class="line">            transform = CGAffineTransformRotate(transform, -M_PI_2);</span><br><span class="line">            break;</span><br><span class="line">        default:</span><br><span class="line">            break;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    switch (aImage.imageOrientation) &#123;</span><br><span class="line">        case UIImageOrientationUpMirrored:</span><br><span class="line">        case UIImageOrientationDownMirrored:</span><br><span class="line">            transform = CGAffineTransformTranslate(transform, aImage.size.width, 0);</span><br><span class="line">            transform = CGAffineTransformScale(transform, -1, 1);</span><br><span class="line">            break;</span><br><span class="line">            </span><br><span class="line">        case UIImageOrientationLeftMirrored:</span><br><span class="line">        case UIImageOrientationRightMirrored:</span><br><span class="line">            transform = CGAffineTransformTranslate(transform, aImage.size.height, 0);</span><br><span class="line">            transform = CGAffineTransformScale(transform, -1, 1);</span><br><span class="line">            break;</span><br><span class="line">        default:</span><br><span class="line">            break;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    // Now we draw the underlying CGImage into a new context, applying the transform</span><br><span class="line">    // calculated above.</span><br><span class="line">    CGContextRef ctx = CGBitmapContextCreate(NULL, aImage.size.width, aImage.size.height,</span><br><span class="line">                                             CGImageGetBitsPerComponent(aImage.CGImage), 0,</span><br><span class="line">                                             CGImageGetColorSpace(aImage.CGImage),</span><br><span class="line">                                             CGImageGetBitmapInfo(aImage.CGImage));</span><br><span class="line">    CGContextConcatCTM(ctx, transform);</span><br><span class="line">    switch (aImage.imageOrientation) &#123;</span><br><span class="line">        case UIImageOrientationLeft:</span><br><span class="line">        case UIImageOrientationLeftMirrored:</span><br><span class="line">        case UIImageOrientationRight:</span><br><span class="line">        case UIImageOrientationRightMirrored:</span><br><span class="line">            // Grr...</span><br><span class="line">            CGContextDrawImage(ctx, CGRectMake(0,0,aImage.size.height,aImage.size.width), aImage.CGImage);</span><br><span class="line">            break;</span><br><span class="line">            </span><br><span class="line">        default:</span><br><span class="line">            CGContextDrawImage(ctx, CGRectMake(0,0,aImage.size.width,aImage.size.height), aImage.CGImage);</span><br><span class="line">            break;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    // And now we just create a new UIImage from the drawing context</span><br><span class="line">    CGImageRef cgimg = CGBitmapContextCreateImage(ctx);</span><br><span class="line">    UIImage *img = [UIImage imageWithCGImage:cgimg];</span><br><span class="line">    CGContextRelease(ctx);</span><br><span class="line">    CGImageRelease(cgimg);</span><br><span class="line">    return img;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
 
   
 
@@ -251,7 +511,9 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">centOS7 安装nginx php mysql</h1>
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/03/21/blog1/" itemprop="url">centOS7 安装nginx php mysql</a></h1>
         
 
         <div class="post-meta">
@@ -301,7 +563,9 @@
       
 
       
-        <h2 id="nginx安装"><a href="#nginx安装" class="headerlink" title="nginx安装"></a>nginx安装</h2><p>本文是介绍使用源码编译安装，包括具体的编译参数信息。</p>
+        
+          
+            <h2 id="nginx安装"><a href="#nginx安装" class="headerlink" title="nginx安装"></a>nginx安装</h2><p>本文是介绍使用源码编译安装，包括具体的编译参数信息。</p>
 <p>正式开始前，编译环境gcc g++ 开发库之类的需要提前装好。</p>
 <p>安装make：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum -y install gcc automake autoconf libtool make</span><br></pre></td></tr></table></figure></p>
 <p>安装g++:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install gcc gcc-c++</span><br></pre></td></tr></table></figure></p>
@@ -347,6 +611,8 @@
 <h5 id="4-注册service"><a href="#4-注册service" class="headerlink" title="4.注册service"></a>4.注册service</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">systemctl <span class="built_in">enable</span> nginx.service <span class="comment">#设置nginx服务为自启动服务</span></span><br><span class="line">systemctl <span class="built_in">enable</span> mysql.service</span><br><span class="line">systemctl <span class="built_in">enable</span> php-fpm.service</span><br></pre></td></tr></table></figure>
 <h5 id="5-启动service"><a href="#5-启动service" class="headerlink" title="5.启动service"></a>5.启动service</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">systemctl start nginx.service <span class="comment">#启动jenkins服务</span></span><br><span class="line">systemctl start mysql.service</span><br><span class="line">systemctl start php-fpm.service</span><br></pre></td></tr></table></figure>
 
+          
+        
       
     </div>
     
@@ -354,12 +620,6 @@
     
 
     <div>
-      
-        <div>
-    
-        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
-    
-</div>
       
     </div>
 
@@ -373,28 +633,12 @@
       
 
       
-      
+
       
 
       
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/03/27/blog2/" rel="prev" title="iOS开发- 相机(摄像头)获取到的图片自动旋转90度解决办法">
-                iOS开发- 相机(摄像头)获取到的图片自动旋转90度解决办法 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
       
-
-      
+        <div class="post-eof"></div>
       
     </footer>
   </div>
@@ -404,11 +648,14 @@
   </article>
 
 
+    
+  </section>
 
-    <div class="post-spread">
-      
-    </div>
-  </div>
+  
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+  </nav>
+
 
 
           </div>
@@ -416,10 +663,6 @@
 
 
           
-
-  
-
-
 
         </div>
         
@@ -440,17 +683,8 @@
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
 
-      <section class="site-overview-wrap sidebar-panel">
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -492,22 +726,6 @@
         </div>
       </section>
 
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#nginx安装"><span class="nav-number">1.</span> <span class="nav-text">nginx安装</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-选定源码目录"><span class="nav-number">1.1.</span> <span class="nav-text">1.选定源码目录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-安装PCRE库"><span class="nav-number">1.2.</span> <span class="nav-text">2.安装PCRE库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-安装zlib库"><span class="nav-number">1.3.</span> <span class="nav-text">3.安装zlib库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-安装ssl"><span class="nav-number">1.4.</span> <span class="nav-text">4.安装ssl</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-安装nginx"><span class="nav-number">1.5.</span> <span class="nav-text">5.安装nginx</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#php-fpm安装配置"><span class="nav-number">2.</span> <span class="nav-text">php-fpm安装配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、编译安装php-fpm"><span class="nav-number">2.1.</span> <span class="nav-text">一、编译安装php-fpm</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#安装前准备"><span class="nav-number">2.1.0.1.</span> <span class="nav-text">安装前准备</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#安装libiconv"><span class="nav-number">2.1.0.2.</span> <span class="nav-text">安装libiconv</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#安装php"><span class="nav-number">2.1.0.3.</span> <span class="nav-text">安装php</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-配置："><span class="nav-number">2.2.</span> <span class="nav-text">1.配置：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#php配置"><span class="nav-number">2.2.1.</span> <span class="nav-text">php配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#php-fpm配置"><span class="nav-number">2.2.2.</span> <span class="nav-text">php-fpm配置</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#修改"><span class="nav-number">2.2.2.0.1.</span> <span class="nav-text">修改</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-运行php-fpm"><span class="nav-number">2.3.</span> <span class="nav-text">2.运行php-fpm</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-nginx和php-fpm整合"><span class="nav-number">2.4.</span> <span class="nav-text">3.nginx和php-fpm整合</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mysql安装"><span class="nav-number">3.</span> <span class="nav-text">mysql安装</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#安装完mysql之后，登陆以后，不管运行任何命令，总是提示这个”ERROR-1820-HY000-You-must-reset-your-password-using-ALTER-USER-statement-before-executing-this-statement-”"><span class="nav-number">3.0.0.1.</span> <span class="nav-text">安装完mysql之后，登陆以后，不管运行任何命令，总是提示这个”ERROR 1820 (HY000): You must reset your password using ALTER USER statement before executing this statement.”</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#step-1-SET-PASSWORD-PASSWORD-‘your-new-password’"><span class="nav-number">3.0.0.1.1.</span> <span class="nav-text">step 1: SET PASSWORD = PASSWORD(‘your new password’);</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#step-2-ALTER-USER-‘root‘-’localhost’-PASSWORD-EXPIRE-NEVER"><span class="nav-number">3.0.0.1.2.</span> <span class="nav-text">step 2: ALTER USER ‘root‘@’localhost’ PASSWORD EXPIRE NEVER;</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#step-3-flush-privileges"><span class="nav-number">3.0.0.1.3.</span> <span class="nav-text">step 3: flush privileges;</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#注："><span class="nav-number">3.1.</span> <span class="nav-text">注：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#修改root密码："><span class="nav-number">3.1.1.</span> <span class="nav-text">修改root密码：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#开机自启动"><span class="nav-number">4.</span> <span class="nav-text">开机自启动</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#在-usr-lib-systemd-system创建三个-service文件，内容如下："><span class="nav-number">4.0.1.</span> <span class="nav-text">在/usr/lib/systemd/system创建三个.service文件，内容如下：</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-nginx-service"><span class="nav-number">4.0.1.1.</span> <span class="nav-text">1.nginx.service</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-mysql-service"><span class="nav-number">4.0.1.2.</span> <span class="nav-text">2.mysql.service</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-php-fpm-service"><span class="nav-number">4.0.1.3.</span> <span class="nav-text">3.php-fpm.service</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-注册service"><span class="nav-number">4.0.1.4.</span> <span class="nav-text">4.注册service</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#5-启动service"><span class="nav-number">4.0.1.5.</span> <span class="nav-text">5.启动service</span></a></li></ol></li></ol></li></ol></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
       
 
       
@@ -635,10 +853,6 @@
   
 
   
-  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
-<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
-
-
 
   
 

@@ -4,8 +4,98 @@
 
     
   <url>
+    <loc>https://blog.msrily.com/2018/05/24/blog13/</loc>
+    <lastmod>2018-09-17T11:00:16.605Z</lastmod>
+    <data>
+        <display>
+        <title>GCD 队列探索</title>
+        <pubTime>2018-05-24T10:44:25.000Z</pubTime>
+        
+         
+           
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://blog.msrily.com/2018/05/23/blog12/</loc>
+    <lastmod>2018-09-17T10:32:55.119Z</lastmod>
+    <data>
+        <display>
+        <title>Objective C 类crash预防</title>
+        <pubTime>2018-05-23T08:29:23.000Z</pubTime>
+        
+         
+           
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://blog.msrily.com/2018/05/17/blog11/</loc>
+    <lastmod>2018-09-17T08:23:36.944Z</lastmod>
+    <data>
+        <display>
+        <title>iOS App启动过程</title>
+        <pubTime>2018-05-17T05:57:39.000Z</pubTime>
+        
+         
+           
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://blog.msrily.com/2018/03/27/blog2/</loc>
+    <lastmod>2018-09-17T05:56:16.350Z</lastmod>
+    <data>
+        <display>
+        <title>iOS开发- 相机(摄像头)获取到的图片自动旋转90度解决办法</title>
+        <pubTime>2018-03-27T02:55:34.000Z</pubTime>
+        
+         
+           
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://blog.msrily.com/2018/03/21/blog1/</loc>
+    <lastmod>2018-09-17T05:56:10.176Z</lastmod>
+    <data>
+        <display>
+        <title>centOS7 安装nginx php mysql</title>
+        <pubTime>2018-03-21T06:28:15.000Z</pubTime>
+        
+         
+           
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://blog.msrily.com/2018/03/27/blog3/</loc>
+    <lastmod>2018-09-17T05:56:08.082Z</lastmod>
+    <data>
+        <display>
+        <title>MySQL大数据量分页性能优化</title>
+        <pubTime>2018-03-27T02:58:25.000Z</pubTime>
+        
+         
+           
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>https://blog.msrily.com/2018/05/09/blog10/</loc>
-    <lastmod>2018-05-09T13:45:57.712Z</lastmod>
+    <lastmod>2018-06-26T02:56:08.133Z</lastmod>
     <data>
         <display>
         <title>iOS SnapKit源码解析</title>
@@ -25,21 +115,6 @@
         <display>
         <title>Today Extension和3D Touch</title>
         <pubTime>2018-04-13T06:38:52.000Z</pubTime>
-        
-         
-           
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>https://blog.msrily.com/2018/03/21/blog1/</loc>
-    <lastmod>2018-04-13T08:39:04.137Z</lastmod>
-    <data>
-        <display>
-        <title>centOS7 安装nginx php mysql</title>
-        <pubTime>2018-03-21T06:28:15.000Z</pubTime>
         
          
            
@@ -115,36 +190,6 @@
         <display>
         <title>搭建redis服务器</title>
         <pubTime>2018-03-27T03:03:49.000Z</pubTime>
-        
-         
-           
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>https://blog.msrily.com/2018/03/27/blog3/</loc>
-    <lastmod>2018-03-27T03:03:00.541Z</lastmod>
-    <data>
-        <display>
-        <title>MySQL大数据量分页性能优化</title>
-        <pubTime>2018-03-27T02:58:25.000Z</pubTime>
-        
-         
-           
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>https://blog.msrily.com/2018/03/27/blog2/</loc>
-    <lastmod>2018-03-27T02:57:25.130Z</lastmod>
-    <data>
-        <display>
-        <title>iOS开发- 相机(摄像头)获取到的图片自动旋转90度解决办法</title>
-        <pubTime>2018-03-27T02:55:34.000Z</pubTime>
         
          
            
