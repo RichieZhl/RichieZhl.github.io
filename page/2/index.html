@@ -5,7 +5,7 @@
   
 
 
-<html class="theme-next muse use-motion" lang="zh-Hans">
+<html class="theme-next gemini use-motion" lang="zh-Hans">
 <head>
   <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -42,6 +42,32 @@
   
   <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
 
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
 
 
 
@@ -93,7 +119,7 @@
   var NexT = window.NexT || {};
   var CONFIG = {
     root: '/',
-    scheme: 'Muse',
+    scheme: 'Gemini',
     version: '5.1.4',
     sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
     fancybox: true,
@@ -157,7 +183,7 @@
       </a>
     </div>
       
-        <p class="site-subtitle"></p>
+        <h1 class="site-subtitle" itemprop="description"></h1>
       
   </div>
 
@@ -229,6 +255,418 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://blog.msrily.com/2018/04/13/blog9/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Richie Zhang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Richie">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/04/13/blog9/" itemprop="url">Today Extension和3D Touch</a></h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-13T14:38:52+08:00">
+                2018-04-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="Today-Extension"><a href="#Today-Extension" class="headerlink" title="Today Extension"></a>Today Extension</h3><h5 id="1-点击文件，选择如下图"><a href="#1-点击文件，选择如下图" class="headerlink" title="1.点击文件，选择如下图"></a>1.点击文件，选择如下图<br></h5><p><img src="/images/1523602659.png" alt=""><br><br><br><img src="/images/1523603517.png" alt=""><br><br><br><img src="/images/1523603742.png" alt=""></p>
+<h5 id="2-选择scheme为demo，run之后显示“hello-world”"><a href="#2-选择scheme为demo，run之后显示“hello-world”" class="headerlink" title="2.选择scheme为demo，run之后显示“hello world”"></a>2.选择scheme为demo，run之后显示“hello world”<br></h5><p>在MainInterface.storyboard里或在TodayViewController里的viewdidload方法里布局UI（跟app开发一样）<br></p>
+<h5 id="3-当需要与主app共享数据时，需配置App-Group，具体如下图"><a href="#3-当需要与主app共享数据时，需配置App-Group，具体如下图" class="headerlink" title="3.当需要与主app共享数据时，需配置App Group，具体如下图"></a>3.当需要与主app共享数据时，需配置App Group，具体如下图<br></h5><p><img src="/images/1523604601.png" alt=""><br>注：App Group为空时，请点左下角的”+”<br><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">let userDefault = UserDefaults(suiteName: &quot;group.shine&quot;)!</span><br></pre></td></tr></table></figure></p>
+<p>使用userDefault来存储需要共享的数据<br></p>
+<h5 id="4-当extension需要调用主app的方法时通过URL方式"><a href="#4-当extension需要调用主app的方法时通过URL方式" class="headerlink" title="4.当extension需要调用主app的方法时通过URL方式"></a>4.当extension需要调用主app的方法时通过URL方式</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">self.extensionContext?.open(URL(string: &quot;shineDemo://todayExtension?index=0&quot;)!, completionHandler: &#123; (res) in</span><br><span class="line">            </span><br><span class="line">        &#125;)</span><br></pre></td></tr></table></figure>
+<p>主App配置URL的scheme<br><br><img src="/images/1523605177.png" alt=""></p>
+<h3 id="3D-Touch"><a href="#3D-Touch" class="headerlink" title="3D Touch"></a>3D Touch</h3><p>上代码（动态3D Touch方式）<br><figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">guard</span> <span class="keyword">let</span> filePath = <span class="type">Bundle</span>.main.url(forResource: <span class="string">"3dtouchdemo"</span>, withExtension: <span class="string">"json"</span>),</span><br><span class="line">    <span class="keyword">let</span> data = <span class="keyword">try</span>? <span class="type">Data</span>.<span class="keyword">init</span>(contentsOf: filePath),</span><br><span class="line">        <span class="keyword">let</span> json = (<span class="keyword">try</span>? <span class="type">JSONSerialization</span>.jsonObject(with: data, options: <span class="type">JSONSerialization</span>.<span class="type">ReadingOptions</span>.mutableContainers)) <span class="keyword">as</span>? [[<span class="type">String</span>: <span class="type">Any</span>]] <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">&#125;</span><br><span class="line">    </span><br><span class="line"><span class="keyword">var</span> items = [<span class="type">UIApplicationShortcutItem</span>]()</span><br><span class="line"><span class="keyword">for</span> jsonItem <span class="keyword">in</span> json &#123;</span><br><span class="line">    <span class="keyword">let</span> icon = <span class="type">UIApplicationShortcutIcon</span>(type: shortcutIconWithType(jsonItem[<span class="string">"icon"</span>] <span class="keyword">as</span>! <span class="type">String</span>))</span><br><span class="line">    <span class="keyword">let</span> item = <span class="type">UIApplicationShortcutItem</span>(type: jsonItem[<span class="string">"icon"</span>] <span class="keyword">as</span>! <span class="type">String</span>, localizedTitle: jsonItem[<span class="string">"title"</span>] <span class="keyword">as</span>! <span class="type">String</span>, localizedSubtitle: (jsonItem[<span class="string">"subtitle"</span>] <span class="keyword">as</span>! <span class="type">String</span>), icon: icon, userInfo: jsonItem[<span class="string">"userInfo"</span>] <span class="keyword">as</span>? [<span class="type">AnyHashable</span> : <span class="type">Any</span>])</span><br><span class="line">    items.append(item)</span><br><span class="line">&#125;</span><br><span class="line"><span class="type">UIApplication</span>.shared.shortcutItems = items</span><br></pre></td></tr></table></figure></p>
+<p>附：3dtouchdemo.json<br><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">[&#123;</span><br><span class="line">    <span class="attr">"icon"</span>: <span class="string">"add"</span>,</span><br><span class="line">    <span class="attr">"title"</span>: <span class="string">"增加"</span>,</span><br><span class="line">    <span class="attr">"subtitle"</span>: <span class="string">"增加-add"</span>,</span><br><span class="line">    <span class="attr">"userInfo"</span>: &#123;</span><br><span class="line">        <span class="attr">"type"</span>: <span class="string">"add"</span></span><br><span class="line">    &#125;</span><br><span class="line"> &#125;,&#123;</span><br><span class="line">     <span class="attr">"icon"</span>: <span class="string">"alarm"</span>,</span><br><span class="line">     <span class="attr">"title"</span>: <span class="string">"闹钟"</span>,</span><br><span class="line">     <span class="attr">"subtitle"</span>: <span class="string">"闹钟-alarm"</span>,</span><br><span class="line">     <span class="attr">"userInfo"</span>: &#123;</span><br><span class="line">         <span class="attr">"type"</span>: <span class="string">"alarm"</span></span><br><span class="line">     &#125;</span><br><span class="line"> &#125;]</span><br></pre></td></tr></table></figure></p>
+<p>在AppDelegate委托方法里实现点击后的事件处理，可以通过UIApplicationShortcutItem的type来判断不同的Item<br><br><img src="/images/1523605834.png" alt=""></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://blog.msrily.com/2018/03/27/blog8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Richie Zhang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Richie">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/03/27/blog8/" itemprop="url">iOS app进入后台毛玻璃效果</a></h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-27T11:14:34+08:00">
+                2018-03-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>直接上代码（Swift）</p>
+<pre>
+    func applicationDidBecomeActive(_ application: UIApplication) {
+        if let visualEffectView = self.visualEffectView {
+            UIView.animate(withDuration: 0.5, animations: {
+                visualEffectView.alpha = 0
+            }, completion: { (_) in
+                visualEffectView.removeFromSuperview()
+            })
+        }
+    }
+
+    weak var visualEffectView: UIVisualEffectView?
+    func applicationWillResignActive(_ application: UIApplication) {
+        let blurEffect = UIBlurEffect(style: UIBlurEffectStyle.light)
+        let visualEffectView = UIVisualEffectView(effect: blurEffect)
+        visualEffectView.alpha = 0
+        visualEffectView.frame = self.window?.frame ?? CGRect.zero
+        self.window?.addSubview(visualEffectView)
+        self.visualEffectView = visualEffectView
+        UIView.animate(withDuration: 0.5) {
+            visualEffectView.alpha = 1
+        }
+    }
+</pre>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://blog.msrily.com/2018/03/27/blog7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Richie Zhang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Richie">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/03/27/blog7/" itemprop="url">MySQL创建数据库与创建用户以及授权</a></h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-27T11:12:00+08:00">
+                2018-03-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <ol>
+<li>create schema [数据库名称] default character set utf8 collate utf8_general_ci;–创建数据库<br><br>　　采用create schema和create database创建数据库的效果一样。</li>
+<li>create user ‘[用户名称]‘@’%’ identified by ‘[用户密码]’;–创建用户<br><br>　　密码8位以上，包括：大写字母、小写字母、数字、特殊字符<br><br>　　%：匹配所有主机，该地方还可以设置成‘localhost’，代表只能本地访问，例如root账户默认为‘localhost‘</li>
+<li>grant select,insert,update,delete,create on [数据库名称].<em> to [用户名称];–用户授权数据库<br>
+　　</em>代表整个数据库</li>
+<li>flush  privileges ;–立即启用修改</li>
+<li>revoke all on <em>.</em> from tester;–取消用户所有数据库（表）的所有权限</li>
+<li>delete from mysql.user where user=’tester’;–删除用户</li>
+<li>drop database [schema名称|数据库名称];–删除数据库</li>
+</ol>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://blog.msrily.com/2018/03/27/blog6/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -246,9 +684,9 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">
+          <h2 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/03/27/blog6/" itemprop="url">macOS使用OpenSSL生成 RSA公钥与私钥</a></h1>
+                <a class="post-title-link" href="/2018/03/27/blog6/" itemprop="url">macOS使用OpenSSL生成 RSA公钥与私钥</a></h2>
         
 
         <div class="post-meta">
@@ -370,9 +808,9 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">
+          <h2 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/03/27/blog5/" itemprop="url">搭建memcached服务器</a></h1>
+                <a class="post-title-link" href="/2018/03/27/blog5/" itemprop="url">搭建memcached服务器</a></h2>
         
 
         <div class="post-meta">
@@ -495,9 +933,9 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">
+          <h2 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/03/27/blog4/" itemprop="url">搭建redis服务器</a></h1>
+                <a class="post-title-link" href="/2018/03/27/blog4/" itemprop="url">搭建redis服务器</a></h2>
         
 
         <div class="post-meta">
@@ -685,9 +1123,9 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">
+          <h2 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/03/27/blog3/" itemprop="url">MySQL大数据量分页性能优化</a></h1>
+                <a class="post-title-link" href="/2018/03/27/blog3/" itemprop="url">MySQL大数据量分页性能优化</a></h2>
         
 
         <div class="post-meta">
@@ -823,9 +1261,9 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">
+          <h2 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/03/27/blog2/" itemprop="url">iOS开发- 相机(摄像头)获取到的图片自动旋转90度解决办法</a></h1>
+                <a class="post-title-link" href="/2018/03/27/blog2/" itemprop="url">iOS开发- 相机(摄像头)获取到的图片自动旋转90度解决办法</a></h2>
         
 
         <div class="post-meta">
@@ -950,9 +1388,9 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">
+          <h2 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/03/21/blog1/" itemprop="url">centOS7 安装nginx php mysql</a></h1>
+                <a class="post-title-link" href="/2018/03/21/blog1/" itemprop="url">centOS7 安装nginx php mysql</a></h2>
         
 
         <div class="post-meta">
@@ -1127,6 +1565,10 @@
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.gif"
+                alt="Richie Zhang" />
+            
               <p class="site-author-name" itemprop="name">Richie Zhang</p>
               <p class="site-description motion-element" itemprop="description"></p>
           </div>
@@ -1138,7 +1580,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-count">19</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1152,6 +1594,16 @@
 
           
 
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:lylaut@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
           
 
           
@@ -1290,6 +1742,13 @@
 
   
   
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
 
   
 

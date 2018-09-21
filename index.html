@@ -5,7 +5,7 @@
   
 
 
-<html class="theme-next muse use-motion" lang="zh-Hans">
+<html class="theme-next gemini use-motion" lang="zh-Hans">
 <head>
   <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -42,6 +42,32 @@
   
   <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
 
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
 
 
 
@@ -93,7 +119,7 @@
   var NexT = window.NexT || {};
   var CONFIG = {
     root: '/',
-    scheme: 'Muse',
+    scheme: 'Gemini',
     version: '5.1.4',
     sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
     fancybox: true,
@@ -157,7 +183,7 @@
       </a>
     </div>
       
-        <p class="site-subtitle"></p>
+        <h1 class="site-subtitle" itemprop="description"></h1>
       
   </div>
 
@@ -229,6 +255,432 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://blog.msrily.com/2018/08/08/blog19/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Richie Zhang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Richie">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/08/08/blog19/" itemprop="url">斐波那契数列及优化和计算字符串中最长非重复子串长度</a></h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-08T17:17:38+08:00">
+                2018-08-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="斐波那契数列及优化（不考虑大数）"><a href="#斐波那契数列及优化（不考虑大数）" class="headerlink" title="斐波那契数列及优化（不考虑大数）"></a>斐波那契数列及优化（不考虑大数）</h3><ul>
+<li>常见递归实现</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">fibon</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (n &lt;= <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> fibon(n<span class="number">-1</span>) + fibon(n<span class="number">-2</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>优化1</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">fibonacci</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (n &lt;= <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">//动态创建一个长度为(n+1)的数组</span></span><br><span class="line">        <span class="keyword">int</span> *arr = <span class="keyword">new</span> <span class="keyword">int</span>[n+<span class="number">1</span>];</span><br><span class="line">        arr[<span class="number">0</span>]=<span class="number">0</span>;</span><br><span class="line">        arr[<span class="number">1</span>]=<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt;= n; i++) &#123;</span><br><span class="line">            n3++;</span><br><span class="line">            arr[i] = arr[i<span class="number">-1</span>] + arr[i<span class="number">-2</span>];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> result = arr[n];</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">delete</span> [] arr;</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>优化2</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">fibonaccii</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (n &lt;= <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">//当n&gt;=2时，初始化pre=f(0)=0,post=f(1)=1,f(n)=0;</span></span><br><span class="line">        <span class="keyword">int</span> pre = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span> post = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">int</span> fn = <span class="number">0</span>;</span><br><span class="line">        <span class="comment">//采用循环计算斐波那契数列，通过两个临时变量pre和post保存中间结果，避免重复计算</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt;= n; i++) &#123;</span><br><span class="line">            <span class="comment">//fn等于其前面两个元素值的和,然后让pre和post分别直线他们后面的元素。</span></span><br><span class="line">            fn = pre + post;</span><br><span class="line">            pre = post;</span><br><span class="line">            post = fn;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> fn;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>优化3</li>
+</ul>
+<p>是优化2的递归版本</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">fibonac</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b, <span class="keyword">int</span> n)</span> </span>&#123; <span class="comment">// a、b都取1</span></span><br><span class="line">    <span class="keyword">if</span> (n &gt; <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> fibonac(a+b, a, n<span class="number">-1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> a;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="计算字符串中最长非重复子串长度"><a href="#计算字符串中最长非重复子串长度" class="headerlink" title="计算字符串中最长非重复子串长度"></a>计算字符串中最长非重复子串长度</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> 题目</span></span><br><span class="line"><span class="comment"> 给定一个字符串，找到最长子串的长度，而不重复字符。</span></span><br><span class="line"><span class="comment"> 例子</span></span><br><span class="line"><span class="comment"> 给定“abcabcbb”，答案是“abc”，长度为3。</span></span><br><span class="line"><span class="comment"> 给定“bbbbb”，答案是“b”，长度为1。</span></span><br><span class="line"><span class="comment"> 给定“pwwkew”，答案是“wke”，长度为3.请注意，答案必须是子字符串，“pwke”是子序列而不是子字符串。</span></span><br><span class="line"><span class="comment"> */</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>正常解法</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">longestSubStringLength</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *str)</span> </span>&#123;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MAX(a, b) (a) &gt; (b) ? (a) : (b)</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">char</span> *temp = (<span class="keyword">char</span> *)str;</span><br><span class="line">    <span class="keyword">char</span> t, tt, ttt;</span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">0</span>, j = <span class="number">2</span>, len = <span class="number">1</span>;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt; substring;</span><br><span class="line">    <span class="keyword">while</span> ((t = *(temp + i)) != <span class="string">'\0'</span>) &#123;</span><br><span class="line">        <span class="comment">// 只有一个字符</span></span><br><span class="line">        <span class="keyword">if</span> ((tt = *(temp + i + <span class="number">1</span>)) == <span class="string">'\0'</span>) &#123;</span><br><span class="line">            len = MAX(len, <span class="number">1</span>);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (t != tt) &#123; <span class="comment">// 两个字符不重复</span></span><br><span class="line">            <span class="comment">/*</span></span><br><span class="line"><span class="comment">            存入vector中，后面的字符都要check一下vector中的元素，若有重复，记录下最大长度，并清空vector</span></span><br><span class="line"><span class="comment">            */</span></span><br><span class="line">            substring.push_back(t);</span><br><span class="line">            substring.push_back(tt);</span><br><span class="line">            <span class="keyword">while</span> ((ttt = *(temp + i + j)) != <span class="string">'\0'</span>) &#123;</span><br><span class="line">                <span class="keyword">bool</span> bk = <span class="literal">false</span>;</span><br><span class="line">                <span class="keyword">char</span> tttt;</span><br><span class="line">                <span class="keyword">for</span> (<span class="keyword">auto</span> it = substring.begin(); it != substring.end(); ++it) &#123;</span><br><span class="line">                    tttt = *it;</span><br><span class="line">                    <span class="keyword">if</span> (tttt == ttt) &#123;</span><br><span class="line">                        bk = <span class="literal">true</span>;</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span> (bk) &#123;</span><br><span class="line">                    len = MAX(len, (<span class="keyword">int</span>)substring.size());</span><br><span class="line">                    i += j;</span><br><span class="line">                    substring.clear();</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    substring.push_back(tttt);</span><br><span class="line">                    j++;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (substring.size() == <span class="number">2</span>) &#123;</span><br><span class="line">                substring.clear();</span><br><span class="line">                len = MAX(len, <span class="number">2</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            j = <span class="number">2</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            i++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> len;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>因为字符串中字符大、小写字母都是在ASCII码中前128位里，于是产生了优化算法。</p>
+<ul>
+<li>优化</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">longestSubStringLength1</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *str)</span> </span>&#123;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MAX(a, b) (a) &gt; (b) ? (a) : (b)</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">char</span> *temp = (<span class="keyword">char</span> *)str;</span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">0</span>, j = <span class="number">0</span>, len = <span class="number">0</span>; <span class="comment">// i为子串开始索引，j为子串终止索引</span></span><br><span class="line">    <span class="keyword">int</span> indexs[<span class="number">128</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">    <span class="keyword">char</span> t;</span><br><span class="line">    <span class="keyword">while</span> ((t = *(temp + j)) != <span class="string">'\0'</span>) &#123;</span><br><span class="line">        i = MAX(indexs[t], i); <span class="comment">// 字符t若有记录，则将i赋值为t在indexs中存储的索引</span></span><br><span class="line">        len = MAX(len, j - i + <span class="number">1</span>); <span class="comment">// 计算子串的长度</span></span><br><span class="line">        indexs[t] = j + <span class="number">1</span>; <span class="comment">//存储值为t索引值为j+1</span></span><br><span class="line">        j++; <span class="comment">// check下一个字符</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> len;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://blog.msrily.com/2018/07/28/blog18/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Richie Zhang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Richie">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/07/28/blog18/" itemprop="url">Sort Algorithms 整理</a></h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-28T15:54:43+08:00">
+                2018-07-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="冒泡排序"><a href="#冒泡排序" class="headerlink" title="冒泡排序"></a>冒泡排序</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">BubbleSort</span><span class="params">(<span class="keyword">int</span> a[], <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">bool</span> flag = <span class="literal">false</span>; <span class="comment">//标记是否发生交换，若没有表示已经有序</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n<span class="number">-1</span>; ++i) &#123; <span class="comment">//要进行n-1次冒泡</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = n<span class="number">-1</span>; j &gt; i; j--) &#123; </span><br><span class="line">            <span class="comment">/* </span></span><br><span class="line"><span class="comment">            从最后一个元素开始，较小的在前</span></span><br><span class="line"><span class="comment">            */</span></span><br><span class="line">            <span class="keyword">if</span> (a[j] &lt; a[j<span class="number">-1</span>]) &#123;</span><br><span class="line">                <span class="keyword">int</span> tmp = a[j<span class="number">-1</span>];</span><br><span class="line">                a[j<span class="number">-1</span>] = a[j];</span><br><span class="line">                a[j] = tmp;</span><br><span class="line">                flag = <span class="literal">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (flag == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>两端同时开始比较交换，衍生出<b>双向冒泡算法</b></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">DbubbleSort</span><span class="params">(<span class="keyword">int</span> a[], <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">1</span>, j = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">bool</span> noswap = <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">while</span> (noswap) &#123; <span class="comment">//当没有发生交换时，表示有序</span></span><br><span class="line">        noswap = <span class="literal">false</span>;</span><br><span class="line">        <span class="comment">/* </span></span><br><span class="line"><span class="comment">            从最后一个元素开始到第一个元素，较小的在前</span></span><br><span class="line"><span class="comment">            从倒数每二个元素开始到第二个元素 ...</span></span><br><span class="line"><span class="comment">            ...</span></span><br><span class="line"><span class="comment">            */</span></span><br><span class="line">        <span class="keyword">for</span> (j = n-i; j &gt;= i; --j) &#123;</span><br><span class="line">            <span class="keyword">if</span> (a[j] &lt; a[j<span class="number">-1</span>]) &#123;</span><br><span class="line">                <span class="keyword">int</span> tmp = a[j];</span><br><span class="line">                a[j] = a[j<span class="number">-1</span>];</span><br><span class="line">                a[j<span class="number">-1</span>] = tmp;</span><br><span class="line">                noswap = <span class="literal">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">/* </span></span><br><span class="line"><span class="comment">            从第二个元素开始到倒数第二个元素，较大的在后</span></span><br><span class="line"><span class="comment">            从第三个元素开始倒数第三个元素 ...</span></span><br><span class="line"><span class="comment">            ...</span></span><br><span class="line"><span class="comment">            */</span></span><br><span class="line">        <span class="keyword">for</span> (j = i; j &lt;= n-i<span class="number">-1</span>; ++j) &#123;</span><br><span class="line">            <span class="keyword">if</span> (a[j] &gt; a[j+<span class="number">1</span>]) &#123;</span><br><span class="line">                <span class="keyword">int</span> tmp = a[j];</span><br><span class="line">                a[j] = a[j+<span class="number">1</span>];</span><br><span class="line">                a[j+<span class="number">1</span>] = tmp;</span><br><span class="line">                noswap = <span class="literal">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        ++i;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="插入排序"><a href="#插入排序" class="headerlink" title="插入排序"></a>插入排序</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">InsertSort</span><span class="params">(<span class="keyword">int</span> a[], <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="comment">/* </span></span><br><span class="line"><span class="comment">    第二个元素开始,与第一个元素比较，若第一个元素大，则交换</span></span><br><span class="line"><span class="comment">    第三个元素，与前面二个元素比较，逐个向后移一位，直到找到比该元素小的元素为止</span></span><br><span class="line"><span class="comment">    ...</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; n; ++i) &#123; </span><br><span class="line">        <span class="keyword">int</span> min = a[i];</span><br><span class="line">        <span class="keyword">int</span> j = i<span class="number">-1</span>;</span><br><span class="line">        <span class="keyword">for</span> (; min &lt; a[j]; j--) &#123;</span><br><span class="line">            a[j+<span class="number">1</span>] = a[j];</span><br><span class="line">        &#125;</span><br><span class="line">        a[j+<span class="number">1</span>] = min;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="希乐排序"><a href="#希乐排序" class="headerlink" title="希乐排序"></a>希乐排序</h3><p>分成多个增量，依次按增量进行插入排序，但最后一个增量必须是1，如：5,3,1</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">ShellInsert</span><span class="params">(<span class="keyword">int</span> a[], <span class="keyword">int</span> dk, <span class="keyword">int</span> n)</span> </span>&#123; <span class="comment">//dk为当前增量</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = dk; i &lt; n; ++i) &#123;</span><br><span class="line">        <span class="keyword">int</span> min = a[i];</span><br><span class="line">        <span class="keyword">int</span> j = i-dk;</span><br><span class="line">        <span class="keyword">for</span> (; j &gt;= <span class="number">0</span> &amp;&amp; min &lt; a[j]; j -= dk) &#123;</span><br><span class="line">            a[j+dk] = a[j];</span><br><span class="line">        &#125;</span><br><span class="line">        a[j+dk] = min;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">ShellSort</span><span class="params">(<span class="keyword">int</span> a[], <span class="keyword">int</span> d[], <span class="keyword">int</span> t, <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; t; ++k) &#123;</span><br><span class="line">        ShellInsert(a, d[k], n);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="直接选择排序"><a href="#直接选择排序" class="headerlink" title="直接选择排序"></a>直接选择排序</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">SelectSort</span><span class="params">(<span class="keyword">int</span> a[], <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">        从第一个元素开始到最后一个，找到第小元素与第一个元素交换</span></span><br><span class="line"><span class="comment">        从第二个元素开始 ...</span></span><br><span class="line"><span class="comment">        ...</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n<span class="number">-1</span>; ++i) &#123;</span><br><span class="line">        <span class="keyword">int</span> k = i;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = i+<span class="number">1</span>; j &lt; n; ++j) &#123;</span><br><span class="line">            <span class="keyword">if</span> (a[j] &lt; a[k]) &#123;</span><br><span class="line">                k = j;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (k != i) &#123;</span><br><span class="line">            <span class="keyword">int</span> tmp = a[i];</span><br><span class="line">            a[i] = a[k];</span><br><span class="line">            a[k] = tmp;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="堆排序"><a href="#堆排序" class="headerlink" title="堆排序"></a>堆排序</h3><p>堆排序是利用堆（完全二叉树）这种数据结构而设计的一种排序算法，堆排序是一种选择排序</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Sift</span><span class="params">(<span class="keyword">int</span> a[], <span class="keyword">int</span> i, <span class="keyword">int</span> h)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> x = a[i<span class="number">-1</span>];</span><br><span class="line">    <span class="keyword">int</span> j = <span class="number">2</span> * i;</span><br><span class="line">    <span class="keyword">while</span> (j &lt;= h) &#123;</span><br><span class="line">        <span class="keyword">if</span> (j &lt; h &amp;&amp; a[j<span class="number">-1</span>] &lt; a[j<span class="number">-1</span>+<span class="number">1</span>]) &#123;</span><br><span class="line">            ++j;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (x &gt;= a[j<span class="number">-1</span>]) &#123;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        a[i<span class="number">-1</span>] = a[j<span class="number">-1</span>];</span><br><span class="line">        i = j;</span><br><span class="line">        j = <span class="number">2</span> * i;</span><br><span class="line">    &#125;</span><br><span class="line">    a[i<span class="number">-1</span>] = x;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">HeapSort</span><span class="params">(<span class="keyword">int</span> a[], <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">    构建大顶堆</span></span><br><span class="line"><span class="comment">    从正中间那个结点开始，找到其子结点的较大者交换</span></span><br><span class="line"><span class="comment">    子结点，找到其子结点的子结点的较大者交换</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = n/<span class="number">2</span>; i &gt; <span class="number">0</span>; --i) &#123;</span><br><span class="line">        Sift(a, i, n);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">    将堆的根结点与最后一个结点交换，重新构建大顶堆</span></span><br><span class="line"><span class="comment">    将堆的根结点与倒数第二个结点交换 ...</span></span><br><span class="line"><span class="comment">    ...</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = n; i &gt; <span class="number">1</span>; --i) &#123;</span><br><span class="line">        <span class="keyword">int</span> tmp = a[<span class="number">0</span>];</span><br><span class="line">        a[<span class="number">0</span>] = a[i<span class="number">-1</span>];</span><br><span class="line">        a[i<span class="number">-1</span>] = tmp;</span><br><span class="line">        Sift(a, <span class="number">1</span>, i<span class="number">-1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="快速排序"><a href="#快速排序" class="headerlink" title="快速排序"></a>快速排序</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">选择第一个元素做为基数</span></span><br><span class="line"><span class="comment">从第j个元素开始向前找到一个比基数小的元素赋值到第i个元素，并让i向后移动一个;从第i个元素开始向右找到一个比基数大的元素赋值到第j个元素，并让j向前移动一个;直到i与j值相等，将基数的数据存储第i个元素</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">Partition</span><span class="params">(<span class="keyword">int</span> a[], <span class="keyword">int</span> i, <span class="keyword">int</span> j)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> x = a[i];</span><br><span class="line">    <span class="keyword">while</span> (i &lt; j) &#123;</span><br><span class="line">        <span class="keyword">while</span> (i &lt; j &amp;&amp; a[j] &gt;= x) --j;</span><br><span class="line">        <span class="keyword">if</span> (i &lt; j) &#123;</span><br><span class="line">            a[i++] = a[j];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">while</span> (i &lt; j &amp;&amp; a[i] &lt;= x) ++i;</span><br><span class="line">        <span class="keyword">if</span> (i &lt; j) &#123;</span><br><span class="line">            a[j--] = a[i];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    a[i] = x;</span><br><span class="line">    <span class="keyword">return</span> i;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">QuickSort</span><span class="params">(<span class="keyword">int</span> a[], <span class="keyword">int</span> low, <span class="keyword">int</span> high)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> p = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (low &lt; high) &#123;</span><br><span class="line">        p = Partition(a, low, high); <span class="comment">// 选择基数并获取最终的索引</span></span><br><span class="line">        QuickSort(a, low, p<span class="number">-1</span>); <span class="comment">// 快速排序基数之前的数据</span></span><br><span class="line">        QuickSort(a, p+<span class="number">1</span>, high); <span class="comment">// 快速排序基数之后的数据</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="归并排序"><a href="#归并排序" class="headerlink" title="归并排序"></a>归并排序</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">outerMerge</span><span class="params">(<span class="keyword">int</span> data1[ ], <span class="keyword">size_t</span> size1, </span></span></span><br><span class="line"><span class="function"><span class="params">				 <span class="keyword">int</span> data2[ ], <span class="keyword">size_t</span> size2, <span class="keyword">int</span> data3[ ])</span> </span>&#123; <span class="comment">//合并有序数组</span></span><br><span class="line">	<span class="keyword">int</span> i = <span class="number">0</span>, j = <span class="number">0</span>, k = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span> (;k &lt; size1 + size2; k++) &#123;</span><br><span class="line">		<span class="keyword">if</span> (i &lt; size1 &amp;&amp; j &lt; size2) &#123; <span class="comment">//需要选择一个放入(比较)</span></span><br><span class="line">			<span class="keyword">if</span> (data1[i] &lt; data2[j]) data3[k] = data1[i++];</span><br><span class="line">			<span class="keyword">else</span> data3[k] = data2[j++];</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123; <span class="comment">//只能从一个数据源放入</span></span><br><span class="line">			<span class="keyword">if</span> (i &lt; size1) data3[k] = data1[i++];</span><br><span class="line">			<span class="keyword">else</span> <span class="keyword">if</span> (j &lt; size2) data3[k] = data2[j++];</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">innerMerge</span><span class="params">(<span class="keyword">int</span> data[ ], <span class="keyword">size_t</span> left, </span></span></span><br><span class="line"><span class="function"><span class="params">				 <span class="keyword">size_t</span> mid, <span class="keyword">size_t</span> right)</span> </span>&#123; <span class="comment">//数组由２个有序子数组</span></span><br><span class="line">	<span class="keyword">size_t</span> size = (right - left + <span class="number">1</span>) * <span class="keyword">sizeof</span>(data[<span class="number">0</span>]);</span><br><span class="line">	<span class="keyword">int</span>* temp = (<span class="keyword">int</span>*)<span class="built_in">malloc</span>(size);</span><br><span class="line">	outerMerge(data + left, mid - left + <span class="number">1</span>, data + mid + <span class="number">1</span>, right - mid, temp);</span><br><span class="line">	<span class="built_in">memcpy</span>(data + left, temp, size);</span><br><span class="line">	<span class="built_in">free</span>(temp);</span><br><span class="line">	temp = <span class="literal">NULL</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">mergeSort</span><span class="params">(<span class="keyword">int</span> data[ ], <span class="keyword">size_t</span> left, <span class="keyword">size_t</span> right)</span> </span>&#123;<span class="comment">//归并排序</span></span><br><span class="line">	<span class="keyword">if</span> (left &lt; right) &#123;</span><br><span class="line">		<span class="keyword">int</span> mid = (left + right) / <span class="number">2</span>;</span><br><span class="line">		mergeSort(data, left, mid);<span class="comment">//排序mid之前</span></span><br><span class="line">		mergeSort(data, mid + <span class="number">1</span>, right);<span class="comment">//排序mid之后</span></span><br><span class="line">		innerMerge(data, left, mid, right);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://blog.msrily.com/2018/07/23/blog17/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Richie Zhang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Richie">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/07/23/blog17/" itemprop="url">iOS Block分析</a></h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-23T18:37:05+08:00">
+                2018-07-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="准备Demo"><a href="#准备Demo" class="headerlink" title="准备Demo"></a>准备Demo</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">#import &quot;ViewController.h&quot;</span><br><span class="line"></span><br><span class="line">void (^block_global)(void) = ^ &#123;</span><br><span class="line">    NSLog(@&quot;block_global&quot;);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">@interface ViewController ()</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation ViewController</span><br><span class="line"></span><br><span class="line">- (void)viewDidLoad &#123;</span><br><span class="line">    [super viewDidLoad];</span><br><span class="line">    </span><br><span class="line">    void (^block0)(void) = ^ &#123;</span><br><span class="line">        NSLog(@&quot;block0&quot;);</span><br><span class="line">    &#125;;</span><br><span class="line">    </span><br><span class="line">    BOOL (^block1)(NSString *string) = ^(NSString *string) &#123;</span><br><span class="line">        NSLog(@&quot;%@&quot;, string);</span><br><span class="line">        return NO;</span><br><span class="line">    &#125;;</span><br><span class="line">    </span><br><span class="line">    int a = 0;</span><br><span class="line">    NSString *b = @&quot;hello&quot;;</span><br><span class="line">    NSArray *c = @[@&quot;hello&quot;, @&quot;world&quot;];</span><br><span class="line">    NSMutableArray *d = c.mutableCopy;</span><br><span class="line">    </span><br><span class="line">    __block double e = 1.0f;</span><br><span class="line">    __block NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithObjectsAndKeys:@&quot;dictionary&quot;, @&quot;key&quot;, nil];</span><br><span class="line">    </span><br><span class="line">    BOOL (^block2)(NSNumber *number) = ^(NSNumber *number) &#123;</span><br><span class="line">        NSLog(@&quot;block%d\n%d %@ %@ %@ %f %@&quot;, number.intValue, a, b, c, d, e, dic);</span><br><span class="line">        return YES;</span><br><span class="line">    &#125;;</span><br><span class="line">    </span><br><span class="line">    block0();</span><br><span class="line">    block1(@&quot;block1&quot;);</span><br><span class="line">    block2(@2);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)didReceiveMemoryWarning &#123;</span><br><span class="line">    [super didReceiveMemoryWarning];</span><br><span class="line">    // Dispose of any resources that can be recreated.</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<p>将ViewController.m编译成C++，以便研究，脚本命令如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">clang -x objective-c -rewrite-objc -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk ViewController.m</span><br></pre></td></tr></table></figure>
+<p>下面来逐一进行分析</p>
+<h3 id="block0"><a href="#block0" class="headerlink" title="block0"></a>block0</h3><h4 id="编译器生成的结构与实现"><a href="#编译器生成的结构与实现" class="headerlink" title="编译器生成的结构与实现"></a>编译器生成的结构与实现</h4><p><img src="/images/83dd34b0-9919-48c4-98e5-ff1f2a1ece93.png" alt=""></p>
+<p><img src="/images/26246fca-5b49-494f-8af7-049ed604ec7f.png" alt=""></p>
+<h4 id="调用"><a href="#调用" class="headerlink" title="调用"></a>调用</h4><p><img src="/images/edde905a-28a8-475f-bc99-8fc93a43bc8a.png" alt=""></p>
+<p>block最终被还原成了一个结构体，成员：实现（imp）和描述（Desc）</p>
+<p>block的调用事实上是调用结构体img的函数指针，并将结构体本身做为参数传入<br></p>
+<h4 id="imp"><a href="#imp" class="headerlink" title="imp"></a>imp</h4><p>isa指向_NSConcreteStackBlock类</p>
+<p>FuncPtr指向函数指针，参数是结构体指向自己的指针</p>
+<h4 id="Desc"><a href="#Desc" class="headerlink" title="Desc"></a>Desc</h4><p>存储结构体的大小</p>
+<h3 id="block1"><a href="#block1" class="headerlink" title="block1"></a>block1</h3><p><img src="/images/e1a42789-44c1-4338-96d7-94d9bf65c3ba.png" alt=""></p>
+<p>与block0唯一的区别就在于多了一个传入的参数NSString</p>
+<h3 id="block2"><a href="#block2" class="headerlink" title="block2"></a>block2</h3><p><img src="/images/fc81ec56-cde3-4f16-8ff5-e1109ee4124b.png" alt=""></p>
+<p><img src="/images/33628f82-3100-423a-9a80-0964162a7379.png" alt=""></p>
+<p><img src="/images/60cfff25-6c0e-4aa9-9574-aa874d1baacb.png" alt=""></p>
+<p>相信读者也有发现，以上的常见block写法都imp的isa都是指向_NSConcreteStackBlock类。其实还会指向另一种类——_NSConcreteGlobalBlock，这种场景比较特殊，在全局里声明的block才会去指向这个类。</p>
+<h3 id="block-global"><a href="#block-global" class="headerlink" title="block_global"></a>block_global</h3><p><img src="/images/19dcad00-c02a-4512-861f-2a66efa2dd58.png" alt=""></p>
+<p>global block也有上面三种形态，在这里就不一一展示了。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://blog.msrily.com/2018/07/10/blog16/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -246,9 +698,9 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">
+          <h2 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/07/10/blog16/" itemprop="url">NSObject Lifecycle</a></h1>
+                <a class="post-title-link" href="/2018/07/10/blog16/" itemprop="url">NSObject Lifecycle</a></h2>
         
 
         <div class="post-meta">
@@ -390,9 +842,9 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">
+          <h2 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/06/19/blog15/" itemprop="url">iOS Runloop</a></h1>
+                <a class="post-title-link" href="/2018/06/19/blog15/" itemprop="url">iOS Runloop</a></h2>
         
 
         <div class="post-meta">
@@ -560,9 +1012,9 @@ _UIApplicationHandleEventQueue() 会把 IOHIDEvent 处理并包装成 UIEvent �
 
         
         
-          <h1 class="post-title" itemprop="name headline">
+          <h2 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/06/01/blog14/" itemprop="url">Objective-C Runtime</a></h1>
+                <a class="post-title-link" href="/2018/06/01/blog14/" itemprop="url">Objective-C Runtime</a></h2>
         
 
         <div class="post-meta">
@@ -758,9 +1210,9 @@ _UIApplicationHandleEventQueue() 会把 IOHIDEvent 处理并包装成 UIEvent �
 
         
         
-          <h1 class="post-title" itemprop="name headline">
+          <h2 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/05/24/blog13/" itemprop="url">GCD 队列探索</a></h1>
+                <a class="post-title-link" href="/2018/05/24/blog13/" itemprop="url">GCD 队列探索</a></h2>
         
 
         <div class="post-meta">
@@ -884,9 +1336,9 @@ _UIApplicationHandleEventQueue() 会把 IOHIDEvent 处理并包装成 UIEvent �
 
         
         
-          <h1 class="post-title" itemprop="name headline">
+          <h2 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/05/23/blog12/" itemprop="url">Objective C 类crash预防</a></h1>
+                <a class="post-title-link" href="/2018/05/23/blog12/" itemprop="url">Objective C 类crash预防</a></h2>
         
 
         <div class="post-meta">
@@ -1014,9 +1466,9 @@ _UIApplicationHandleEventQueue() 会把 IOHIDEvent 处理并包装成 UIEvent �
 
         
         
-          <h1 class="post-title" itemprop="name headline">
+          <h2 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/05/17/blog11/" itemprop="url">iOS App启动过程</a></h1>
+                <a class="post-title-link" href="/2018/05/17/blog11/" itemprop="url">iOS App启动过程</a></h2>
         
 
         <div class="post-meta">
@@ -1203,9 +1655,9 @@ _UIApplicationHandleEventQueue() 会把 IOHIDEvent 处理并包装成 UIEvent �
 
         
         
-          <h1 class="post-title" itemprop="name headline">
+          <h2 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/05/09/blog10/" itemprop="url">iOS SnapKit源码解析</a></h1>
+                <a class="post-title-link" href="/2018/05/09/blog10/" itemprop="url">iOS SnapKit源码解析</a></h2>
         
 
         <div class="post-meta">
@@ -1318,418 +1770,6 @@ _UIApplicationHandleEventQueue() 会把 IOHIDEvent 处理并包装成 UIEvent �
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://blog.msrily.com/2018/04/13/blog9/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Richie Zhang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Richie">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/04/13/blog9/" itemprop="url">Today Extension和3D Touch</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-13T14:38:52+08:00">
-                2018-04-13
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="Today-Extension"><a href="#Today-Extension" class="headerlink" title="Today Extension"></a>Today Extension</h3><h5 id="1-点击文件，选择如下图"><a href="#1-点击文件，选择如下图" class="headerlink" title="1.点击文件，选择如下图"></a>1.点击文件，选择如下图<br></h5><p><img src="/images/1523602659.png" alt=""><br><br><br><img src="/images/1523603517.png" alt=""><br><br><br><img src="/images/1523603742.png" alt=""></p>
-<h5 id="2-选择scheme为demo，run之后显示“hello-world”"><a href="#2-选择scheme为demo，run之后显示“hello-world”" class="headerlink" title="2.选择scheme为demo，run之后显示“hello world”"></a>2.选择scheme为demo，run之后显示“hello world”<br></h5><p>在MainInterface.storyboard里或在TodayViewController里的viewdidload方法里布局UI（跟app开发一样）<br></p>
-<h5 id="3-当需要与主app共享数据时，需配置App-Group，具体如下图"><a href="#3-当需要与主app共享数据时，需配置App-Group，具体如下图" class="headerlink" title="3.当需要与主app共享数据时，需配置App Group，具体如下图"></a>3.当需要与主app共享数据时，需配置App Group，具体如下图<br></h5><p><img src="/images/1523604601.png" alt=""><br>注：App Group为空时，请点左下角的”+”<br><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">let userDefault = UserDefaults(suiteName: &quot;group.shine&quot;)!</span><br></pre></td></tr></table></figure></p>
-<p>使用userDefault来存储需要共享的数据<br></p>
-<h5 id="4-当extension需要调用主app的方法时通过URL方式"><a href="#4-当extension需要调用主app的方法时通过URL方式" class="headerlink" title="4.当extension需要调用主app的方法时通过URL方式"></a>4.当extension需要调用主app的方法时通过URL方式</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">self.extensionContext?.open(URL(string: &quot;shineDemo://todayExtension?index=0&quot;)!, completionHandler: &#123; (res) in</span><br><span class="line">            </span><br><span class="line">        &#125;)</span><br></pre></td></tr></table></figure>
-<p>主App配置URL的scheme<br><br><img src="/images/1523605177.png" alt=""></p>
-<h3 id="3D-Touch"><a href="#3D-Touch" class="headerlink" title="3D Touch"></a>3D Touch</h3><p>上代码（动态3D Touch方式）<br><figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">guard</span> <span class="keyword">let</span> filePath = <span class="type">Bundle</span>.main.url(forResource: <span class="string">"3dtouchdemo"</span>, withExtension: <span class="string">"json"</span>),</span><br><span class="line">    <span class="keyword">let</span> data = <span class="keyword">try</span>? <span class="type">Data</span>.<span class="keyword">init</span>(contentsOf: filePath),</span><br><span class="line">        <span class="keyword">let</span> json = (<span class="keyword">try</span>? <span class="type">JSONSerialization</span>.jsonObject(with: data, options: <span class="type">JSONSerialization</span>.<span class="type">ReadingOptions</span>.mutableContainers)) <span class="keyword">as</span>? [[<span class="type">String</span>: <span class="type">Any</span>]] <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">&#125;</span><br><span class="line">    </span><br><span class="line"><span class="keyword">var</span> items = [<span class="type">UIApplicationShortcutItem</span>]()</span><br><span class="line"><span class="keyword">for</span> jsonItem <span class="keyword">in</span> json &#123;</span><br><span class="line">    <span class="keyword">let</span> icon = <span class="type">UIApplicationShortcutIcon</span>(type: shortcutIconWithType(jsonItem[<span class="string">"icon"</span>] <span class="keyword">as</span>! <span class="type">String</span>))</span><br><span class="line">    <span class="keyword">let</span> item = <span class="type">UIApplicationShortcutItem</span>(type: jsonItem[<span class="string">"icon"</span>] <span class="keyword">as</span>! <span class="type">String</span>, localizedTitle: jsonItem[<span class="string">"title"</span>] <span class="keyword">as</span>! <span class="type">String</span>, localizedSubtitle: (jsonItem[<span class="string">"subtitle"</span>] <span class="keyword">as</span>! <span class="type">String</span>), icon: icon, userInfo: jsonItem[<span class="string">"userInfo"</span>] <span class="keyword">as</span>? [<span class="type">AnyHashable</span> : <span class="type">Any</span>])</span><br><span class="line">    items.append(item)</span><br><span class="line">&#125;</span><br><span class="line"><span class="type">UIApplication</span>.shared.shortcutItems = items</span><br></pre></td></tr></table></figure></p>
-<p>附：3dtouchdemo.json<br><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">[&#123;</span><br><span class="line">    <span class="attr">"icon"</span>: <span class="string">"add"</span>,</span><br><span class="line">    <span class="attr">"title"</span>: <span class="string">"增加"</span>,</span><br><span class="line">    <span class="attr">"subtitle"</span>: <span class="string">"增加-add"</span>,</span><br><span class="line">    <span class="attr">"userInfo"</span>: &#123;</span><br><span class="line">        <span class="attr">"type"</span>: <span class="string">"add"</span></span><br><span class="line">    &#125;</span><br><span class="line"> &#125;,&#123;</span><br><span class="line">     <span class="attr">"icon"</span>: <span class="string">"alarm"</span>,</span><br><span class="line">     <span class="attr">"title"</span>: <span class="string">"闹钟"</span>,</span><br><span class="line">     <span class="attr">"subtitle"</span>: <span class="string">"闹钟-alarm"</span>,</span><br><span class="line">     <span class="attr">"userInfo"</span>: &#123;</span><br><span class="line">         <span class="attr">"type"</span>: <span class="string">"alarm"</span></span><br><span class="line">     &#125;</span><br><span class="line"> &#125;]</span><br></pre></td></tr></table></figure></p>
-<p>在AppDelegate委托方法里实现点击后的事件处理，可以通过UIApplicationShortcutItem的type来判断不同的Item<br><br><img src="/images/1523605834.png" alt=""></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://blog.msrily.com/2018/03/27/blog8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Richie Zhang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Richie">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/03/27/blog8/" itemprop="url">iOS app进入后台毛玻璃效果</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-27T11:14:34+08:00">
-                2018-03-27
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>直接上代码（Swift）</p>
-<pre>
-    func applicationDidBecomeActive(_ application: UIApplication) {
-        if let visualEffectView = self.visualEffectView {
-            UIView.animate(withDuration: 0.5, animations: {
-                visualEffectView.alpha = 0
-            }, completion: { (_) in
-                visualEffectView.removeFromSuperview()
-            })
-        }
-    }
-
-    weak var visualEffectView: UIVisualEffectView?
-    func applicationWillResignActive(_ application: UIApplication) {
-        let blurEffect = UIBlurEffect(style: UIBlurEffectStyle.light)
-        let visualEffectView = UIVisualEffectView(effect: blurEffect)
-        visualEffectView.alpha = 0
-        visualEffectView.frame = self.window?.frame ?? CGRect.zero
-        self.window?.addSubview(visualEffectView)
-        self.visualEffectView = visualEffectView
-        UIView.animate(withDuration: 0.5) {
-            visualEffectView.alpha = 1
-        }
-    }
-</pre>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://blog.msrily.com/2018/03/27/blog7/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Richie Zhang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Richie">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/03/27/blog7/" itemprop="url">MySQL创建数据库与创建用户以及授权</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-27T11:12:00+08:00">
-                2018-03-27
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <ol>
-<li>create schema [数据库名称] default character set utf8 collate utf8_general_ci;–创建数据库<br><br>　　采用create schema和create database创建数据库的效果一样。</li>
-<li>create user ‘[用户名称]‘@’%’ identified by ‘[用户密码]’;–创建用户<br><br>　　密码8位以上，包括：大写字母、小写字母、数字、特殊字符<br><br>　　%：匹配所有主机，该地方还可以设置成‘localhost’，代表只能本地访问，例如root账户默认为‘localhost‘</li>
-<li>grant select,insert,update,delete,create on [数据库名称].<em> to [用户名称];–用户授权数据库<br>
-　　</em>代表整个数据库</li>
-<li>flush  privileges ;–立即启用修改</li>
-<li>revoke all on <em>.</em> from tester;–取消用户所有数据库（表）的所有权限</li>
-<li>delete from mysql.user where user=’tester’;–删除用户</li>
-<li>drop database [schema名称|数据库名称];–删除数据库</li>
-</ol>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1769,6 +1809,10 @@ _UIApplicationHandleEventQueue() 会把 IOHIDEvent 处理并包装成 UIEvent �
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.gif"
+                alt="Richie Zhang" />
+            
               <p class="site-author-name" itemprop="name">Richie Zhang</p>
               <p class="site-description motion-element" itemprop="description"></p>
           </div>
@@ -1780,7 +1824,7 @@ _UIApplicationHandleEventQueue() 会把 IOHIDEvent 处理并包装成 UIEvent �
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-count">19</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1794,6 +1838,16 @@ _UIApplicationHandleEventQueue() 会把 IOHIDEvent 处理并包装成 UIEvent �
 
           
 
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:lylaut@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
           
 
           
@@ -1932,6 +1986,13 @@ _UIApplicationHandleEventQueue() 会把 IOHIDEvent 处理并包装成 UIEvent �
 
   
   
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
 
   
 

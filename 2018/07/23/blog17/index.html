@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="准备Demo123456789101112131415161718192021222324252627282930313233343536373839404142434445464748#import &amp;quot;ViewController.h&amp;quot;void (^block_global)(void) = ^ &amp;#123;    NSLog(@&amp;quot;block_global&amp;quot">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS Block分析">
+<meta property="og:url" content="https://blog.msrily.com/2018/07/23/blog17/index.html">
+<meta property="og:site_name" content="Richie">
+<meta property="og:description" content="准备Demo123456789101112131415161718192021222324252627282930313233343536373839404142434445464748#import &amp;quot;ViewController.h&amp;quot;void (^block_global)(void) = ^ &amp;#123;    NSLog(@&amp;quot;block_global&amp;quot">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://blog.msrily.com/images/83dd34b0-9919-48c4-98e5-ff1f2a1ece93.png">
+<meta property="og:image" content="https://blog.msrily.com/images/26246fca-5b49-494f-8af7-049ed604ec7f.png">
+<meta property="og:image" content="https://blog.msrily.com/images/edde905a-28a8-475f-bc99-8fc93a43bc8a.png">
+<meta property="og:image" content="https://blog.msrily.com/images/e1a42789-44c1-4338-96d7-94d9bf65c3ba.png">
+<meta property="og:image" content="https://blog.msrily.com/images/fc81ec56-cde3-4f16-8ff5-e1109ee4124b.png">
+<meta property="og:image" content="https://blog.msrily.com/images/33628f82-3100-423a-9a80-0964162a7379.png">
+<meta property="og:image" content="https://blog.msrily.com/images/60cfff25-6c0e-4aa9-9574-aa874d1baacb.png">
+<meta property="og:image" content="https://blog.msrily.com/images/19dcad00-c02a-4512-861f-2a66efa2dd58.png">
+<meta property="og:updated_time" content="2018-09-21T07:43:19.300Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS Block分析">
+<meta name="twitter:description" content="准备Demo123456789101112131415161718192021222324252627282930313233343536373839404142434445464748#import &amp;quot;ViewController.h&amp;quot;void (^block_global)(void) = ^ &amp;#123;    NSLog(@&amp;quot;block_global&amp;quot">
+<meta name="twitter:image" content="https://blog.msrily.com/images/83dd34b0-9919-48c4-98e5-ff1f2a1ece93.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://blog.msrily.com/2018/07/23/blog17/"/>
+
+
+
+
+
+  <title>iOS Block分析 | Richie</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Richie</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description"></h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://blog.msrily.com/2018/07/23/blog17/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Richie Zhang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Richie">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">iOS Block分析</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-23T18:37:05+08:00">
+                2018-07-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="准备Demo"><a href="#准备Demo" class="headerlink" title="准备Demo"></a>准备Demo</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">#import &quot;ViewController.h&quot;</span><br><span class="line"></span><br><span class="line">void (^block_global)(void) = ^ &#123;</span><br><span class="line">    NSLog(@&quot;block_global&quot;);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">@interface ViewController ()</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation ViewController</span><br><span class="line"></span><br><span class="line">- (void)viewDidLoad &#123;</span><br><span class="line">    [super viewDidLoad];</span><br><span class="line">    </span><br><span class="line">    void (^block0)(void) = ^ &#123;</span><br><span class="line">        NSLog(@&quot;block0&quot;);</span><br><span class="line">    &#125;;</span><br><span class="line">    </span><br><span class="line">    BOOL (^block1)(NSString *string) = ^(NSString *string) &#123;</span><br><span class="line">        NSLog(@&quot;%@&quot;, string);</span><br><span class="line">        return NO;</span><br><span class="line">    &#125;;</span><br><span class="line">    </span><br><span class="line">    int a = 0;</span><br><span class="line">    NSString *b = @&quot;hello&quot;;</span><br><span class="line">    NSArray *c = @[@&quot;hello&quot;, @&quot;world&quot;];</span><br><span class="line">    NSMutableArray *d = c.mutableCopy;</span><br><span class="line">    </span><br><span class="line">    __block double e = 1.0f;</span><br><span class="line">    __block NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithObjectsAndKeys:@&quot;dictionary&quot;, @&quot;key&quot;, nil];</span><br><span class="line">    </span><br><span class="line">    BOOL (^block2)(NSNumber *number) = ^(NSNumber *number) &#123;</span><br><span class="line">        NSLog(@&quot;block%d\n%d %@ %@ %@ %f %@&quot;, number.intValue, a, b, c, d, e, dic);</span><br><span class="line">        return YES;</span><br><span class="line">    &#125;;</span><br><span class="line">    </span><br><span class="line">    block0();</span><br><span class="line">    block1(@&quot;block1&quot;);</span><br><span class="line">    block2(@2);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)didReceiveMemoryWarning &#123;</span><br><span class="line">    [super didReceiveMemoryWarning];</span><br><span class="line">    // Dispose of any resources that can be recreated.</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<p>将ViewController.m编译成C++，以便研究，脚本命令如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">clang -x objective-c -rewrite-objc -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk ViewController.m</span><br></pre></td></tr></table></figure>
+<p>下面来逐一进行分析</p>
+<h3 id="block0"><a href="#block0" class="headerlink" title="block0"></a>block0</h3><h4 id="编译器生成的结构与实现"><a href="#编译器生成的结构与实现" class="headerlink" title="编译器生成的结构与实现"></a>编译器生成的结构与实现</h4><p><img src="/images/83dd34b0-9919-48c4-98e5-ff1f2a1ece93.png" alt=""></p>
+<p><img src="/images/26246fca-5b49-494f-8af7-049ed604ec7f.png" alt=""></p>
+<h4 id="调用"><a href="#调用" class="headerlink" title="调用"></a>调用</h4><p><img src="/images/edde905a-28a8-475f-bc99-8fc93a43bc8a.png" alt=""></p>
+<p>block最终被还原成了一个结构体，成员：实现（imp）和描述（Desc）</p>
+<p>block的调用事实上是调用结构体img的函数指针，并将结构体本身做为参数传入<br></p>
+<h4 id="imp"><a href="#imp" class="headerlink" title="imp"></a>imp</h4><p>isa指向_NSConcreteStackBlock类</p>
+<p>FuncPtr指向函数指针，参数是结构体指向自己的指针</p>
+<h4 id="Desc"><a href="#Desc" class="headerlink" title="Desc"></a>Desc</h4><p>存储结构体的大小</p>
+<h3 id="block1"><a href="#block1" class="headerlink" title="block1"></a>block1</h3><p><img src="/images/e1a42789-44c1-4338-96d7-94d9bf65c3ba.png" alt=""></p>
+<p>与block0唯一的区别就在于多了一个传入的参数NSString</p>
+<h3 id="block2"><a href="#block2" class="headerlink" title="block2"></a>block2</h3><p><img src="/images/fc81ec56-cde3-4f16-8ff5-e1109ee4124b.png" alt=""></p>
+<p><img src="/images/33628f82-3100-423a-9a80-0964162a7379.png" alt=""></p>
+<p><img src="/images/60cfff25-6c0e-4aa9-9574-aa874d1baacb.png" alt=""></p>
+<p>相信读者也有发现，以上的常见block写法都imp的isa都是指向_NSConcreteStackBlock类。其实还会指向另一种类——_NSConcreteGlobalBlock，这种场景比较特殊，在全局里声明的block才会去指向这个类。</p>
+<h3 id="block-global"><a href="#block-global" class="headerlink" title="block_global"></a>block_global</h3><p><img src="/images/19dcad00-c02a-4512-861f-2a66efa2dd58.png" alt=""></p>
+<p>global block也有上面三种形态，在这里就不一一展示了。</p>
+
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+      
+    </div>
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    Richie Zhang
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://blog.msrily.com/2018/07/23/blog17/" title="iOS Block分析">https://blog.msrily.com/2018/07/23/blog17/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/07/10/blog16/" rel="next" title="NSObject Lifecycle">
+                <i class="fa fa-chevron-left"></i> NSObject Lifecycle
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/07/28/blog18/" rel="prev" title="Sort Algorithms 整理">
+                Sort Algorithms 整理 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.gif"
+                alt="Richie Zhang" />
+            
+              <p class="site-author-name" itemprop="name">Richie Zhang</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:lylaut@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#准备Demo"><span class="nav-number">1.</span> <span class="nav-text">准备Demo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#block0"><span class="nav-number">2.</span> <span class="nav-text">block0</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#编译器生成的结构与实现"><span class="nav-number">2.1.</span> <span class="nav-text">编译器生成的结构与实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#调用"><span class="nav-number">2.2.</span> <span class="nav-text">调用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#imp"><span class="nav-number">2.3.</span> <span class="nav-text">imp</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Desc"><span class="nav-number">2.4.</span> <span class="nav-text">Desc</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#block1"><span class="nav-number">3.</span> <span class="nav-text">block1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#block2"><span class="nav-number">4.</span> <span class="nav-text">block2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#block-global"><span class="nav-number">5.</span> <span class="nav-text">block_global</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Richie Zhang</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
