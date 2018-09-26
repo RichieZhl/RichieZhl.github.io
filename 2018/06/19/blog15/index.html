@@ -94,7 +94,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="iOS," />
 
 
 
@@ -106,10 +106,11 @@
 
 
 <meta name="description" content="RunLoop实际上是一个对象，这个对象管理了其需要处理的事件和消息. macOS/iOS系统中，提供了两个这样的对象：NSRunLoop 和 CFRunLoopRef。 CFRunLoopRef 是在 CoreFoundation 框架内的，它提供了纯 C 函数的 API，所有这些 API 都是线程安全的(CFSpinlock/CFSpinUnlock)。 1234567891011121314">
+<meta name="keywords" content="iOS">
 <meta property="og:type" content="article">
 <meta property="og:title" content="iOS Runloop">
 <meta property="og:url" content="https://blog.msrily.com/2018/06/19/blog15/index.html">
-<meta property="og:site_name" content="Richie">
+<meta property="og:site_name" content="RICHIE">
 <meta property="og:description" content="RunLoop实际上是一个对象，这个对象管理了其需要处理的事件和消息. macOS/iOS系统中，提供了两个这样的对象：NSRunLoop 和 CFRunLoopRef。 CFRunLoopRef 是在 CoreFoundation 框架内的，它提供了纯 C 函数的 API，所有这些 API 都是线程安全的(CFSpinlock/CFSpinUnlock)。 1234567891011121314">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://blog.msrily.com/images/5b0d42bc-aaea-4359-a0d5-fcc27beeb206.png">
@@ -117,7 +118,7 @@
 <meta property="og:image" content="https://blog.msrily.com/images/2039514-2eedcaceda05fc7c.png">
 <meta property="og:image" content="https://blog.msrily.com/images/2039514-e5d3e1ba0b9fb3a3.png">
 <meta property="og:image" content="https://blog.msrily.com/images/b41f651c-7fc6-4e8d-9b93-02cf5af1b687.png">
-<meta property="og:updated_time" content="2018-09-26T02:39:39.794Z">
+<meta property="og:updated_time" content="2018-09-26T09:27:10.754Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS Runloop">
 <meta name="twitter:description" content="RunLoop实际上是一个对象，这个对象管理了其需要处理的事件和消息. macOS/iOS系统中，提供了两个这样的对象：NSRunLoop 和 CFRunLoopRef。 CFRunLoopRef 是在 CoreFoundation 框架内的，它提供了纯 C 函数的 API，所有这些 API 都是线程安全的(CFSpinlock/CFSpinUnlock)。 1234567891011121314">
@@ -157,7 +158,7 @@
 
 
 
-  <title>iOS Runloop | Richie</title>
+  <title>iOS Runloop | RICHIE</title>
   
 
 
@@ -187,7 +188,7 @@
     <div class="custom-logo-site-title">
       <a href="/"  class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
-        <span class="site-title">Richie</span>
+        <span class="site-title">RICHIE</span>
         <span class="logo-line-after"><i></i></span>
       </a>
     </div>
@@ -228,6 +229,26 @@
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
             归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
           </a>
         </li>
       
@@ -273,7 +294,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Richie">
+      <meta itemprop="name" content="RICHIE">
     </span>
 
     
@@ -303,6 +324,28 @@
             
           </span>
 
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/原创/" itemprop="url" rel="index">
+                    <span itemprop="name">原创</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
           
 
           
@@ -421,6 +464,12 @@ _UIApplicationHandleEventQueue() 会把 IOHIDEvent 处理并包装成 UIEvent �
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+        </div>
+      
 
       
       
@@ -530,7 +579,25 @@ _UIApplicationHandleEventQueue() 会把 IOHIDEvent 处理并包装成 UIEvent �
             
 
             
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
 
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
             
 
           </nav>
