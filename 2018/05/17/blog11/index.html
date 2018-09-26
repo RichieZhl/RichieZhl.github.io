@@ -105,20 +105,20 @@
 
 
 
-<meta name="description" content="Mach-O  Header 头部，包含可以执行的CPU架构，比如x86,x86_64,arm7s,arm64 Load commands 加载命令，包含文件的组织架构和在虚拟内存中的布局方式 Data，数据，包含load commands中需要的各个段(segment)的数据，每一个Segment都得大小是Page的整数倍。  1) TEXT 代码段，只读（通常使用于frameworks,bun">
+<meta name="description" content="Mach-O">
 <meta property="og:type" content="article">
 <meta property="og:title" content="iOS App启动过程">
 <meta property="og:url" content="https://blog.msrily.com/2018/05/17/blog11/index.html">
 <meta property="og:site_name" content="Richie">
-<meta property="og:description" content="Mach-O  Header 头部，包含可以执行的CPU架构，比如x86,x86_64,arm7s,arm64 Load commands 加载命令，包含文件的组织架构和在虚拟内存中的布局方式 Data，数据，包含load commands中需要的各个段(segment)的数据，每一个Segment都得大小是Page的整数倍。  1) TEXT 代码段，只读（通常使用于frameworks,bun">
+<meta property="og:description" content="Mach-O">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://blog.msrily.com/images/299fcf31-8662-4634-af54-b6b0ca50ab2d.png">
 <meta property="og:image" content="https://blog.msrily.com/images/20171023100523145.png">
 <meta property="og:image" content="https://blog.msrily.com/images/20171022203521690.png">
-<meta property="og:updated_time" content="2018-09-17T08:23:36.944Z">
+<meta property="og:updated_time" content="2018-09-26T02:41:18.358Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS App启动过程">
-<meta name="twitter:description" content="Mach-O  Header 头部，包含可以执行的CPU架构，比如x86,x86_64,arm7s,arm64 Load commands 加载命令，包含文件的组织架构和在虚拟内存中的布局方式 Data，数据，包含load commands中需要的各个段(segment)的数据，每一个Segment都得大小是Page的整数倍。  1) TEXT 代码段，只读（通常使用于frameworks,bun">
+<meta name="twitter:description" content="Mach-O">
 <meta name="twitter:image" content="https://blog.msrily.com/images/299fcf31-8662-4634-af54-b6b0ca50ab2d.png">
 
 
@@ -329,7 +329,7 @@
       
 
       
-        <h2 id="Mach-O"><a href="#Mach-O" class="headerlink" title="Mach-O"></a>Mach-O</h2><p><img src="/images/299fcf31-8662-4634-af54-b6b0ca50ab2d.png" alt=""></p>
+        <h2 id="Mach-O"><a href="#Mach-O" class="headerlink" title="Mach-O"></a>Mach-O</h2><p><img src="/images/299fcf31-8662-4634-af54-b6b0ca50ab2d.png" alt=""><br><a id="more"></a></p>
 <ul>
 <li>Header 头部，包含可以执行的CPU架构，比如x86,x86_64,arm7s,arm64</li>
 <li>Load commands 加载命令，包含文件的组织架构和在虚拟内存中的布局方式</li>
@@ -540,7 +540,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-count">20</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -788,6 +788,28 @@
   
 
   
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
 
   
 

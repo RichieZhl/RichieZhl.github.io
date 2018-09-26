@@ -117,7 +117,7 @@
 <meta property="og:image" content="https://blog.msrily.com/images/2039514-2eedcaceda05fc7c.png">
 <meta property="og:image" content="https://blog.msrily.com/images/2039514-e5d3e1ba0b9fb3a3.png">
 <meta property="og:image" content="https://blog.msrily.com/images/b41f651c-7fc6-4e8d-9b93-02cf5af1b687.png">
-<meta property="og:updated_time" content="2018-09-19T10:58:16.419Z">
+<meta property="og:updated_time" content="2018-09-26T02:39:39.794Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS Runloop">
 <meta name="twitter:description" content="RunLoop实际上是一个对象，这个对象管理了其需要处理的事件和消息. macOS/iOS系统中，提供了两个这样的对象：NSRunLoop 和 CFRunLoopRef。 CFRunLoopRef 是在 CoreFoundation 框架内的，它提供了纯 C 函数的 API，所有这些 API 都是线程安全的(CFSpinlock/CFSpinUnlock)。 1234567891011121314">
@@ -336,7 +336,7 @@
 <p>CFRunLoopRef 是在 CoreFoundation 框架内的，它提供了纯 C 函数的 API，所有这些 API 都是线程安全的(<strong>CFSpinlock/</strong>CFSpinUnlock)。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">struct __CFRunLoop &#123;</span><br><span class="line">    CFRuntimeBase _base;</span><br><span class="line">    pthread_mutex_t _lock;			/* locked for accessing mode list */</span><br><span class="line">    __CFPort _wakeUpPort;			// used for CFRunLoopWakeUp </span><br><span class="line">    Boolean _unused;</span><br><span class="line">    volatile _per_run_data *_perRunData;              // reset for runs of the run loop</span><br><span class="line">    pthread_t _pthread;</span><br><span class="line">    uint32_t _winthread;</span><br><span class="line">    CFMutableSetRef _commonModes;</span><br><span class="line">    CFMutableSetRef _commonModeItems;</span><br><span class="line">    CFRunLoopModeRef _currentMode;</span><br><span class="line">    CFMutableSetRef _modes;</span><br><span class="line">    struct _block_item *_blocks_head;</span><br><span class="line">    struct _block_item *_blocks_tail;</span><br><span class="line">    CFTypeRef _counterpart;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">typedef struct __CFRunLoop * CFRunLoopRef;</span><br></pre></td></tr></table></figure>
 <p>NSRunLoop 是基于 CFRunLoopRef 的封装，提供了面向对象的 API，但是这些 API 不是线程安全的。</p>
-<p>CFRunLoopRef 的代码是开源的，你可以在<a href="http://opensource.apple.com/tarballs/CF" target="_blank" rel="noopener">这里</a> 下载到整个 CoreFoundation 的源码来查看。</p>
+<p>CFRunLoopRef 的代码是开源的，你可以在<a href="http://opensource.apple.com/tarballs/CF" target="_blank" rel="noopener">这里</a> 下载到整个 CoreFoundation 的源码来查看。<br><a id="more"></a></p>
 <h3 id="RunLoop与线程的关系"><a href="#RunLoop与线程的关系" class="headerlink" title="RunLoop与线程的关系"></a>RunLoop与线程的关系</h3><p>CFRunLoop 是基于 pthread 来管理的，苹果不允许直接创建RunLoop，可以通过CFRunLoopGetMain()和CFRunLoopGetCurrent()获取。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line">CFRunLoopRef CFRunLoopGetMain(void) &#123;</span><br><span class="line">    CHECK_FOR_FORK();</span><br><span class="line">    static CFRunLoopRef __main = NULL; // no retain needed</span><br><span class="line">    if (!__main) __main = _CFRunLoopGet0(pthread_main_thread_np()); // no CAS needed</span><br><span class="line">    return __main;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">CFRunLoopRef CFRunLoopGetCurrent(void) &#123;</span><br><span class="line">    CHECK_FOR_FORK();</span><br><span class="line">    CFRunLoopRef rl = (CFRunLoopRef)_CFGetTSD(__CFTSDKeyRunLoop);</span><br><span class="line">    if (rl) return rl;</span><br><span class="line">    return _CFRunLoopGet0(pthread_self());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">CF_EXPORT CFRunLoopRef _CFRunLoopGet0(pthread_t t) &#123;</span><br><span class="line">    if (pthread_equal(t, kNilPthreadT)) &#123;</span><br><span class="line">	t = pthread_main_thread_np();</span><br><span class="line">    &#125;</span><br><span class="line">    __CFSpinLock(&amp;loopsLock);</span><br><span class="line">    if (!__CFRunLoops) &#123;</span><br><span class="line">        __CFSpinUnlock(&amp;loopsLock);</span><br><span class="line">	CFMutableDictionaryRef dict = CFDictionaryCreateMutable(kCFAllocatorSystemDefault, 0, NULL, &amp;kCFTypeDictionaryValueCallBacks);</span><br><span class="line">	CFRunLoopRef mainLoop = __CFRunLoopCreate(pthread_main_thread_np());</span><br><span class="line">	CFDictionarySetValue(dict, pthreadPointer(pthread_main_thread_np()), mainLoop);</span><br><span class="line">	if (!OSAtomicCompareAndSwapPtrBarrier(NULL, dict, (void * volatile *)&amp;__CFRunLoops)) &#123;</span><br><span class="line">	    CFRelease(dict);</span><br><span class="line">	&#125;</span><br><span class="line">	CFRelease(mainLoop);</span><br><span class="line">        __CFSpinLock(&amp;loopsLock);</span><br><span class="line">    &#125;</span><br><span class="line">    CFRunLoopRef loop = (CFRunLoopRef)CFDictionaryGetValue(__CFRunLoops, pthreadPointer(t));</span><br><span class="line">    __CFSpinUnlock(&amp;loopsLock);</span><br><span class="line">    if (!loop) &#123;</span><br><span class="line">	CFRunLoopRef newLoop = __CFRunLoopCreate(t);</span><br><span class="line">        __CFSpinLock(&amp;loopsLock);</span><br><span class="line">	loop = (CFRunLoopRef)CFDictionaryGetValue(__CFRunLoops, pthreadPointer(t));</span><br><span class="line">	if (!loop) &#123;</span><br><span class="line">	    CFDictionarySetValue(__CFRunLoops, pthreadPointer(t), newLoop);</span><br><span class="line">	    loop = newLoop;</span><br><span class="line">	&#125;</span><br><span class="line">        // don&apos;t release run loops inside the loopsLock, because CFRunLoopDeallocate may end up taking it</span><br><span class="line">        __CFSpinUnlock(&amp;loopsLock);</span><br><span class="line">	CFRelease(newLoop);</span><br><span class="line">    &#125;</span><br><span class="line">    if (pthread_equal(t, pthread_self())) &#123;</span><br><span class="line">        _CFSetTSD(__CFTSDKeyRunLoop, (void *)loop, NULL);</span><br><span class="line">        if (0 == _CFGetTSD(__CFTSDKeyRunLoopCntr)) &#123;</span><br><span class="line">            _CFSetTSD(__CFTSDKeyRunLoopCntr, (void *)(PTHREAD_DESTRUCTOR_ITERATIONS-1), (void (*)(void *))__CFFinalizeRunLoop);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return loop;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>你可以通过pthread_main_thread_np()或[NSThread mainThread]来获取主线程；也可以通过 pthread_self()或[NSThread currentThread]来获取当前线程。</p>
@@ -523,7 +523,7 @@ _UIApplicationHandleEventQueue() 会把 IOHIDEvent 处理并包装成 UIEvent �
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-count">20</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -771,6 +771,28 @@ _UIApplicationHandleEventQueue() 会把 IOHIDEvent 处理并包装成 UIEvent �
   
 
   
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
 
   
 

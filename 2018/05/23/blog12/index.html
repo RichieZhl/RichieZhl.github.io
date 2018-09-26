@@ -105,20 +105,20 @@
 
 
 
-<meta name="description" content="Persion类    运行结果：1232018-09-17 18:07:47.368888+0800 demo11[30894:402677] 202018-09-17 18:07:47.369026+0800 demo11[30894:402677] ---eat----2018-09-17 18:07:47.369233+0800 demo11[30894:402677] ---cras">
+<meta name="description" content="Persion类">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Objective C 类crash预防">
 <meta property="og:url" content="https://blog.msrily.com/2018/05/23/blog12/index.html">
 <meta property="og:site_name" content="Richie">
-<meta property="og:description" content="Persion类    运行结果：1232018-09-17 18:07:47.368888+0800 demo11[30894:402677] 202018-09-17 18:07:47.369026+0800 demo11[30894:402677] ---eat----2018-09-17 18:07:47.369233+0800 demo11[30894:402677] ---cras">
+<meta property="og:description" content="Persion类">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://blog.msrily.com/images/16a7155c-f0ff-47e9-bdca-47f517b30d1d.png">
 <meta property="og:image" content="https://blog.msrily.com/images/0235ad78-fb93-420a-9acf-b7f7076dfd46.png">
 <meta property="og:image" content="https://blog.msrily.com/images/93af98b9-0108-4069-a18b-579723fb30e7.png">
-<meta property="og:updated_time" content="2018-09-17T10:32:55.119Z">
+<meta property="og:updated_time" content="2018-09-26T02:42:03.789Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Objective C 类crash预防">
-<meta name="twitter:description" content="Persion类    运行结果：1232018-09-17 18:07:47.368888+0800 demo11[30894:402677] 202018-09-17 18:07:47.369026+0800 demo11[30894:402677] ---eat----2018-09-17 18:07:47.369233+0800 demo11[30894:402677] ---cras">
+<meta name="twitter:description" content="Persion类">
 <meta name="twitter:image" content="https://blog.msrily.com/images/16a7155c-f0ff-47e9-bdca-47f517b30d1d.png">
 
 
@@ -330,8 +330,7 @@
 
       
         <p>Persion类</p>
-<p><img src="/images/16a7155c-f0ff-47e9-bdca-47f517b30d1d.png" alt=""></p>
-<p><img src="/images/0235ad78-fb93-420a-9acf-b7f7076dfd46.png" alt=""></p>
+<p><img src="/images/16a7155c-f0ff-47e9-bdca-47f517b30d1d.png" alt=""><br><a id="more"></a><br><img src="/images/0235ad78-fb93-420a-9acf-b7f7076dfd46.png" alt=""></p>
 <p><img src="/images/93af98b9-0108-4069-a18b-579723fb30e7.png" alt=""></p>
 <p>运行结果：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">2018-09-17 18:07:47.368888+0800 demo11[30894:402677] 20</span><br><span class="line">2018-09-17 18:07:47.369026+0800 demo11[30894:402677] ---eat----</span><br><span class="line">2018-09-17 18:07:47.369233+0800 demo11[30894:402677] ---crash----</span><br></pre></td></tr></table></figure></p>
 <p>第三副图调用objc_msgSend方法直接绕过了这个预防机制。</p>
@@ -472,7 +471,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-count">20</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -704,6 +703,28 @@
   
 
   
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
 
   
 

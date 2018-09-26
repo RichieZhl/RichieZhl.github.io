@@ -105,17 +105,17 @@
 
 
 
-<meta name="description" content="直接上代码（Swift）      func applicationDidBecomeActive(_ application: UIApplication) {         if let visualEffectView = self.visualEffectView {             UIView.animate(withDuration: 0.5, animations: {">
+<meta name="description" content="直接上代码12345678910111213141516171819202122func applicationDidBecomeActive(_ application: UIApplication) &amp;#123;    if let visualEffectView = self.visualEffectView &amp;#123;        UIView.animate(withDuratio">
 <meta property="og:type" content="article">
 <meta property="og:title" content="iOS app进入后台毛玻璃效果">
 <meta property="og:url" content="https://blog.msrily.com/2018/03/27/blog8/index.html">
 <meta property="og:site_name" content="Richie">
-<meta property="og:description" content="直接上代码（Swift）      func applicationDidBecomeActive(_ application: UIApplication) {         if let visualEffectView = self.visualEffectView {             UIView.animate(withDuration: 0.5, animations: {">
+<meta property="og:description" content="直接上代码12345678910111213141516171819202122func applicationDidBecomeActive(_ application: UIApplication) &amp;#123;    if let visualEffectView = self.visualEffectView &amp;#123;        UIView.animate(withDuratio">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-03-27T03:19:28.000Z">
+<meta property="og:updated_time" content="2018-09-25T03:44:53.850Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS app进入后台毛玻璃效果">
-<meta name="twitter:description" content="直接上代码（Swift）      func applicationDidBecomeActive(_ application: UIApplication) {         if let visualEffectView = self.visualEffectView {             UIView.animate(withDuration: 0.5, animations: {">
+<meta name="twitter:description" content="直接上代码12345678910111213141516171819202122func applicationDidBecomeActive(_ application: UIApplication) &amp;#123;    if let visualEffectView = self.visualEffectView &amp;#123;        UIView.animate(withDuratio">
 
 
 
@@ -325,31 +325,8 @@
       
 
       
-        <p>直接上代码（Swift）</p>
-<pre>
-    func applicationDidBecomeActive(_ application: UIApplication) {
-        if let visualEffectView = self.visualEffectView {
-            UIView.animate(withDuration: 0.5, animations: {
-                visualEffectView.alpha = 0
-            }, completion: { (_) in
-                visualEffectView.removeFromSuperview()
-            })
-        }
-    }
+        <p>直接上代码<br><figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">applicationDidBecomeActive</span><span class="params">(<span class="number">_</span> application: UIApplication)</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">let</span> visualEffectView = <span class="keyword">self</span>.visualEffectView &#123;</span><br><span class="line">        <span class="type">UIView</span>.animate(withDuration: <span class="number">0.5</span>, animations: &#123;</span><br><span class="line">            visualEffectView.alpha = <span class="number">0</span></span><br><span class="line">        &#125;, completion: &#123; (<span class="number">_</span>) <span class="keyword">in</span></span><br><span class="line">            visualEffectView.removeFromSuperview()</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">weak</span> <span class="keyword">var</span> visualEffectView: <span class="type">UIVisualEffectView</span>?</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">applicationWillResignActive</span><span class="params">(<span class="number">_</span> application: UIApplication)</span></span> &#123;</span><br><span class="line">    <span class="keyword">let</span> blurEffect = <span class="type">UIBlurEffect</span>(style: <span class="type">UIBlurEffectStyle</span>.light)</span><br><span class="line">    <span class="keyword">let</span> visualEffectView = <span class="type">UIVisualEffectView</span>(effect: blurEffect)</span><br><span class="line">    visualEffectView.alpha = <span class="number">0</span></span><br><span class="line">    visualEffectView.frame = <span class="keyword">self</span>.window?.frame ?? <span class="type">CGRect</span>.zero</span><br><span class="line">    <span class="keyword">self</span>.window?.addSubview(visualEffectView)</span><br><span class="line">    <span class="keyword">self</span>.visualEffectView = visualEffectView</span><br><span class="line">    <span class="type">UIView</span>.animate(withDuration: <span class="number">0.5</span>) &#123;</span><br><span class="line">        visualEffectView.alpha = <span class="number">1</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 
-    weak var visualEffectView: UIVisualEffectView?
-    func applicationWillResignActive(_ application: UIApplication) {
-        let blurEffect = UIBlurEffect(style: UIBlurEffectStyle.light)
-        let visualEffectView = UIVisualEffectView(effect: blurEffect)
-        visualEffectView.alpha = 0
-        visualEffectView.frame = self.window?.frame ?? CGRect.zero
-        self.window?.addSubview(visualEffectView)
-        self.visualEffectView = visualEffectView
-        UIView.animate(withDuration: 0.5) {
-            visualEffectView.alpha = 1
-        }
-    }
-</pre>
       
     </div>
     
@@ -485,7 +462,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-count">20</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -717,6 +694,28 @@
   
 
   
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
 
   
 

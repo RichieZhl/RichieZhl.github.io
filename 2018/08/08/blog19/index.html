@@ -105,17 +105,17 @@
 
 
 
-<meta name="description" content="斐波那契数列及优化（不考虑大数） 常见递归实现  123456int fibon(int n) &amp;#123;    if (n &amp;lt;= 2) &amp;#123;        return 1;    &amp;#125;    return fibon(n-1) + fibon(n-2);&amp;#125;  优化1  123456789101112131415161718int fibonacci(int n">
+<meta name="description" content="斐波那契数列及优化（不考虑大数） 常见递归实现  123456int fibon(int n) &amp;#123;    if (n &amp;lt;= 2) &amp;#123;        return 1;    &amp;#125;    return fibon(n-1) + fibon(n-2);&amp;#125;">
 <meta property="og:type" content="article">
 <meta property="og:title" content="斐波那契数列及优化和计算字符串中最长非重复子串长度">
 <meta property="og:url" content="https://blog.msrily.com/2018/08/08/blog19/index.html">
 <meta property="og:site_name" content="Richie">
-<meta property="og:description" content="斐波那契数列及优化（不考虑大数） 常见递归实现  123456int fibon(int n) &amp;#123;    if (n &amp;lt;= 2) &amp;#123;        return 1;    &amp;#125;    return fibon(n-1) + fibon(n-2);&amp;#125;  优化1  123456789101112131415161718int fibonacci(int n">
+<meta property="og:description" content="斐波那契数列及优化（不考虑大数） 常见递归实现  123456int fibon(int n) &amp;#123;    if (n &amp;lt;= 2) &amp;#123;        return 1;    &amp;#125;    return fibon(n-1) + fibon(n-2);&amp;#125;">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-09-21T10:00:49.521Z">
+<meta property="og:updated_time" content="2018-09-26T02:37:41.759Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="斐波那契数列及优化和计算字符串中最长非重复子串长度">
-<meta name="twitter:description" content="斐波那契数列及优化（不考虑大数） 常见递归实现  123456int fibon(int n) &amp;#123;    if (n &amp;lt;= 2) &amp;#123;        return 1;    &amp;#125;    return fibon(n-1) + fibon(n-2);&amp;#125;  优化1  123456789101112131415161718int fibonacci(int n">
+<meta name="twitter:description" content="斐波那契数列及优化（不考虑大数） 常见递归实现  123456int fibon(int n) &amp;#123;    if (n &amp;lt;= 2) &amp;#123;        return 1;    &amp;#125;    return fibon(n-1) + fibon(n-2);&amp;#125;">
 
 
 
@@ -329,6 +329,7 @@
 <li>常见递归实现</li>
 </ul>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">fibon</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (n &lt;= <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> fibon(n<span class="number">-1</span>) + fibon(n<span class="number">-2</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
 <ul>
 <li>优化1</li>
 </ul>
@@ -414,6 +415,10 @@
 
           <div class="post-nav-prev post-nav-item">
             
+              <a href="/2018/08/28/blog20/" rel="prev" title="iOS 架构">
+                iOS 架构 <i class="fa fa-chevron-right"></i>
+              </a>
+            
           </div>
         </div>
       
@@ -493,7 +498,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-count">20</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -741,6 +746,28 @@
   
 
   
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
 
   
 
