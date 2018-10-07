@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="iOS,React Native," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="RCTRootView 创建前到中获取URL从localhost/ip获取，或者从本地获取">
+<meta name="keywords" content="iOS,React Native">
+<meta property="og:type" content="article">
+<meta property="og:title" content="React Native 实现原理">
+<meta property="og:url" content="https://blog.msrily.com/2018/09/29/blog22/index.html">
+<meta property="og:site_name" content="RICHIE">
+<meta property="og:description" content="RCTRootView 创建前到中获取URL从localhost/ip获取，或者从本地获取">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://blog.msrily.com/images/9d4c8e1c-292a-4837-b7c9-67e115c0d47f.png">
+<meta property="og:image" content="https://blog.msrily.com/images/ee70aa74-1147-4b1e-af80-9a468bc07ebd.png">
+<meta property="og:image" content="https://blog.msrily.com/images/a3ee86bb-0a6f-42a1-b2dc-be63c784e06e.png">
+<meta property="og:updated_time" content="2018-10-07T08:17:58.296Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="React Native 实现原理">
+<meta name="twitter:description" content="RCTRootView 创建前到中获取URL从localhost/ip获取，或者从本地获取">
+<meta name="twitter:image" content="https://blog.msrily.com/images/9d4c8e1c-292a-4837-b7c9-67e115c0d47f.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://blog.msrily.com/2018/09/29/blog22/"/>
+
+
+
+
+
+  <title>React Native 实现原理 | RICHIE</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">RICHIE</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description"></h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://blog.msrily.com/2018/09/29/blog22/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Richie Zhang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RICHIE">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">React Native 实现原理</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-29T16:12:54+08:00">
+                2018-09-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/原创/" itemprop="url" rel="index">
+                    <span itemprop="name">原创</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="RCTRootView-创建前到中"><a href="#RCTRootView-创建前到中" class="headerlink" title="RCTRootView 创建前到中"></a>RCTRootView 创建前到中</h3><h4 id="获取URL"><a href="#获取URL" class="headerlink" title="获取URL"></a>获取URL</h4><p>从localhost/ip获取，或者从本地获取<br><a id="more"></a><br><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">[[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:<span class="string">@"index"</span> </span><br><span class="line">        fallbackResource:<span class="literal">nil</span>] = &#123;</span><br><span class="line">    <span class="keyword">return</span> [<span class="keyword">self</span> jsBundleURLForBundleRoot:bundleRoot </span><br><span class="line">                         fallbackResource:resourceName</span><br><span class="line">                        fallbackExtension:<span class="literal">nil</span>] = &#123;</span><br><span class="line">        <span class="built_in">NSString</span> *packagerServerHost = [<span class="keyword">self</span> packagerServerHost] = &#123;</span><br><span class="line">            <span class="comment">// debug模式下如果没有内置ip.txt，则返回localhost，release则返回nil</span></span><br><span class="line">            <span class="built_in">NSString</span> *location = [<span class="keyword">self</span> jsLocation];</span><br><span class="line">            <span class="keyword">if</span> (location != <span class="literal">nil</span>) &#123;</span><br><span class="line">                <span class="keyword">return</span> location;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="meta">#if RCT_DEV</span></span><br><span class="line">            <span class="built_in">NSString</span> *host = [<span class="keyword">self</span> guessPackagerHost] = &#123;</span><br><span class="line">                <span class="comment">// ...</span></span><br><span class="line">                    <span class="built_in">NSString</span> *ipPath = [[<span class="built_in">NSBundle</span> mainBundle] pathForResource:<span class="string">@"ip"</span> </span><br><span class="line">                                         ofType:<span class="string">@"txt"</span>];</span><br><span class="line">                <span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">                <span class="built_in">NSString</span> *host = ipGuess ?: <span class="string">@"localhost"</span>;</span><br><span class="line">                <span class="comment">// ...</span></span><br><span class="line">            &#125;; </span><br><span class="line">            <span class="keyword">if</span> (host) &#123;</span><br><span class="line">                <span class="keyword">return</span> host;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="meta">#endif</span></span><br><span class="line">            <span class="keyword">return</span> <span class="literal">nil</span>;</span><br><span class="line">        &#125;;</span><br><span class="line">        <span class="keyword">if</span> (!packagerServerHost) &#123;</span><br><span class="line">            <span class="keyword">return</span> [<span class="keyword">self</span> jsBundleURLForFallbackResource:resourceName </span><br><span class="line">                         fallbackExtension:extension];</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// http://localhost:8081/index.bundle?platform=ios&amp;dev=true&amp;minify=false</span></span><br><span class="line">            <span class="keyword">return</span> [RCTBundleURLProvider jsBundleURLForBundleRoot:bundleRoot   </span><br><span class="line">                        packagerHost:packagerServerHost</span><br><span class="line">                           enableDev:[<span class="keyword">self</span> enableDev]</span><br><span class="line">                  enableMinification:[<span class="keyword">self</span> enableMinification]];</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<h4 id="创建-Bridge"><a href="#创建-Bridge" class="headerlink" title="创建 Bridge"></a>创建 Bridge</h4><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[[RCTRootView alloc] initWithBundleURL:jsCodeLocation</span><br><span class="line">                            moduleName:<span class="string">@"demo3"</span></span><br><span class="line">                     initialProperties:<span class="literal">nil</span></span><br><span class="line">                         launchOptions:launchOptions] = &#123;</span><br><span class="line">                             RCTBridge *bridge = </span><br><span class="line">                                [[RCTBridge alloc] initWithBundleURL:bundleURL</span><br><span class="line">                                                    moduleProvider:<span class="literal">nil</span></span><br><span class="line">                                                    launchOptions:launchOptions];</span><br><span class="line"></span><br><span class="line">                            <span class="keyword">return</span> [<span class="keyword">self</span> initWithBridge:bridge</span><br><span class="line">                                            moduleName:moduleName</span><br><span class="line">                                      initialProperties:initialProperties];</span><br><span class="line">                         &#125;;</span><br></pre></td></tr></table></figure>
+<h5 id="RCTBridge-创建"><a href="#RCTBridge-创建" class="headerlink" title="RCTBridge 创建"></a>RCTBridge 创建</h5><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">RCTBridge *bridge = [[RCTBridge alloc] initWithBundleURL:bundleURL</span><br><span class="line">                                            moduleProvider:<span class="literal">nil</span></span><br><span class="line">                                             launchOptions:launchOptions];</span><br><span class="line"><span class="comment">// RCTBridge 的 setUp</span></span><br><span class="line"><span class="comment">// ...</span></span><br><span class="line">[<span class="keyword">self</span> setUp];</span><br></pre></td></tr></table></figure>
+<h5 id="RCTBridge-setUp"><a href="#RCTBridge-setUp" class="headerlink" title="RCTBridge setUp"></a>RCTBridge setUp</h5><p><img src="/images/9d4c8e1c-292a-4837-b7c9-67e115c0d47f.png" alt=""></p>
+<h5 id="RCTCxxBridge-创建"><a href="#RCTCxxBridge-创建" class="headerlink" title="RCTCxxBridge 创建"></a>RCTCxxBridge 创建</h5><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">instancetype</span>)initWithParentBridge:(RCTBridge *)bridge &#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 设置可用状态、加载状态，以及一些数组的初始化，并将bridge设置成自己</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    _valid = <span class="literal">YES</span>; </span><br><span class="line">    _loading = <span class="literal">YES</span>;</span><br><span class="line">    _pendingCalls = [<span class="built_in">NSMutableArray</span> new];</span><br><span class="line">    _displayLink = [RCTDisplayLink new];</span><br><span class="line"></span><br><span class="line">    _moduleDataByName = [<span class="built_in">NSMutableDictionary</span> new];</span><br><span class="line">    _moduleClassesByID = [<span class="built_in">NSMutableArray</span> new];</span><br><span class="line">    _moduleDataByID = [<span class="built_in">NSMutableArray</span> new];</span><br><span class="line"></span><br><span class="line">    [RCTBridge setCurrentBridge:<span class="keyword">self</span>];</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="RCTCxxBridge-start"><a href="#RCTCxxBridge-start" class="headerlink" title="RCTCxxBridge start"></a>RCTCxxBridge start</h5><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)start &#123;</span><br><span class="line">  RCT_PROFILE_BEGIN_EVENT(RCTProfileTagAlways, <span class="string">@"-[RCTCxxBridge start]"</span>, <span class="literal">nil</span>);</span><br><span class="line"></span><br><span class="line">  [[<span class="built_in">NSNotificationCenter</span> defaultCenter]</span><br><span class="line">    postNotificationName:RCTJavaScriptWillStartLoadingNotification</span><br><span class="line">    object:_parentBridge userInfo:@&#123;<span class="string">@"bridge"</span>: <span class="keyword">self</span>&#125;];</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 创建一个启动runloop的名为com.facebook.react.JavaScript的线程，并运行</span></span><br><span class="line">  <span class="comment">// Set up the JS thread early</span></span><br><span class="line">  _jsThread = [[<span class="built_in">NSThread</span> alloc] initWithTarget:[<span class="keyword">self</span> <span class="keyword">class</span>]</span><br><span class="line">                                      selector:<span class="keyword">@selector</span>(runRunLoop)</span><br><span class="line">                                        object:<span class="literal">nil</span>];</span><br><span class="line">  _jsThread.name = RCTJSThreadName;</span><br><span class="line">  _jsThread.qualityOfService = <span class="built_in">NSOperationQualityOfServiceUserInteractive</span>;</span><br><span class="line"><span class="meta">#if RCT_DEBUG</span></span><br><span class="line">  _jsThread.stackSize *= <span class="number">2</span>;</span><br><span class="line"><span class="meta">#endif</span></span><br><span class="line">  [_jsThread start];</span><br><span class="line"></span><br><span class="line">  dispatch_group_t prepareBridge = dispatch_group_create();</span><br><span class="line"></span><br><span class="line">  [_performanceLogger markStartForTag:RCTPLNativeModuleInit];</span><br><span class="line"></span><br><span class="line">  [<span class="keyword">self</span> registerExtraModules];</span><br><span class="line">  <span class="comment">// 初始化所有的本地模块，先非主线程后主线程</span></span><br><span class="line">  <span class="comment">// RCTGetModuleClasses() 实际上是 RCTModuleClasses 的拷贝</span></span><br><span class="line">  (<span class="keyword">void</span>)[<span class="keyword">self</span> _initializeModules:RCTGetModuleClasses() withDispatchGroup:prepareBridge lazilyDiscovered:<span class="literal">NO</span>];</span><br><span class="line"></span><br><span class="line">  [_performanceLogger markStopForTag:RCTPLNativeModuleInit];</span><br><span class="line"></span><br><span class="line">  <span class="comment">// This doesn't really do anything.  The real work happens in initializeBridge.</span></span><br><span class="line">  _reactInstance.reset(new Instance);</span><br><span class="line"></span><br><span class="line">  __<span class="keyword">weak</span> RCTCxxBridge *weakSelf = <span class="keyword">self</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Prepare executor factory (shared_ptr for copy into block)</span></span><br><span class="line">  <span class="comment">// 创建JSC实例</span></span><br><span class="line">  std::shared_ptr&lt;JSExecutorFactory&gt; executorFactory;</span><br><span class="line">  <span class="keyword">if</span> (!<span class="keyword">self</span>.executorClass) &#123;</span><br><span class="line">    <span class="keyword">if</span> ([<span class="keyword">self</span>.delegate conformsToProtocol:<span class="class"><span class="keyword">@protocol</span>(<span class="title">RCTCxxBridgeDelegate</span>)]) </span>&#123;</span><br><span class="line">      <span class="keyword">id</span>&lt;RCTCxxBridgeDelegate&gt; cxxDelegate = (<span class="keyword">id</span>&lt;RCTCxxBridgeDelegate&gt;) <span class="keyword">self</span>.delegate;</span><br><span class="line">      executorFactory = [cxxDelegate jsExecutorFactoryForBridge:<span class="keyword">self</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (!executorFactory) &#123;</span><br><span class="line">      <span class="built_in">BOOL</span> useCustomJSC =</span><br><span class="line">        [<span class="keyword">self</span>.delegate respondsToSelector:<span class="keyword">@selector</span>(shouldBridgeUseCustomJSC:)] &amp;&amp;</span><br><span class="line">        [<span class="keyword">self</span>.delegate shouldBridgeUseCustomJSC:<span class="keyword">self</span>];</span><br><span class="line">      <span class="comment">// We use the name of the device and the app for debugging &amp; metrics</span></span><br><span class="line">      <span class="built_in">NSString</span> *deviceName = [[<span class="built_in">UIDevice</span> currentDevice] name];</span><br><span class="line">      <span class="built_in">NSString</span> *appName = [[<span class="built_in">NSBundle</span> mainBundle] bundleIdentifier];</span><br><span class="line">      <span class="comment">// The arg is a cache dir.  It's not used with standard JSC.</span></span><br><span class="line">      executorFactory.reset(new JSCExecutorFactory(folly::dynamic::object</span><br><span class="line">        (<span class="string">"OwnerIdentity"</span>, <span class="string">"ReactNative"</span>)</span><br><span class="line">        (<span class="string">"AppIdentity"</span>, [(appName ?: <span class="string">@"unknown"</span>) UTF8String])</span><br><span class="line">        (<span class="string">"DeviceIdentity"</span>, [(deviceName ?: <span class="string">@"unknown"</span>) UTF8String])</span><br><span class="line">        (<span class="string">"UseCustomJSC"</span>, (<span class="keyword">bool</span>)useCustomJSC)</span><br><span class="line">  <span class="meta">#if RCT_PROFILE</span></span><br><span class="line">        (<span class="string">"StartSamplingProfilerOnInit"</span>, (<span class="keyword">bool</span>)<span class="keyword">self</span>.devSettings.startSamplingProfilerOnLaunch)</span><br><span class="line">  <span class="meta">#endif</span></span><br><span class="line">      ));</span><br><span class="line">    &#125;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">id</span>&lt;RCTJavaScriptExecutor&gt; objcExecutor = [<span class="keyword">self</span> moduleForClass:<span class="keyword">self</span>.executorClass];</span><br><span class="line">    executorFactory.reset(new RCTObjcExecutorFactory(objcExecutor, ^(<span class="built_in">NSError</span> *error) &#123;</span><br><span class="line">      <span class="keyword">if</span> (error) &#123;</span><br><span class="line">        [weakSelf handleError:error];</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;));</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 初始化JSC</span></span><br><span class="line">  dispatch_group_enter(prepareBridge);</span><br><span class="line">  [<span class="keyword">self</span> ensureOnJavaScriptThread:^&#123;</span><br><span class="line">    [weakSelf _initializeBridge:executorFactory];</span><br><span class="line">    dispatch_group_leave(prepareBridge);</span><br><span class="line">  &#125;];</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 开始加载JS数据</span></span><br><span class="line">  dispatch_group_enter(prepareBridge);</span><br><span class="line">  __block <span class="built_in">NSData</span> *sourceCode;</span><br><span class="line">  [<span class="keyword">self</span> loadSource:^(<span class="built_in">NSError</span> *error, RCTSource *source) &#123;</span><br><span class="line">    <span class="keyword">if</span> (error) &#123;</span><br><span class="line">      [weakSelf handleError:error];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    sourceCode = source.data;</span><br><span class="line">    dispatch_group_leave(prepareBridge);</span><br><span class="line">  &#125; onProgress:^(RCTLoadingProgress *progressData) &#123;</span><br><span class="line"><span class="meta">#if RCT_DEV &amp;&amp; __has_include(<span class="meta-string">"RCTDevLoadingView.h"</span>)</span></span><br><span class="line">    RCTDevLoadingView *loadingView = [weakSelf moduleForClass:[RCTDevLoadingView <span class="keyword">class</span>]];</span><br><span class="line">    [loadingView updateProgress:progressData];</span><br><span class="line"><span class="meta">#endif</span></span><br><span class="line">  &#125;];</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 最后开始执行JS数据</span></span><br><span class="line">  dispatch_group_notify(prepareBridge, dispatch_get_global_queue(QOS_CLASS_USER_INTERACTIVE, <span class="number">0</span>), ^&#123;</span><br><span class="line">    RCTCxxBridge *strongSelf = weakSelf;</span><br><span class="line">    <span class="keyword">if</span> (sourceCode &amp;&amp; strongSelf.loading) &#123;</span><br><span class="line">      [strongSelf executeSourceCode:sourceCode sync:<span class="literal">NO</span>];</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line">  RCT_PROFILE_END_EVENT(RCTProfileTagAlways, <span class="string">@""</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h6 id="RCTModuleClasses"><a href="#RCTModuleClasses" class="headerlink" title="RCTModuleClasses"></a>RCTModuleClasses</h6><p>每一个导出类都会实现<code>RCTBridgeModule</code>的代理方法</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">@protocol</span> <span class="title">RCTBridgeModule</span> &lt;<span class="title">NSObject</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Place this macro in your class implementation to automatically register</span></span><br><span class="line"><span class="comment"> * your module with the bridge when it loads. The optional js_name argument</span></span><br><span class="line"><span class="comment"> * will be used as the JS module name. If omitted, the JS module name will</span></span><br><span class="line"><span class="comment"> * match the Objective-C class name.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">#define RCT_EXPORT_MODULE(js_name) \</span></span><br><span class="line">RCT_EXTERN <span class="keyword">void</span> RCTRegisterModule(Class); \</span><br><span class="line">+ (<span class="built_in">NSString</span> *)moduleName &#123; <span class="keyword">return</span> @<span class="meta">#js_name; &#125; \</span></span><br><span class="line">+ (<span class="keyword">void</span>)load &#123; RCTRegisterModule(<span class="keyword">self</span>); &#125;</span><br><span class="line"></span><br><span class="line">+ (<span class="built_in">NSString</span> *)moduleName;</span><br><span class="line"></span><br><span class="line"><span class="comment">//...</span></span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
+<p>RCT_EXPORT_MODULE里实现了moduleName方法，同时也在类的<code>load</code>方法里注册本类，下面来看下<code>RCTRegisterModule</code>里的方法</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> RCTRegisterModule(Class moduleClass) &#123;</span><br><span class="line">  <span class="comment">// 线程安全地注册所有的模块类，加入到RCTModuleClasses数组中</span></span><br><span class="line">  <span class="keyword">static</span> <span class="built_in">dispatch_once_t</span> onceToken;</span><br><span class="line">  <span class="built_in">dispatch_once</span>(&amp;onceToken, ^&#123;</span><br><span class="line">    RCTModuleClasses = [<span class="built_in">NSMutableArray</span> new];</span><br><span class="line">    RCTModuleClassesSyncQueue = dispatch_queue_create(<span class="string">"com.facebook.react.ModuleClassesSyncQueue"</span>, DISPATCH_QUEUE_CONCURRENT);</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  RCTAssert([moduleClass conformsToProtocol:<span class="class"><span class="keyword">@protocol</span>(<span class="title">RCTBridgeModule</span>)],</span></span><br><span class="line">            <span class="string">@"%@ does not conform to the RCTBridgeModule protocol"</span>,</span><br><span class="line">            moduleClass);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Register module</span></span><br><span class="line">  <span class="built_in">NSLog</span>(<span class="string">@"%@"</span>, <span class="built_in">NSStringFromClass</span>(moduleClass));</span><br><span class="line">  dispatch_barrier_async(RCTModuleClassesSyncQueue, ^&#123;</span><br><span class="line">    [RCTModuleClasses addObject:moduleClass];</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>RCTModuleData 创建</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="built_in">NSArray</span>&lt;RCTModuleData *&gt; *)_initializeModules:(<span class="built_in">NSArray</span>&lt;<span class="keyword">id</span>&lt;RCTBridgeModule&gt;&gt; *)modules</span><br><span class="line">                               withDispatchGroup:(dispatch_group_t)dispatchGroup</span><br><span class="line">                                lazilyDiscovered:(<span class="built_in">BOOL</span>)lazilyDiscovered &#123;</span><br><span class="line">  RCTAssert(!(RCTIsMainQueue() &amp;&amp; lazilyDiscovered), <span class="string">@"Lazy discovery can only happen off the Main Queue"</span>);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Set up moduleData for automatically-exported modules</span></span><br><span class="line">  <span class="built_in">NSArray</span>&lt;RCTModuleData *&gt; *moduleDataById = [<span class="keyword">self</span> registerModulesForClasses:modules] = &#123;</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">        <span class="built_in">NSArray</span> *moduleClassesCopy = [moduleClasses <span class="keyword">copy</span>];</span><br><span class="line">        <span class="built_in">NSMutableArray</span>&lt;RCTModuleData *&gt; *moduleDataByID = [<span class="built_in">NSMutableArray</span> arrayWithCapacity:moduleClassesCopy.count];</span><br><span class="line">        <span class="keyword">for</span> (Class moduleClass <span class="keyword">in</span> moduleClassesCopy) &#123;</span><br><span class="line">            <span class="built_in">NSString</span> *moduleName = RCTBridgeModuleNameForClass(moduleClass); <span class="comment">//去掉RK和RCT</span></span><br><span class="line"></span><br><span class="line">            <span class="comment">// Check for module name collisions</span></span><br><span class="line">            RCTModuleData *moduleData = _moduleDataByName[moduleName];</span><br><span class="line">            <span class="comment">// 如果已经有moduleData了，并且已经有实例或new方法返回空时丢弃</span></span><br><span class="line">            <span class="keyword">if</span> (moduleData) &#123;</span><br><span class="line">                <span class="comment">// ...</span></span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 创建 moduleData ，并判断是否需要在主线程上初始化</span></span><br><span class="line">            moduleData = [[RCTModuleData alloc] initWithModuleClass:moduleClass bridge:<span class="keyword">self</span>];</span><br><span class="line">            </span><br><span class="line">            <span class="comment">/*</span></span><br><span class="line"><span class="comment">            _moduleDataByName  记录模块数据，以模块名为key</span></span><br><span class="line"><span class="comment">            _moduleClassesByID 模块类名列表</span></span><br><span class="line"><span class="comment">            _moduleDataByID    模块数据列表</span></span><br><span class="line"><span class="comment">            */</span></span><br><span class="line">            </span><br><span class="line">            _moduleDataByName[moduleName] = moduleData;</span><br><span class="line">            [_moduleClassesByID addObject:moduleClass];</span><br><span class="line">            [moduleDataByID addObject:moduleData];</span><br><span class="line">        &#125;</span><br><span class="line">        [_moduleDataByID addObjectsFromArray:moduleDataByID];</span><br><span class="line"></span><br><span class="line">        RCT_PROFILE_END_EVENT(RCTProfileTagAlways, <span class="string">@""</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> moduleDataByID;</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">    RCT_PROFILE_BEGIN_EVENT(RCTProfileTagAlways,</span><br><span class="line">                            <span class="string">@"-[RCTCxxBridge initModulesWithDispatchGroup:] moduleData.hasInstance"</span>, <span class="literal">nil</span>);</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">    先是遍历不需要在主线程上执行的模块，并初始化这些模块;</span></span><br><span class="line"><span class="comment">    后在_prepareModulesWithDispatchGroup方法里在主线程上执行模块的初始化</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">    <span class="keyword">for</span> (RCTModuleData *moduleData <span class="keyword">in</span> _moduleDataByID) &#123;</span><br><span class="line">      <span class="keyword">if</span> (moduleData.hasInstance &amp;&amp; (!moduleData.requiresMainQueueSetup || RCTIsMainQueue())) &#123;</span><br><span class="line">        <span class="comment">// Modules that were pre-initialized should ideally be set up before</span></span><br><span class="line">        <span class="comment">// bridge init has finished, otherwise the caller may try to access the</span></span><br><span class="line">        <span class="comment">// module directly rather than via `[bridge moduleForClass:]`, which won't</span></span><br><span class="line">        <span class="comment">// trigger the lazy initialization process. If the module cannot safely be</span></span><br><span class="line">        <span class="comment">// set up on the current thread, it will instead be async dispatched</span></span><br><span class="line">        <span class="comment">// to the main thread to be set up in _prepareModulesWithDispatchGroup:.</span></span><br><span class="line">        (<span class="keyword">void</span>)[moduleData instance];</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    RCT_PROFILE_END_EVENT(RCTProfileTagAlways, <span class="string">@""</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// From this point on, RCTDidInitializeModuleNotification notifications will</span></span><br><span class="line">    <span class="comment">// be sent the first time a module is accessed.</span></span><br><span class="line">    _moduleSetupComplete = <span class="literal">YES</span>;</span><br><span class="line">    [<span class="keyword">self</span> _prepareModulesWithDispatchGroup:dispatchGroup];</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">  <span class="keyword">return</span> moduleDataById;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>executorFactory.reset()</code>初始化JS执行环境，以及初始化<code>devSettings</code>模块以便调试用</p>
+<p>RCTModuleData 创建Module时，通过runtime查找出所有方法名前缀是 <code>__rct_export__</code> 的方法生成RCTBridgeMethod对象，当需要调用本地方法时，调用<code>processMethodSignature</code>，先生成方法的签名（NSMethodSignature），再生成 <code>NSInvocation</code>, 设置参数，调用 <code>invoke</code> 方法，完成调用。</p>
+<p>下面是JS需要原生回调数据时的情况：</p>
+<p><img src="/images/ee70aa74-1147-4b1e-af80-9a468bc07ebd.png" alt=""></p>
+<h6 id="initializeBridge"><a href="#initializeBridge" class="headerlink" title="_initializeBridge"></a>_initializeBridge</h6><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)_initializeBridge:(std::shared_ptr&lt;JSExecutorFactory&gt;)executorFactory &#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">  <span class="comment">// 创建JS消息线程</span></span><br><span class="line">  __<span class="keyword">weak</span> RCTCxxBridge *weakSelf = <span class="keyword">self</span>;</span><br><span class="line">  _jsMessageThread = std::make_shared&lt;RCTMessageThread&gt;([<span class="built_in">NSRunLoop</span> currentRunLoop], ^(<span class="built_in">NSError</span> *error) &#123;</span><br><span class="line">    <span class="keyword">if</span> (error) &#123;</span><br><span class="line">      [weakSelf handleError:error];</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  RCT_PROFILE_BEGIN_EVENT(RCTProfileTagAlways, <span class="string">@"-[RCTCxxBridge initializeBridge:]"</span>, <span class="literal">nil</span>);</span><br><span class="line">  <span class="comment">// This can only be false if the bridge was invalidated before startup completed</span></span><br><span class="line">  <span class="keyword">if</span> (_reactInstance) &#123;</span><br><span class="line"><span class="meta">#if RCT_DEV</span></span><br><span class="line">    <span class="comment">// 调试模式下，初始化RCTObjcExecutor执行器，</span></span><br><span class="line">    executorFactory = std::make_shared&lt;GetDescAdapter&gt;(<span class="keyword">self</span>, executorFactory) = &#123;</span><br><span class="line">        std::unique_ptr&lt;JSExecutor&gt; createJSExecutor(</span><br><span class="line">        std::shared_ptr&lt;ExecutorDelegate&gt; delegate,</span><br><span class="line">        std::shared_ptr&lt;MessageQueueThread&gt; jsQueue) override &#123;</span><br><span class="line">        auto ret = factory_-&gt;createJSExecutor(delegate, jsQueue) = &#123;</span><br><span class="line">            <span class="keyword">return</span> std::unique_ptr&lt;JSExecutor&gt;(</span><br><span class="line">    new RCTObjcExecutor(m_jse, m_errorBlock, jsQueue, dele</span><br><span class="line">        &#125;;</span><br><span class="line">        bridge_.bridgeDescription =</span><br><span class="line">        [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"RCTCxxBridge %s"</span>,</span><br><span class="line">                    ret-&gt;getDescription().c_str()];</span><br><span class="line">        <span class="keyword">return</span> std::move(ret);</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">    与此同时之前需要在主线程上初始化的模块开始初始化</span></span><br><span class="line"><span class="comment">    RCTDevMenu开始注册摇晃手机和键盘事件监听</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line"><span class="meta">#endif</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// This is async, but any calls into JS are blocked by the m_syncReady CV in Instance</span></span><br><span class="line">    _reactInstance-&gt;initializeBridge(</span><br><span class="line">      std::make_unique&lt;RCTInstanceCallback&gt;(<span class="keyword">self</span>),</span><br><span class="line">      executorFactory,</span><br><span class="line">      _jsMessageThread,</span><br><span class="line">      [<span class="keyword">self</span> _buildModuleRegistry]);</span><br><span class="line"></span><br><span class="line"><span class="meta">#if RCT_PROFILE</span></span><br><span class="line">    <span class="keyword">if</span> (RCTProfileIsProfiling()) &#123;</span><br><span class="line">      _reactInstance-&gt;setGlobalVariable(</span><br><span class="line">        <span class="string">"__RCTProfileIsProfiling"</span>,</span><br><span class="line">        std::make_unique&lt;JSBigStdString&gt;(<span class="string">"true"</span>));</span><br><span class="line">    &#125;</span><br><span class="line"><span class="meta">#endif</span></span><br><span class="line"></span><br><span class="line">    [<span class="keyword">self</span> installExtraJSBinding];</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  RCT_PROFILE_END_EVENT(RCTProfileTagAlways, <span class="string">@""</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在JSCExecutor的构造函数中调用<code>initOnJSVMThread()</code>和<code>installGlobalProxy()</code>两个方法</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> JSCExecutor::initOnJSVMThread() <span class="keyword">throw</span>(JSException) &#123;</span><br><span class="line">  <span class="keyword">const</span> <span class="keyword">bool</span> useCustomJSC =</span><br><span class="line">      m_jscConfig.getDefault(<span class="string">"UseCustomJSC"</span>, <span class="literal">false</span>).getBool(); <span class="comment">// false</span></span><br><span class="line">  <span class="keyword">if</span> (useCustomJSC) &#123;</span><br><span class="line">    JSC_configureJSCForIOS(<span class="literal">true</span>, toJson(m_jscConfig));</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 创建JS上下文</span></span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">  &#123;</span><br><span class="line">    <span class="function">SystraceSection <span class="title">s_</span><span class="params">(<span class="string">"JSGlobalContextCreateInGroup"</span>)</span></span>;</span><br><span class="line">    m_context =</span><br><span class="line">        JSC_JSGlobalContextCreateInGroup(useCustomJSC, <span class="literal">nullptr</span>, globalClass);</span><br><span class="line">  &#125;</span><br><span class="line">  JSC_JSClassRelease(useCustomJSC, globalClass);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Add a pointer to ourselves so we can retrieve it later in our hooks</span></span><br><span class="line">  Object::getGlobalObject(m_context).setPrivate(<span class="keyword">this</span>);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">  <span class="comment">/*</span></span><br><span class="line"><span class="comment">  绑定nativeFlushQueueImmediate，nativeCallSyncHook的本地方法，</span></span><br><span class="line"><span class="comment">  以及创建了nativeLoggingHook、nativePerformanceNow、nativeInjectHMRUpdate JS函数</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line"></span><br><span class="line">  installNativeHook&lt;&amp;JSCExecutor::nativeFlushQueueImmediate&gt;(</span><br><span class="line">      <span class="string">"nativeFlushQueueImmediate"</span>);</span><br><span class="line">  installNativeHook&lt;&amp;JSCExecutor::nativeCallSyncHook&gt;(<span class="string">"nativeCallSyncHook"</span>);</span><br><span class="line"></span><br><span class="line">  installGlobalFunction(</span><br><span class="line">      m_context, <span class="string">"nativeLoggingHook"</span>, JSCNativeHooks::loggingHook);</span><br><span class="line">  installGlobalFunction(</span><br><span class="line">      m_context, <span class="string">"nativePerformanceNow"</span>, JSCNativeHooks::nowHook);</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">if</span> DEBUG</span></span><br><span class="line">  installGlobalFunction(</span><br><span class="line">      m_context, <span class="string">"nativeInjectHMRUpdate"</span>, nativeInjectHMRUpdate);</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 绑定nativeModuleProxy为NativeModules</span></span><br><span class="line">installGlobalProxy(</span><br><span class="line">        m_context,</span><br><span class="line">        <span class="string">"nativeModuleProxy"</span>,</span><br><span class="line">        exceptionWrapMethod&lt;&amp;JSCExecutor::getNativeModule&gt;()) = &#123;</span><br><span class="line">            <span class="keyword">if</span> (JSC_JSStringIsEqualToUTF8CString(m_context, propertyName, <span class="string">"name"</span>)) &#123;</span><br><span class="line">                <span class="keyword">return</span> Value(m_context, String(m_context, <span class="string">"NativeModules"</span>));</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">return</span> m_nativeModules.getModule(m_context, propertyName);</span><br><span class="line">        &#125;;</span><br></pre></td></tr></table></figure>
+<h6 id="loadSource"><a href="#loadSource" class="headerlink" title="loadSource"></a>loadSource</h6><p><img src="/images/a3ee86bb-0a6f-42a1-b2dc-be63c784e06e.png" alt=""></p>
+<p>loadBundleAtURL</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">+ (<span class="keyword">void</span>)loadBundleAtURL:(<span class="built_in">NSURL</span> *)scriptURL onProgress:(RCTSourceLoadProgressBlock)onProgress onComplete:(RCTSourceLoadBlock)onComplete &#123;</span><br><span class="line">  int64_t sourceLength;</span><br><span class="line">  <span class="built_in">NSError</span> *error;</span><br><span class="line">  <span class="comment">// 远程数据异步下载，本地数据同步读取</span></span><br><span class="line">  <span class="built_in">NSData</span> *data = [<span class="keyword">self</span> attemptSynchronousLoadOfBundleAtURL:scriptURL</span><br><span class="line">                                          runtimeBCVersion:JSNoBytecodeFileFormatVersion</span><br><span class="line">                                              sourceLength:&amp;sourceLength</span><br><span class="line">                                                     error:&amp;error];</span><br><span class="line">  <span class="keyword">if</span> (data) &#123;</span><br><span class="line">    onComplete(<span class="literal">nil</span>, RCTSourceCreate(scriptURL, data, sourceLength));</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> <span class="built_in">BOOL</span> isCannotLoadSyncError =</span><br><span class="line">  [error.domain isEqualToString:RCTJavaScriptLoaderErrorDomain]</span><br><span class="line">  &amp;&amp; error.code == RCTJavaScriptLoaderErrorCannotBeLoadedSynchronously;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (isCannotLoadSyncError) &#123;</span><br><span class="line">    attemptAsynchronousLoadOfBundleAtURL(scriptURL, onProgress, onComplete);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    onComplete(error, <span class="literal">nil</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里以远程数据为例，调用<code>attemptAsynchronousLoadOfBundleAtURL</code>方法</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">attemptAsynchronousLoadOfBundleAtURL</span><span class="params">(NSURL *scriptURL, RCTSourceLoadProgressBlock onProgress, RCTSourceLoadBlock onComplete)</span> </span>&#123;</span><br><span class="line">  scriptURL = sanitizeURL(scriptURL);</span><br><span class="line">  <span class="comment">// 如果本地数据，则切后台线程读取</span></span><br><span class="line">  <span class="keyword">if</span> (scriptURL.fileURL) &#123;</span><br><span class="line">    <span class="comment">// Reading in a large bundle can be slow. Dispatch to the background queue to do it.</span></span><br><span class="line">    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>), ^&#123;</span><br><span class="line">      NSError *error = nil;</span><br><span class="line">      NSData *source = [NSData dataWithContentsOfFile:scriptURL.path</span><br><span class="line">                                              options:NSDataReadingMappedIfSafe</span><br><span class="line">                                                error:&amp;error];</span><br><span class="line">      onComplete(error, RCTSourceCreate(scriptURL, source, source.length));</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 创建RCTMultipartDataTask并执行</span></span><br><span class="line">  RCTMultipartDataTask *task = [[RCTMultipartDataTask alloc] initWithURL:scriptURL partHandler:^(NSInteger statusCode, NSDictionary *headers, NSData *data, NSError *error, BOOL done) &#123;</span><br><span class="line">    <span class="keyword">if</span> (!done) &#123;</span><br><span class="line">      <span class="keyword">if</span> (onProgress) &#123;</span><br><span class="line">          <span class="comment">// 调试模式下绿色条显示的内容</span></span><br><span class="line">        onProgress(progressEventFromData(data));</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 出错时的处理</span></span><br><span class="line">    <span class="keyword">if</span> (error) &#123;</span><br><span class="line">      <span class="comment">// ...</span></span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 成功响应会执行下面的代码</span></span><br><span class="line">    <span class="comment">// 200表示已成功下载，解析并验证数据，无误就返回RCTSource</span></span><br><span class="line">    NSString *statusCodeHeader = headers[@<span class="string">"X-Http-Status"</span>];</span><br><span class="line">    <span class="keyword">if</span> (statusCodeHeader) &#123;</span><br><span class="line">      statusCode = [statusCodeHeader integerValue];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (statusCode != <span class="number">200</span>) &#123;</span><br><span class="line">      error = [NSError errorWithDomain:@<span class="string">"JSServer"</span></span><br><span class="line">                                  code:statusCode</span><br><span class="line">                              userInfo:userInfoForRawResponse([[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding])];</span><br><span class="line">      onComplete(error, nil);</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Validate that the packager actually returned javascript.</span></span><br><span class="line">    NSString *contentType = headers[@<span class="string">"Content-Type"</span>];</span><br><span class="line">    NSString *mimeType = [[contentType componentsSeparatedByString:@<span class="string">";"</span>] firstObject];</span><br><span class="line">    <span class="keyword">if</span> (![mimeType isEqualToString:@<span class="string">"application/javascript"</span>] &amp;&amp;</span><br><span class="line">        ![mimeType isEqualToString:@<span class="string">"text/javascript"</span>]) &#123;</span><br><span class="line">      NSString *description = [NSString stringWithFormat:@<span class="string">"Expected MIME-Type to be 'application/javascript' or 'text/javascript', but got '%@'."</span>, mimeType];</span><br><span class="line">      error = [NSError errorWithDomain:@<span class="string">"JSServer"</span></span><br><span class="line">                                  code:NSURLErrorCannotParseResponse</span><br><span class="line">                              userInfo:@&#123;</span><br><span class="line">                                         NSLocalizedDescriptionKey: description,</span><br><span class="line">                                         @<span class="string">"headers"</span>: headers,</span><br><span class="line">                                         @<span class="string">"data"</span>: data</span><br><span class="line">                                       &#125;];</span><br><span class="line">      onComplete(error, nil);</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    RCTSource *source = RCTSourceCreate(scriptURL, data, data.length);</span><br><span class="line">    parseHeaders(headers, source);</span><br><span class="line">    onComplete(nil, source);</span><br><span class="line">  &#125; progressHandler:^(NSDictionary *headers, NSNumber *loaded, NSNumber *total) &#123;</span><br><span class="line">    <span class="comment">// Only care about download progress events for the javascript bundle part.</span></span><br><span class="line">    <span class="keyword">if</span> ([headers[@<span class="string">"Content-Type"</span>] isEqualToString:@<span class="string">"application/javascript"</span>]) &#123;</span><br><span class="line">      onProgress(progressEventFromDownloadProgress(loaded, total));</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;];</span><br><span class="line"></span><br><span class="line">  [task startTask];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>下载完JS数据后，开始执行</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)executeSourceCode:(<span class="built_in">NSData</span> *)sourceCode sync:(<span class="built_in">BOOL</span>)sync &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    <span class="keyword">self</span>-&gt;_reactInstance-&gt;loadScriptFromString(std::make_unique&lt;<span class="built_in">NSDataBigString</span>&gt;(script),</span><br><span class="line">                                                 sourceUrlStr.UTF8String, !async) = &#123;</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">        loadApplication(nullptr, std::move(string), std::move(sourceURL)) = &#123;</span><br><span class="line">            <span class="comment">// ...</span></span><br><span class="line">            nativeToJsBridge_-&gt;loadApplication(std::move(bundleRegistry), std::move(string),</span><br><span class="line">                                     std::move(sourceURL)) = &#123;</span><br><span class="line">                <span class="comment">// ...</span></span><br><span class="line">                executor-&gt;loadApplicationScript(std::move(*startupScript),</span><br><span class="line">                                      std::move(startupScriptSourceURL));</span><br><span class="line">            &#125;;</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>JSCExecutor::loadApplicationScript</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> JSCExecutor::loadApplicationScript(</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">unique_ptr</span>&lt;<span class="keyword">const</span> JSBigString&gt; script,</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">string</span> sourceURL) &#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">  <span class="comment">// 开始执行JS脚本</span></span><br><span class="line">  evaluateScript(m_context, jsScript, jsSourceURL);</span><br><span class="line"></span><br><span class="line">  flush() = &#123;</span><br><span class="line">      <span class="comment">// ...</span></span><br><span class="line">      bindBridge();</span><br><span class="line">      callNativeModules(m_flushedQueueJS-&gt;callAsFunction(&#123;&#125;));</span><br><span class="line">      <span class="comment">// ...</span></span><br><span class="line">  &#125;;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>bindBridge</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">// __fbBatchedBridge 对应 JS 中 BatchedBridge</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">auto</span> batchedBridgeValue = global.getProperty(<span class="string">"__fbBatchedBridge"</span>);</span><br><span class="line"><span class="comment">// ...</span></span><br><span class="line"><span class="keyword">auto</span> batchedBridge = batchedBridgeValue.asObject();</span><br><span class="line">m_callFunctionReturnFlushedQueueJS =</span><br><span class="line">    batchedBridge.getProperty(<span class="string">"callFunctionReturnFlushedQueue"</span>).asObject();</span><br><span class="line">m_invokeCallbackAndReturnFlushedQueueJS =</span><br><span class="line">    batchedBridge.getProperty(<span class="string">"invokeCallbackAndReturnFlushedQueue"</span>)</span><br><span class="line">        .asObject();</span><br><span class="line">m_flushedQueueJS = batchedBridge.getProperty(<span class="string">"flushedQueue"</span>).asObject();</span><br><span class="line">m_callFunctionReturnResultAndFlushedQueueJS =</span><br><span class="line">    batchedBridge.getProperty(<span class="string">"callFunctionReturnResultAndFlushedQueue"</span>)</span><br><span class="line">        .asObject();</span><br></pre></td></tr></table></figure>
+<p>映射了JS中的callFunctionReturnFlushedQueue、invokeCallbackAndReturnFlushedQueue、flushedQueue和callFunctionReturnResultAndFlushedQueue四个方法</p>
+<p><code>m_flushedQueueJS-&gt;callAsFunction({})</code>从JS中取出待处理的队列</p>
+<p><code>callNativeModules()</code>映射成调用本地方法</p>
+<h3 id="RCTRootView-创建"><a href="#RCTRootView-创建" class="headerlink" title="RCTRootView 创建"></a>RCTRootView 创建</h3><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">instancetype</span>)initWithBridge:(RCTBridge *)bridge</span><br><span class="line">                    moduleName:(<span class="built_in">NSString</span> *)moduleName</span><br><span class="line">             initialProperties:(<span class="built_in">NSDictionary</span> *)initialProperties &#123;</span><br><span class="line">  <span class="comment">// ...               </span></span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">self</span> = [<span class="keyword">super</span> initWithFrame:<span class="built_in">CGRectZero</span>]) &#123;</span><br><span class="line">    <span class="keyword">self</span>.backgroundColor = [<span class="built_in">UIColor</span> whiteColor];</span><br><span class="line"></span><br><span class="line">    _bridge = bridge;</span><br><span class="line">    _moduleName = moduleName;</span><br><span class="line">    _appProperties = [initialProperties <span class="keyword">copy</span>];</span><br><span class="line">    _loadingViewFadeDelay = <span class="number">0.25</span>;</span><br><span class="line">    _loadingViewFadeDuration = <span class="number">0.25</span>;</span><br><span class="line">    _sizeFlexibility = RCTRootViewSizeFlexibilityNone;</span><br><span class="line">    <span class="comment">// 注册loading view 的开始、JS数据获取完毕和已经渲染UI的通知</span></span><br><span class="line">    [[<span class="built_in">NSNotificationCenter</span> defaultCenter] addObserver:<span class="keyword">self</span></span><br><span class="line">                                             selector:<span class="keyword">@selector</span>(bridgeDidReload)</span><br><span class="line">                                                 name:RCTJavaScriptWillStartLoadingNotification</span><br><span class="line">                                               object:_bridge];</span><br><span class="line"></span><br><span class="line">    [[<span class="built_in">NSNotificationCenter</span> defaultCenter] addObserver:<span class="keyword">self</span></span><br><span class="line">                                             selector:<span class="keyword">@selector</span>(javaScriptDidLoad:)</span><br><span class="line">                                                 name:RCTJavaScriptDidLoadNotification</span><br><span class="line">                                               object:_bridge];</span><br><span class="line"></span><br><span class="line">    [[<span class="built_in">NSNotificationCenter</span> defaultCenter] addObserver:<span class="keyword">self</span></span><br><span class="line">                                             selector:<span class="keyword">@selector</span>(hideLoadingView)</span><br><span class="line">                                                 name:RCTContentDidAppearNotification</span><br><span class="line">                                               object:<span class="keyword">self</span>];</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 显示loading View</span></span><br><span class="line">    [<span class="keyword">self</span> showLoadingView];</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Immediately schedule the application to be started.</span></span><br><span class="line">    <span class="comment">// (Sometimes actual `_bridge` is already batched bridge here.)</span></span><br><span class="line">    [<span class="keyword">self</span> bundleFinishedLoading:([_bridge batchedBridge] ?: _bridge)];</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  RCT_PROFILE_END_EVENT(RCTProfileTagAlways, <span class="string">@""</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">self</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="bundleFinishedLoading"><a href="#bundleFinishedLoading" class="headerlink" title="bundleFinishedLoading"></a>bundleFinishedLoading</h4><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)bundleFinishedLoading:(RCTBridge *)bridge &#123;</span><br><span class="line">  RCTAssert(bridge != <span class="literal">nil</span>, <span class="string">@"Bridge cannot be nil"</span>);</span><br><span class="line">  <span class="keyword">if</span> (!bridge.valid) &#123;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 创建RCTRootContentView，RCTRootContentView是一切React Native的父控件,本质上就是UIView</span></span><br><span class="line">  [_contentView removeFromSuperview];</span><br><span class="line">  _contentView = [[RCTRootContentView alloc] initWithFrame:<span class="keyword">self</span>.bounds</span><br><span class="line">                                                    bridge:bridge</span><br><span class="line">                                                  reactTag:<span class="keyword">self</span>.reactTag</span><br><span class="line">                                            sizeFlexiblity:_sizeFlexibility] = &#123;</span><br><span class="line">        <span class="keyword">if</span> ((<span class="keyword">self</span> = [<span class="keyword">super</span> initWithFrame:frame])) &#123;</span><br><span class="line">            _bridge = bridge;</span><br><span class="line">            <span class="comment">// 设置根控件的reactTag为1</span></span><br><span class="line">            <span class="keyword">self</span>.reactTag = reactTag;</span><br><span class="line">            _sizeFlexibility = sizeFlexibility;</span><br><span class="line">            <span class="comment">// 创建RCTTouchHandler，并加到根控件上</span></span><br><span class="line">            _touchHandler = [[RCTTouchHandler alloc] initWithBridge:_bridge];</span><br><span class="line">            [_touchHandler attachToView:<span class="keyword">self</span>];</span><br><span class="line">            <span class="comment">// 创建RCTUIManager，并绑定根控件</span></span><br><span class="line">            [_bridge.uiManager registerRootView:<span class="keyword">self</span>];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">self</span>;</span><br><span class="line">  &#125;;</span><br><span class="line">  [<span class="keyword">self</span> runApplication:bridge] = &#123;</span><br><span class="line">        <span class="built_in">NSString</span> *moduleName = _moduleName ?: <span class="string">@""</span>;</span><br><span class="line">        <span class="built_in">NSDictionary</span> *appParameters = @&#123;</span><br><span class="line">            <span class="string">@"rootTag"</span>: _contentView.reactTag,</span><br><span class="line">            <span class="string">@"initialProps"</span>: _appProperties ?: @&#123;&#125;,</span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line">        RCTLogInfo(<span class="string">@"Running application %@ (%@)"</span>, moduleName, appParameters);</span><br><span class="line">        <span class="comment">/*  启动Application */</span></span><br><span class="line">        [bridge enqueueJSCall:<span class="string">@"AppRegistry"</span></span><br><span class="line">                        method:<span class="string">@"runApplication"</span></span><br><span class="line">                        args:@[moduleName, appParameters]</span><br><span class="line">                    completion:<span class="literal">NULL</span>];</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  _contentView.passThroughTouches = _passThroughTouches;</span><br><span class="line">  [<span class="keyword">self</span> insertSubview:_contentView atIndex:<span class="number">0</span>];</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (_sizeFlexibility == RCTRootViewSizeFlexibilityNone) &#123;</span><br><span class="line">    <span class="keyword">self</span>.intrinsicContentSize = <span class="keyword">self</span>.bounds.size;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>调用JS里的<code>AppRegistry.runApplication</code>方法，RCTCxxBridge 初始化完成，调用<code>RCTInstanceCallback中的onBatchComplete</code>方法，然后调用<code>RCTUIManager</code>的<code>_layoutAndMount</code></p>
+<h3 id="RCTUIManager"><a href="#RCTUIManager" class="headerlink" title="RCTUIManager"></a>RCTUIManager</h3><p>负责处理UI相关的一切事务，包括控件的创建、更新和动画等</p>
+<h4 id="setBridge"><a href="#setBridge" class="headerlink" title="setBridge"></a>setBridge</h4><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)setBridge:(RCTBridge *)bridge &#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">  <span class="comment">// 获取所有的ViewManager</span></span><br><span class="line">  <span class="keyword">for</span> (Class moduleClass <span class="keyword">in</span> _bridge.moduleClasses) &#123;</span><br><span class="line">    <span class="keyword">if</span> ([moduleClass isSubclassOfClass:[RCTViewManager <span class="keyword">class</span>]]) &#123;</span><br><span class="line">      RCTComponentData *componentData = [[RCTComponentData alloc] initWithManagerClass:moduleClass</span><br><span class="line">                                                                                bridge:_bridge];</span><br><span class="line">      componentDataByName[componentData.name] = componentData;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  _componentDataByName = [componentDataByName <span class="keyword">copy</span>];</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 监听RCTAccessibilityManagerDidUpdateMultiplierNotification、设备方向以及键盘弹出/消失的通知</span></span><br><span class="line">  [[<span class="built_in">NSNotificationCenter</span> defaultCenter] addObserver:<span class="keyword">self</span></span><br><span class="line">                                           selector:<span class="keyword">@selector</span>(didReceiveNewContentSizeMultiplier)</span><br><span class="line">                                               name:RCTAccessibilityManagerDidUpdateMultiplierNotification</span><br><span class="line">                                             object:_bridge.accessibilityManager];</span><br><span class="line"><span class="meta">#if !TARGET_OS_TV</span></span><br><span class="line">  [[<span class="built_in">NSNotificationCenter</span> defaultCenter] addObserver:<span class="keyword">self</span></span><br><span class="line">                                           selector:<span class="keyword">@selector</span>(namedOrientationDidChange)</span><br><span class="line">                                               name:<span class="built_in">UIDeviceOrientationDidChangeNotification</span></span><br><span class="line">                                             object:<span class="literal">nil</span>];</span><br><span class="line"><span class="meta">#endif</span></span><br><span class="line">  [RCTLayoutAnimation initializeStatics];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="registerRootView"><a href="#registerRootView" class="headerlink" title="registerRootView"></a>registerRootView</h4><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)registerRootView:(RCTRootContentView *)rootView &#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// _viewRegistry保存所有的view，key是reactTag</span></span><br><span class="line">  _viewRegistry[reactTag] = rootView;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Register shadow view</span></span><br><span class="line">  RCTExecuteOnUIManagerQueue(^&#123;</span><br><span class="line">    <span class="keyword">if</span> (!<span class="keyword">self</span>-&gt;_viewRegistry) &#123;</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// _shadowViewRegistry保存所有的shadowView，shadowView与rootView一一对应，负责更新rootView的属性或动画执行</span></span><br><span class="line">    RCTRootShadowView *shadowView = [RCTRootShadowView new];</span><br><span class="line">    shadowView.availableSize = availableSize;</span><br><span class="line">    shadowView.reactTag = reactTag;</span><br><span class="line">    shadowView.viewName = <span class="built_in">NSStringFromClass</span>([rootView <span class="keyword">class</span>]);</span><br><span class="line">    <span class="keyword">self</span>-&gt;_shadowViewRegistry[shadowView.reactTag] = shadowView;</span><br><span class="line">    <span class="comment">// 保存reactTag</span></span><br><span class="line">    [<span class="keyword">self</span>-&gt;_rootViewTags addObject:reactTag];</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="layoutAndMount"><a href="#layoutAndMount" class="headerlink" title="_layoutAndMount"></a>_layoutAndMount</h4><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)_layoutAndMount &#123;</span><br><span class="line">  <span class="comment">// RCTShadowView解析所有的props，并设置rootView的props</span></span><br><span class="line">  [<span class="keyword">self</span> _dispatchPropsDidChangeEvents];</span><br><span class="line">  <span class="comment">// 处理其子视图的props</span></span><br><span class="line">  [<span class="keyword">self</span> _dispatchChildrenDidChangeEvents];</span><br><span class="line"></span><br><span class="line">  [_observerCoordinator uiManagerWillPerformLayout:<span class="keyword">self</span>];</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 开始计算(yoga库)并更新rootView属性，具体的有兴趣可以去看一看</span></span><br><span class="line">  <span class="keyword">for</span> (<span class="built_in">NSNumber</span> *reactTag <span class="keyword">in</span> _rootViewTags) &#123;</span><br><span class="line">    RCTRootShadowView *rootView = (RCTRootShadowView *)_shadowViewRegistry[reactTag];</span><br><span class="line">    [<span class="keyword">self</span> addUIBlock:[<span class="keyword">self</span> uiBlockWithLayoutUpdateForRootView:rootView]];</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  [_observerCoordinator uiManagerDidPerformLayout:<span class="keyword">self</span>];</span><br><span class="line"></span><br><span class="line">  [_observerCoordinator uiManagerWillPerformMounting:<span class="keyword">self</span>];</span><br><span class="line"></span><br><span class="line">  [<span class="keyword">self</span> flushUIBlocksWithCompletion:^&#123;</span><br><span class="line">    [<span class="keyword">self</span>-&gt;_observerCoordinator uiManagerDidPerformMounting:<span class="keyword">self</span>];</span><br><span class="line">  &#125;];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><br>接下来会调用<code>RCTUIManager createView:viewName:rootTag:props:</code>方法创建子视图</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line">RCT_EXPORT_METHOD(createView:(<span class="keyword">nonnull</span> <span class="built_in">NSNumber</span> *)reactTag</span><br><span class="line">                  viewName:(<span class="built_in">NSString</span> *)viewName</span><br><span class="line">                  rootTag:(<span class="keyword">nonnull</span> <span class="built_in">NSNumber</span> *)rootTag</span><br><span class="line">                  props:(<span class="built_in">NSDictionary</span> *)props) &#123;</span><br><span class="line">  RCTComponentData *componentData = _componentDataByName[viewName];</span><br><span class="line">  <span class="keyword">if</span> (componentData == <span class="literal">nil</span>) &#123;</span><br><span class="line">    RCTLogError(<span class="string">@"No component found for view with name \"%@\""</span>, viewName);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 先注册shadowView</span></span><br><span class="line">  RCTShadowView *shadowView = [componentData createShadowViewWithTag:reactTag];</span><br><span class="line">  <span class="keyword">if</span> (shadowView) &#123;</span><br><span class="line">    [componentData setProps:props forShadowView:shadowView];</span><br><span class="line">    _shadowViewRegistry[reactTag] = shadowView;</span><br><span class="line">    RCTShadowView *rootView = _shadowViewRegistry[rootTag];</span><br><span class="line">    RCTAssert([rootView isKindOfClass:[RCTRootShadowView <span class="keyword">class</span>]] ||</span><br><span class="line">              [rootView isKindOfClass:[RCTSurfaceRootShadowView <span class="keyword">class</span>]],</span><br><span class="line">      <span class="string">@"Given `rootTag` (%@) does not correspond to a valid root shadow view instance."</span>, rootTag);</span><br><span class="line">    shadowView.rootView = (RCTRootShadowView *)rootView;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 在主线程上创建对应的view，并加到_viewRegistry数组中，并设置props</span></span><br><span class="line">  __block <span class="built_in">UIView</span> *preliminaryCreatedView = <span class="literal">nil</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">void</span> (^createViewBlock)(<span class="keyword">void</span>) = ^&#123;</span><br><span class="line">    <span class="comment">// Do nothing on the second run.</span></span><br><span class="line">    <span class="keyword">if</span> (preliminaryCreatedView) &#123;</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    preliminaryCreatedView = [componentData createViewWithTag:reactTag];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (preliminaryCreatedView) &#123;</span><br><span class="line">      <span class="keyword">self</span>-&gt;_viewRegistry[reactTag] = preliminaryCreatedView;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// We cannot guarantee that asynchronously scheduled block will be executed</span></span><br><span class="line">  <span class="comment">// *before* a block is added to the regular mounting process (simply because</span></span><br><span class="line">  <span class="comment">// mounting process can be managed externally while the main queue is</span></span><br><span class="line">  <span class="comment">// locked).</span></span><br><span class="line">  <span class="comment">// So, we positively dispatch it asynchronously and double check inside</span></span><br><span class="line">  <span class="comment">// the regular mounting block.</span></span><br><span class="line"></span><br><span class="line">  RCTExecuteOnMainQueue(createViewBlock);</span><br><span class="line"></span><br><span class="line">  [<span class="keyword">self</span> addUIBlock:^(__unused RCTUIManager *uiManager, __unused <span class="built_in">NSDictionary</span>&lt;<span class="built_in">NSNumber</span> *, <span class="built_in">UIView</span> *&gt; *viewRegistry) &#123;</span><br><span class="line">    createViewBlock();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (preliminaryCreatedView) &#123;</span><br><span class="line">      <span class="comment">// 设置view的props</span></span><br><span class="line">      [componentData setProps:props forView:preliminaryCreatedView];</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;];</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 将需要更新的props增加到_shadowViewsWithUpdatedProps里</span></span><br><span class="line">  [<span class="keyword">self</span> _shadowView:shadowView didReceiveUpdatedProps:[props allKeys]];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在导出视图的Manager中，如果需要暴露一些属性设置，一般会加<code>RCT_EXPORT_VIEW_PROPERTY</code>宏，这个宏会把方法名加上<code>propConfig_</code>的前缀</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)setProps:(<span class="built_in">NSDictionary</span>&lt;<span class="built_in">NSString</span> *, <span class="keyword">id</span>&gt; *)props forShadowView:(RCTShadowView *)shadowView &#123;</span><br><span class="line">  <span class="keyword">if</span> (!shadowView) &#123;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  [props enumerateKeysAndObjectsUsingBlock:^(<span class="built_in">NSString</span> *key, <span class="keyword">id</span> json, __unused <span class="built_in">BOOL</span> *stop) &#123;</span><br><span class="line">    [<span class="keyword">self</span> propBlockForKey:key isShadowView:<span class="literal">YES</span>](shadowView, json) = &#123;</span><br><span class="line">        RCTPropBlockDictionary *propBlocks = isShadowView ? _shadowPropBlocks : _viewPropBlocks;</span><br><span class="line">        RCTPropBlock propBlock = propBlocks[name];</span><br><span class="line">        <span class="keyword">if</span> (!propBlock) &#123;</span><br><span class="line">            创建props的block，也是通过runtime获取对应方法名，通过<span class="built_in">NSInvocation</span>来完成调用，具体的有兴趣可以去看看</span><br><span class="line">            propBlock = [<span class="keyword">self</span> createPropBlock:name isShadowView:isShadowView];</span><br><span class="line"></span><br><span class="line">            propBlocks[name] = [propBlock <span class="keyword">copy</span>];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> propBlock;</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>创建完视图后，开始设置每个视图的子视图（<code>setChildren:reactTags:</code>），不断地循环 createView 和 setChildren 直到整个页面渲染完毕</p>
+<h3 id="RCTTouchHandler"><a href="#RCTTouchHandler" class="headerlink" title="RCTTouchHandler"></a>RCTTouchHandler</h3><p>手势事件的捕获者并把事件传递给事件分发者RCTEventDispatcher进行分发</p>
+<h4 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h4><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">instancetype</span>)initWithBridge:(RCTBridge *)bridge &#123;</span><br><span class="line">  RCTAssertParam(bridge);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> ((<span class="keyword">self</span> = [<span class="keyword">super</span> initWithTarget:<span class="literal">nil</span> action:<span class="literal">NULL</span>])) &#123;</span><br><span class="line">    <span class="comment">// 每一个实例都有RCTEventDispatcher的实例，RCTEventDispatcher负责把事件传给JS，包括手势事件和输入框文本相关事件</span></span><br><span class="line">    _eventDispatcher = [bridge moduleForClass:[RCTEventDispatcher <span class="keyword">class</span>]];</span><br><span class="line"></span><br><span class="line">    _nativeTouches = [<span class="built_in">NSMutableOrderedSet</span> new];</span><br><span class="line">    _reactTouches = [<span class="built_in">NSMutableArray</span> new];</span><br><span class="line">    _touchViews = [<span class="built_in">NSMutableArray</span> new];</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 落在控件内的事件不被取消，任何事件都被立即处理</span></span><br><span class="line">    <span class="keyword">self</span>.cancelsTouchesInView = <span class="literal">NO</span>;</span><br><span class="line">    <span class="keyword">self</span>.delaysTouchesBegan = <span class="literal">NO</span>; <span class="comment">// This is default value.</span></span><br><span class="line">    <span class="keyword">self</span>.delaysTouchesEnded = <span class="literal">NO</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">self</span>.delegate = <span class="keyword">self</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">self</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当有点击事件时，<code>RCTEventDispatcher</code>调用<code>sendEvent:</code>方法,加入到事件队列中，开始调用<code>dispatchEvent:</code>方法，调用JS对应方法<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[_bridge enqueueJSCall:[[event <span class="keyword">class</span>] moduleDotMethod] args:[event arguments]]; <span class="comment">// event 有view的reactTag，以便JS中查找到对应方法</span></span><br></pre></td></tr></table></figure></p>
+<p>enqueueJSCall: <code>RCTEventEmitter.receiveTouches</code>，事实上是RN里RCTEventEmitter的监听事件负责分发<br>args: <code>RCTNormalizeInputEventName(_eventName), _reactTouches, _changedIndexes</code></p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)sendEvent:(<span class="keyword">id</span>&lt;RCTEvent&gt;)event &#123;</span><br><span class="line">  [_observersLock lock];</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">id</span>&lt;RCTEventDispatcherObserver&gt; observer <span class="keyword">in</span> _observers) &#123;</span><br><span class="line">    [observer eventDispatcherWillDispatchEvent:event];</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  [_observersLock unlock];</span><br><span class="line"></span><br><span class="line">  [_eventQueueLock lock];</span><br><span class="line"></span><br><span class="line">  <span class="built_in">NSNumber</span> *eventID = RCTGetEventID(event);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">id</span>&lt;RCTEvent&gt; previousEvent = _events[eventID];</span><br><span class="line">  <span class="keyword">if</span> (previousEvent) &#123;</span><br><span class="line">    RCTAssert([event canCoalesce], <span class="string">@"Got event %@ which cannot be coalesced, but has the same eventID %@ as the previous event %@"</span>, event, eventID, previousEvent);</span><br><span class="line">    event = [previousEvent coalesceWithEvent:event];</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    [_eventQueue addObject:eventID];</span><br><span class="line">  &#125;</span><br><span class="line">  _events[eventID] = event;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">BOOL</span> scheduleEventsDispatch = <span class="literal">NO</span>;</span><br><span class="line">  <span class="keyword">if</span> (!_eventsDispatchScheduled) &#123;</span><br><span class="line">    _eventsDispatchScheduled = <span class="literal">YES</span>;</span><br><span class="line">    scheduleEventsDispatch = <span class="literal">YES</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// We have to release the lock before dispatching block with events,</span></span><br><span class="line">  <span class="comment">// since dispatchBlock: can be executed synchronously on the same queue.</span></span><br><span class="line">  <span class="comment">// (This is happening when chrome debugging is turned on.)</span></span><br><span class="line">  [_eventQueueLock unlock];</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (scheduleEventsDispatch) &#123;</span><br><span class="line">    [_bridge dispatchBlock:^&#123;</span><br><span class="line">        [<span class="keyword">self</span> flushEventsQueue] = &#123;</span><br><span class="line">            [_eventQueueLock lock];</span><br><span class="line">            <span class="built_in">NSDictionary</span> *events = _events;</span><br><span class="line">            _events = [<span class="built_in">NSMutableDictionary</span> new];</span><br><span class="line">            <span class="built_in">NSMutableArray</span> *eventQueue = _eventQueue;</span><br><span class="line">            _eventQueue = [<span class="built_in">NSMutableArray</span> new];</span><br><span class="line">            _eventsDispatchScheduled = <span class="literal">NO</span>;</span><br><span class="line">            [_eventQueueLock unlock];</span><br><span class="line"></span><br><span class="line">            <span class="keyword">for</span> (<span class="built_in">NSNumber</span> *eventId <span class="keyword">in</span> eventQueue) &#123;</span><br><span class="line">                [<span class="keyword">self</span> dispatchEvent:events[eventId]] = &#123;</span><br><span class="line">                    [_bridge enqueueJSCall:[[event <span class="keyword">class</span>] moduleDotMethod] args:[event arguments]];</span><br><span class="line">                &#125;;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125; queue:RCTJSThread];</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当有输入事件时，<code>RCTEventDispatcher</code>则会调用<code>sendTextEventWithType:reactTag:text:key:eventCount:</code>方法</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)sendTextEventWithType:(RCTTextEventType)type</span><br><span class="line">                     reactTag:(<span class="built_in">NSNumber</span> *)reactTag</span><br><span class="line">                         text:(<span class="built_in">NSString</span> *)text</span><br><span class="line">                          key:(<span class="built_in">NSString</span> *)key</span><br><span class="line">                   eventCount:(<span class="built_in">NSInteger</span>)eventCount</span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">static</span> <span class="built_in">NSString</span> *events[] = &#123;</span><br><span class="line">    <span class="string">@"focus"</span>, <span class="comment">// 获取焦点</span></span><br><span class="line">    <span class="string">@"blur"</span>, <span class="comment">// 终止编辑之后</span></span><br><span class="line">    <span class="string">@"change"</span>,  <span class="comment">// 文本改变</span></span><br><span class="line">    <span class="string">@"submitEditing"</span>, <span class="comment">// 当按下右下角最后一个键时</span></span><br><span class="line">    <span class="string">@"endEditing"</span>, <span class="comment">// 终止编辑</span></span><br><span class="line">    <span class="string">@"keyPress"</span> <span class="comment">// 按下键盘上的键</span></span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">NSMutableDictionary</span> *body = [[<span class="built_in">NSMutableDictionary</span> alloc] initWithDictionary:@&#123;</span><br><span class="line">    <span class="string">@"eventCount"</span>: @(eventCount),</span><br><span class="line">    <span class="string">@"target"</span>: reactTag</span><br><span class="line">  &#125;];</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (text) &#123;</span><br><span class="line">    body[<span class="string">@"text"</span>] = text;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (key) &#123;</span><br><span class="line">    <span class="keyword">if</span> (key.length == <span class="number">0</span>) &#123;</span><br><span class="line">      key = <span class="string">@"Backspace"</span>; <span class="comment">// 当按下删除键时</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">switch</span> ([key characterAtIndex:<span class="number">0</span>]) &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="string">'\t'</span>:</span><br><span class="line">          key = <span class="string">@"Tab"</span>;</span><br><span class="line">          <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="string">'\n'</span>:</span><br><span class="line">          key = <span class="string">@"Enter"</span>; </span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">          <span class="keyword">break</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    body[<span class="string">@"key"</span>] = key;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#pragma clang diagnostic push</span></span><br><span class="line"><span class="meta">#pragma clang diagnostic ignored <span class="meta-string">"-Wdeprecated-declarations"</span></span></span><br><span class="line">  [<span class="keyword">self</span> sendInputEventWithName:events[type] body:body] = &#123;</span><br><span class="line">        name = RCTNormalizeInputEventName(name);</span><br><span class="line">        <span class="comment">// 由于输入比较慢，不需要考虑并发的问题</span></span><br><span class="line">        [_bridge enqueueJSCall:<span class="string">@"RCTEventEmitter"</span></span><br><span class="line">                        method:<span class="string">@"receiveEvent"</span></span><br><span class="line">                            args:body ? @[body[<span class="string">@"target"</span>], name, body] : @[body[<span class="string">@"target"</span>], name]</span><br><span class="line">                    completion:<span class="literal">NULL</span>];</span><br><span class="line">  &#125;;</span><br><span class="line"><span class="meta">#pragma clang diagnostic pop</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>从上面的代码可以看出输入事件和手势事件最终都是调用<code>bridge enqueueJSCall:method:args:completion</code>方法，模块都是RCTEventEmitter，但是方法名一个是 receiveEvent，另一个是 receiveTouches。</p>
+
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+      
+    </div>
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    Richie Zhang
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://blog.msrily.com/2018/09/29/blog22/" title="React Native 实现原理">https://blog.msrily.com/2018/09/29/blog22/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+            <a href="/tags/React-Native/" rel="tag"># React Native</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/09/12/blog21/" rel="next" title="GCD 队列探索">
+                <i class="fa fa-chevron-left"></i> GCD 队列探索
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.gif"
+                alt="Richie Zhang" />
+            
+              <p class="site-author-name" itemprop="name">Richie Zhang</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:lylaut@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#RCTRootView-创建前到中"><span class="nav-number">1.</span> <span class="nav-text">RCTRootView 创建前到中</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#获取URL"><span class="nav-number">1.1.</span> <span class="nav-text">获取URL</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#创建-Bridge"><span class="nav-number">1.2.</span> <span class="nav-text">创建 Bridge</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#RCTBridge-创建"><span class="nav-number">1.2.1.</span> <span class="nav-text">RCTBridge 创建</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#RCTBridge-setUp"><span class="nav-number">1.2.2.</span> <span class="nav-text">RCTBridge setUp</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#RCTCxxBridge-创建"><span class="nav-number">1.2.3.</span> <span class="nav-text">RCTCxxBridge 创建</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#RCTCxxBridge-start"><span class="nav-number">1.2.4.</span> <span class="nav-text">RCTCxxBridge start</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#RCTModuleClasses"><span class="nav-number">1.2.4.1.</span> <span class="nav-text">RCTModuleClasses</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#initializeBridge"><span class="nav-number">1.2.4.2.</span> <span class="nav-text">_initializeBridge</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#loadSource"><span class="nav-number">1.2.4.3.</span> <span class="nav-text">loadSource</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RCTRootView-创建"><span class="nav-number">2.</span> <span class="nav-text">RCTRootView 创建</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#bundleFinishedLoading"><span class="nav-number">2.1.</span> <span class="nav-text">bundleFinishedLoading</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RCTUIManager"><span class="nav-number">3.</span> <span class="nav-text">RCTUIManager</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#setBridge"><span class="nav-number">3.1.</span> <span class="nav-text">setBridge</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#registerRootView"><span class="nav-number">3.2.</span> <span class="nav-text">registerRootView</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#layoutAndMount"><span class="nav-number">3.3.</span> <span class="nav-text">_layoutAndMount</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RCTTouchHandler"><span class="nav-number">4.</span> <span class="nav-text">RCTTouchHandler</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#初始化"><span class="nav-number">4.1.</span> <span class="nav-text">初始化</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Richie Zhang</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
