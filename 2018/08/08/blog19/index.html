@@ -105,18 +105,18 @@
 
 
 
-<meta name="description" content="一只青蛙一次可以跳上1级台阶，也可以跳上2级。求该青蛙跳上一个n级的台阶总共有多少种跳法。 分析： 青蛙每次只会跳1级或2级，则跳n级必定是所有的1级和2级之和 跳上1级只有1种跳法（0-&amp;gt;1） =&amp;gt; f(1)=1 跳上2级有2种跳法（0-&amp;gt;1-&amp;gt;2,0-&amp;gt;2）=&amp;gt; f(2)=f(1)+f(0) 跳上3级有3种跳法（0-&amp;gt;1-&amp;gt;2-&amp;gt;3,">
+<meta name="description" content="一只青蛙一次可以跳上1级台阶，也可以跳上2级。求该青蛙跳上一个n级的台阶总共有多少种跳法。 分析： 青蛙每次只会跳1级或2级，则跳n级必定是所有的1级和2级之和 设f(0)=1 跳上1级只有1种跳法（0-&amp;gt;1） =&amp;gt; f(1)=1 跳上2级有2种跳法（0-&amp;gt;1-&amp;gt;2,0-&amp;gt;2）=&amp;gt; f(2)=f(1)+f(0) =&amp;gt; f(2)=2 跳上3级有3种跳法">
 <meta name="keywords" content="C&#x2F;C++">
 <meta property="og:type" content="article">
 <meta property="og:title" content="斐波那契数列及优化和计算字符串中最长非重复子串长度">
 <meta property="og:url" content="https://blog.msrily.com/2018/08/08/blog19/index.html">
 <meta property="og:site_name" content="RICHIE">
-<meta property="og:description" content="一只青蛙一次可以跳上1级台阶，也可以跳上2级。求该青蛙跳上一个n级的台阶总共有多少种跳法。 分析： 青蛙每次只会跳1级或2级，则跳n级必定是所有的1级和2级之和 跳上1级只有1种跳法（0-&amp;gt;1） =&amp;gt; f(1)=1 跳上2级有2种跳法（0-&amp;gt;1-&amp;gt;2,0-&amp;gt;2）=&amp;gt; f(2)=f(1)+f(0) 跳上3级有3种跳法（0-&amp;gt;1-&amp;gt;2-&amp;gt;3,">
+<meta property="og:description" content="一只青蛙一次可以跳上1级台阶，也可以跳上2级。求该青蛙跳上一个n级的台阶总共有多少种跳法。 分析： 青蛙每次只会跳1级或2级，则跳n级必定是所有的1级和2级之和 设f(0)=1 跳上1级只有1种跳法（0-&amp;gt;1） =&amp;gt; f(1)=1 跳上2级有2种跳法（0-&amp;gt;1-&amp;gt;2,0-&amp;gt;2）=&amp;gt; f(2)=f(1)+f(0) =&amp;gt; f(2)=2 跳上3级有3种跳法">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-10-08T06:01:25.617Z">
+<meta property="og:updated_time" content="2018-10-08T06:05:34.783Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="斐波那契数列及优化和计算字符串中最长非重复子串长度">
-<meta name="twitter:description" content="一只青蛙一次可以跳上1级台阶，也可以跳上2级。求该青蛙跳上一个n级的台阶总共有多少种跳法。 分析： 青蛙每次只会跳1级或2级，则跳n级必定是所有的1级和2级之和 跳上1级只有1种跳法（0-&amp;gt;1） =&amp;gt; f(1)=1 跳上2级有2种跳法（0-&amp;gt;1-&amp;gt;2,0-&amp;gt;2）=&amp;gt; f(2)=f(1)+f(0) 跳上3级有3种跳法（0-&amp;gt;1-&amp;gt;2-&amp;gt;3,">
+<meta name="twitter:description" content="一只青蛙一次可以跳上1级台阶，也可以跳上2级。求该青蛙跳上一个n级的台阶总共有多少种跳法。 分析： 青蛙每次只会跳1级或2级，则跳n级必定是所有的1级和2级之和 设f(0)=1 跳上1级只有1种跳法（0-&amp;gt;1） =&amp;gt; f(1)=1 跳上2级有2种跳法（0-&amp;gt;1-&amp;gt;2,0-&amp;gt;2）=&amp;gt; f(2)=f(1)+f(0) =&amp;gt; f(2)=2 跳上3级有3种跳法">
 
 
 
@@ -371,8 +371,9 @@
         <p>一只青蛙一次可以跳上1级台阶，也可以跳上2级。求该青蛙跳上一个n级的台阶总共有多少种跳法。</p>
 <p>分析：</p>
 <pre><code>青蛙每次只会跳1级或2级，则跳n级必定是所有的1级和2级之和
+设f(0)=1
 跳上1级只有1种跳法（0-&gt;1） =&gt; f(1)=1
-跳上2级有2种跳法（0-&gt;1-&gt;2,0-&gt;2）=&gt; f(2)=f(1)+f(0)
+跳上2级有2种跳法（0-&gt;1-&gt;2,0-&gt;2）=&gt; f(2)=f(1)+f(0) =&gt; f(2)=2
 跳上3级有3种跳法（0-&gt;1-&gt;2-&gt;3,0-&gt;1-&gt;3,0-&gt;2-&gt;3）=&gt; f(3)=f(2)+f(1)
 跳上4级有5种跳法（0-&gt;1-&gt;2-&gt;3-&gt;4,0-&gt;1-&gt;2-&gt;4,0-&gt;1-&gt;3-&gt;4,0-&gt;2-&gt;3-&gt;4,0-&gt;2-&gt;4）=&gt; f(4)=f(3)+f(2)
 ...
