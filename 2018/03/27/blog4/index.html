@@ -94,7 +94,7 @@
 
 
 
-  <meta name="keywords" content="iOS," />
+  <meta name="keywords" content="Shell," />
 
 
 
@@ -105,25 +105,18 @@
 
 
 
-<meta name="description" content="Today Extension1.点击文件，选择如下图">
-<meta name="keywords" content="iOS">
+<meta name="description" content="安装 EPEL 源123yum install epel-releaseyum -y install yum-utilsyum-config-manager --enable rhui-REGION-rhel-server-extras rhui-REGION-rhel-server-optional 安装C1yum install gcc 安装Redis123456curl http://dow">
+<meta name="keywords" content="Shell">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Today Extension和3D Touch">
-<meta property="og:url" content="https://blog.msrily.com/2018/04/13/blog9/index.html">
+<meta property="og:title" content="搭建redis服务器">
+<meta property="og:url" content="https://blog.msrily.com/2018/03/27/blog4/index.html">
 <meta property="og:site_name" content="RICHIE">
-<meta property="og:description" content="Today Extension1.点击文件，选择如下图">
+<meta property="og:description" content="安装 EPEL 源123yum install epel-releaseyum -y install yum-utilsyum-config-manager --enable rhui-REGION-rhel-server-extras rhui-REGION-rhel-server-optional 安装C1yum install gcc 安装Redis123456curl http://dow">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://blog.msrily.com/images/1523602659.png">
-<meta property="og:image" content="https://blog.msrily.com/images/1523603517.png">
-<meta property="og:image" content="https://blog.msrily.com/images/1523603742.png">
-<meta property="og:image" content="https://blog.msrily.com/images/1523604601.png">
-<meta property="og:image" content="https://blog.msrily.com/images/1523605177.png">
-<meta property="og:image" content="https://blog.msrily.com/images/1523605834.png">
-<meta property="og:updated_time" content="2018-09-26T09:28:03.198Z">
+<meta property="og:updated_time" content="2018-10-08T02:38:13.102Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Today Extension和3D Touch">
-<meta name="twitter:description" content="Today Extension1.点击文件，选择如下图">
-<meta name="twitter:image" content="https://blog.msrily.com/images/1523602659.png">
+<meta name="twitter:title" content="搭建redis服务器">
+<meta name="twitter:description" content="安装 EPEL 源123yum install epel-releaseyum -y install yum-utilsyum-config-manager --enable rhui-REGION-rhel-server-extras rhui-REGION-rhel-server-optional 安装C1yum install gcc 安装Redis123456curl http://dow">
 
 
 
@@ -153,13 +146,13 @@
 
 
 
-  <link rel="canonical" href="https://blog.msrily.com/2018/04/13/blog9/"/>
+  <link rel="canonical" href="https://blog.msrily.com/2018/03/27/blog4/"/>
 
 
 
 
 
-  <title>Today Extension和3D Touch | RICHIE</title>
+  <title>搭建redis服务器 | RICHIE</title>
   
 
 
@@ -286,7 +279,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://blog.msrily.com/2018/04/13/blog9/">
+    <link itemprop="mainEntityOfPage" href="https://blog.msrily.com/2018/03/27/blog4/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Richie Zhang">
@@ -303,7 +296,7 @@
 
         
         
-          <h2 class="post-title" itemprop="name headline">Today Extension和3D Touch</h2>
+          <h2 class="post-title" itemprop="name headline">搭建redis服务器</h2>
         
 
         <div class="post-meta">
@@ -315,8 +308,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-13T14:38:52+08:00">
-                2018-04-13
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-27T11:03:49+08:00">
+                2018-03-27
               </time>
             
 
@@ -338,8 +331,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/原创/" itemprop="url" rel="index">
-                    <span itemprop="name">原创</span>
+                  <a href="/categories/笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">笔记</span>
                   </a>
                 </span>
 
@@ -375,15 +368,74 @@
       
 
       
-        <h3 id="Today-Extension"><a href="#Today-Extension" class="headerlink" title="Today Extension"></a>Today Extension</h3><h5 id="1-点击文件，选择如下图"><a href="#1-点击文件，选择如下图" class="headerlink" title="1.点击文件，选择如下图"></a>1.点击文件，选择如下图<br></h5><p><img src="/images/1523602659.png" alt=""><br><a id="more"></a><br><br><br><img src="/images/1523603517.png" alt=""><br><br><br><img src="/images/1523603742.png" alt=""></p>
-<h5 id="2-选择scheme为demo，run之后显示“hello-world”"><a href="#2-选择scheme为demo，run之后显示“hello-world”" class="headerlink" title="2.选择scheme为demo，run之后显示“hello world”"></a>2.选择scheme为demo，run之后显示“hello world”<br></h5><p>在MainInterface.storyboard里或在TodayViewController里的viewdidload方法里布局UI（跟app开发一样）<br></p>
-<h5 id="3-当需要与主app共享数据时，需配置App-Group，具体如下图"><a href="#3-当需要与主app共享数据时，需配置App-Group，具体如下图" class="headerlink" title="3.当需要与主app共享数据时，需配置App Group，具体如下图"></a>3.当需要与主app共享数据时，需配置App Group，具体如下图<br></h5><p><img src="/images/1523604601.png" alt=""><br>注：App Group为空时，请点左下角的”+”<br><br><figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> userDefault = <span class="type">UserDefaults</span>(suiteName: <span class="string">"group.shine"</span>)!</span><br></pre></td></tr></table></figure></p>
-<p>使用userDefault来存储需要共享的数据<br></p>
-<h5 id="4-当extension需要调用主app的方法时通过URL方式"><a href="#4-当extension需要调用主app的方法时通过URL方式" class="headerlink" title="4.当extension需要调用主app的方法时通过URL方式"></a>4.当extension需要调用主app的方法时通过URL方式</h5><figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">self</span>.extensionContext?.<span class="keyword">open</span>(<span class="type">URL</span>(string: <span class="string">"shineDemo://todayExtension?index=0"</span>)!, completionHandler: &#123; (res) <span class="keyword">in</span></span><br><span class="line">            </span><br><span class="line">        &#125;)</span><br></pre></td></tr></table></figure>
-<p>主App配置URL的scheme<br><br><img src="/images/1523605177.png" alt=""></p>
-<h3 id="3D-Touch"><a href="#3D-Touch" class="headerlink" title="3D Touch"></a>3D Touch</h3><p>上代码（动态3D Touch方式）<br><figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">guard</span> <span class="keyword">let</span> filePath = <span class="type">Bundle</span>.main.url(forResource: <span class="string">"3dtouchdemo"</span>, withExtension: <span class="string">"json"</span>),</span><br><span class="line">    <span class="keyword">let</span> data = <span class="keyword">try</span>? <span class="type">Data</span>.<span class="keyword">init</span>(contentsOf: filePath),</span><br><span class="line">        <span class="keyword">let</span> json = (<span class="keyword">try</span>? <span class="type">JSONSerialization</span>.jsonObject(with: data, options: <span class="type">JSONSerialization</span>.<span class="type">ReadingOptions</span>.mutableContainers)) <span class="keyword">as</span>? [[<span class="type">String</span>: <span class="type">Any</span>]] <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">&#125;</span><br><span class="line">    </span><br><span class="line"><span class="keyword">var</span> items = [<span class="type">UIApplicationShortcutItem</span>]()</span><br><span class="line"><span class="keyword">for</span> jsonItem <span class="keyword">in</span> json &#123;</span><br><span class="line">    <span class="keyword">let</span> icon = <span class="type">UIApplicationShortcutIcon</span>(type: shortcutIconWithType(jsonItem[<span class="string">"icon"</span>] <span class="keyword">as</span>! <span class="type">String</span>))</span><br><span class="line">    <span class="keyword">let</span> item = <span class="type">UIApplicationShortcutItem</span>(type: jsonItem[<span class="string">"icon"</span>] <span class="keyword">as</span>! <span class="type">String</span>, localizedTitle: jsonItem[<span class="string">"title"</span>] <span class="keyword">as</span>! <span class="type">String</span>, localizedSubtitle: (jsonItem[<span class="string">"subtitle"</span>] <span class="keyword">as</span>! <span class="type">String</span>), icon: icon, userInfo: jsonItem[<span class="string">"userInfo"</span>] <span class="keyword">as</span>? [<span class="type">AnyHashable</span> : <span class="type">Any</span>])</span><br><span class="line">    items.append(item)</span><br><span class="line">&#125;</span><br><span class="line"><span class="type">UIApplication</span>.shared.shortcutItems = items</span><br></pre></td></tr></table></figure></p>
-<p>附：3dtouchdemo.json<br><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">[&#123;</span><br><span class="line">    <span class="attr">"icon"</span>: <span class="string">"add"</span>,</span><br><span class="line">    <span class="attr">"title"</span>: <span class="string">"增加"</span>,</span><br><span class="line">    <span class="attr">"subtitle"</span>: <span class="string">"增加-add"</span>,</span><br><span class="line">    <span class="attr">"userInfo"</span>: &#123;</span><br><span class="line">        <span class="attr">"type"</span>: <span class="string">"add"</span></span><br><span class="line">    &#125;</span><br><span class="line"> &#125;,&#123;</span><br><span class="line">     <span class="attr">"icon"</span>: <span class="string">"alarm"</span>,</span><br><span class="line">     <span class="attr">"title"</span>: <span class="string">"闹钟"</span>,</span><br><span class="line">     <span class="attr">"subtitle"</span>: <span class="string">"闹钟-alarm"</span>,</span><br><span class="line">     <span class="attr">"userInfo"</span>: &#123;</span><br><span class="line">         <span class="attr">"type"</span>: <span class="string">"alarm"</span></span><br><span class="line">     &#125;</span><br><span class="line"> &#125;]</span><br></pre></td></tr></table></figure></p>
-<p>在AppDelegate委托方法里实现点击后的事件处理，可以通过UIApplicationShortcutItem的type来判断不同的Item<br><br><img src="/images/1523605834.png" alt=""></p>
+        <h4 id="安装-EPEL-源"><a href="#安装-EPEL-源" class="headerlink" title="安装 EPEL 源"></a>安装 EPEL 源</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">yum install epel-release</span><br><span class="line">yum -y install yum-utils</span><br><span class="line">yum-config-manager --<span class="built_in">enable</span> rhui-REGION-rhel-server-extras rhui-REGION-rhel-server-optional</span><br></pre></td></tr></table></figure>
+<h4 id="安装C"><a href="#安装C" class="headerlink" title="安装C"></a>安装C</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install gcc</span><br></pre></td></tr></table></figure>
+<h4 id="安装Redis"><a href="#安装Redis" class="headerlink" title="安装Redis"></a>安装Redis</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">curl http://download.redis.io/releases/redis-4.0.1.tar.gz -o redis-4.0.1.tar.gz</span><br><span class="line">tar xzf redis-4.0.1.tar.gz</span><br><span class="line"><span class="built_in">cd</span> redis-4.0.1</span><br><span class="line">make MALLOC=libc</span><br><span class="line"></span><br><span class="line">./redis-server ./redis.conf</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<p>开放端口<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">firewall-cmd --zone=public --add-port=6379/tcp --permanent</span><br><span class="line">firewall-cmd --zone=public --add-port=6379/udp --permanent</span><br><span class="line">firewall-cmd --reload</span><br></pre></td></tr></table></figure></p>
+<p><br></p>
+<h3 id="redis-conf-配置项说明如下："><a href="#redis-conf-配置项说明如下：" class="headerlink" title="redis.conf 配置项说明如下："></a>redis.conf 配置项说明如下：</h3><ol>
+<li><p>Redis默认不是以守护进程的方式运行，可以通过该配置项修改，使用yes启用守护进程<br>daemonize no</p>
+</li>
+<li><p>当Redis以守护进程方式运行时，Redis默认会把pid写入/var/run/redis.pid文件，可以通过pidfile指定<br>pidfile /var/run/redis.pid</p>
+</li>
+<li><p>指定Redis监听端口，默认端口为6379，作者在自己的一篇博文中解释了为什么选用6379作为默认端口，因为6379在手机按键上MERZ对应的号码，而MERZ取自意大利歌女Alessia Merz的名字<br>port 6379</p>
+</li>
+<li><p>绑定的主机地址<br>bind 127.0.0.1</p>
+</li>
+<li><p>当客户端闲置多长时间后关闭连接，如果指定为0，表示关闭该功能<br>timeout 300</p>
+</li>
+<li><p>指定日志记录级别，Redis总共支持四个级别：debug、verbose、notice、warning，默认为verbose<br>loglevel verbose</p>
+</li>
+<li><p>日志记录方式，默认为标准输出，如果配置Redis为守护进程方式运行，而这里又配置为日志记录方式为标准输出，则日志将会发送给/dev/null<br>logfile stdout</p>
+</li>
+<li><p>设置数据库的数量，默认数据库为0，可以使用SELECT <dbid>命令在连接上指定数据库id<br>databases 16</dbid></p>
+</li>
+<li><p>指定在多长时间内，有多少次更新操作，就将数据同步到数据文件，可以多个条件配合<br>save <seconds> <changes><br>Redis默认配置文件中提供了三个条件：<br>save 900 1<br>save 300 10<br>save 60 10000<br>分别表示900秒（15分钟）内有1个更改，300秒（5分钟）内有10个更改以及60秒内有10000个更改。</changes></seconds></p>
+</li>
+<li><p>指定存储至本地数据库时是否压缩数据，默认为yes，Redis采用LZF压缩，如果为了节省CPU时间，可以关闭该选项，但会导致数据库文件变的巨大<br>rdbcompression yes</p>
+</li>
+<li><p>指定本地数据库文件名，默认值为dump.rdb<br>dbfilename dump.rdb</p>
+</li>
+<li><p>指定本地数据库存放目录<br>dir ./</p>
+</li>
+<li><p>设置当本机为slav服务时，设置master服务的IP地址及端口，在Redis启动时，它会自动从master进行数据同步<br>slaveof <masterip> <masterport></masterport></masterip></p>
+</li>
+<li><p>当master服务设置了密码保护时，slav服务连接master的密码<br>masterauth <master-password></master-password></p>
+</li>
+<li><p>设置Redis连接密码，如果配置了连接密码，客户端在连接Redis时需要通过AUTH <password>命令提供密码，默认关闭<br>requirepass foobared</password></p>
+</li>
+<li><p>设置同一时间最大客户端连接数，默认无限制，Redis可以同时打开的客户端连接数为Redis进程可以打开的最大文件描述符数，如果设置 maxclients 0，表示不作限制。当客户端连接数到达限制时，Redis会关闭新的连接并向客户端返回max number of clients reached错误信息<br>maxclients 128</p>
+</li>
+<li><p>指定Redis最大内存限制，Redis在启动时会把数据加载到内存中，达到最大内存后，Redis会先尝试清除已到期或即将到期的Key，当此方法处理 后，仍然到达最大内存设置，将无法再进行写入操作，但仍然可以进行读取操作。Redis新的vm机制，会把Key存放内存，Value会存放在swap区<br>maxmemory <bytes></bytes></p>
+</li>
+<li><p>指定是否在每次更新操作后进行日志记录，Redis在默认情况下是异步的把数据写入磁盘，如果不开启，可能会在断电时导致一段时间内的数据丢失。因为 redis本身同步数据文件是按上面save条件来同步的，所以有的数据会在一段时间内只存在于内存中。默认为no<br>appendonly no</p>
+</li>
+<li><p>指定更新日志文件名，默认为appendonly.aof<br>appendfilename appendonly.aof</p>
+</li>
+<li><p>指定更新日志条件，共有3个可选值：<br>no：表示等操作系统进行数据缓存同步到磁盘（快）<br>always：表示每次更新操作后手动调用fsync()将数据写到磁盘（慢，安全）<br>everysec：表示每秒同步一次（折衷，默认值）<br>appendfsync everysec</p>
+</li>
+<li><p>指定是否启用虚拟内存机制，默认值为no，简单的介绍一下，VM机制将数据分页存放，由Redis将访问量较少的页即冷数据swap到磁盘上，访问多的页面由磁盘自动换出到内存中（在后面的文章我会仔细分析Redis的VM机制）<br>vm-enabled no</p>
+</li>
+<li><p>虚拟内存文件路径，默认值为/tmp/redis.swap，不可多个Redis实例共享<br>vm-swap-file /tmp/redis.swap</p>
+</li>
+<li><p>将所有大于vm-max-memory的数据存入虚拟内存,无论vm-max-memory设置多小,所有索引数据都是内存存储的(Redis的索引数据 就是keys),也就是说,当vm-max-memory设置为0的时候,其实是所有value都存在于磁盘。默认值为0<br>vm-max-memory 0</p>
+</li>
+<li><p>Redis swap文件分成了很多的page，一个对象可以保存在多个page上面，但一个page上不能被多个对象共享，vm-page-size是要根据存储的 数据大小来设定的，作者建议如果存储很多小对象，page大小最好设置为32或者64bytes；如果存储很大大对象，则可以使用更大的page，如果不 确定，就使用默认值<br>vm-page-size 32</p>
+</li>
+<li><p>设置swap文件中的page数量，由于页表（一种表示页面空闲或使用的bitmap）是在放在内存中的，，在磁盘上每8个pages将消耗1byte的内存。<br>vm-pages 134217728</p>
+</li>
+<li><p>设置访问swap文件的线程数,最好不要超过机器的核数,如果设置为0,那么所有对swap文件的操作都是串行的，可能会造成比较长时间的延迟。默认值为4<br>vm-max-threads 4</p>
+</li>
+<li><p>设置在向客户端应答时，是否把较小的包合并为一个包发送，默认为开启<br>glueoutputbuf yes</p>
+</li>
+<li><p>指定在超过一定的数量或者最大的元素超过某一临界值时，采用一种特殊的哈希算法<br>hash-max-zipmap-entries 64<br>hash-max-zipmap-value 512</p>
+</li>
+<li><p>指定是否激活重置哈希，默认为开启（后面在介绍Redis的哈希算法时具体介绍）<br>activerehashing yes</p>
+</li>
+<li><p>指定包含其它的配置文件，可以在同一主机上多个Redis实例之间使用同一份配置文件，而同时各个实例又拥有自己的特定配置文件<br>include /path/to/local.conf</p>
+</li>
+</ol>
 
       
     </div>
@@ -414,7 +466,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://blog.msrily.com/2018/04/13/blog9/" title="Today Extension和3D Touch">https://blog.msrily.com/2018/04/13/blog9/</a>
+    <a href="https://blog.msrily.com/2018/03/27/blog4/" title="搭建redis服务器">https://blog.msrily.com/2018/03/27/blog4/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -429,7 +481,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/iOS/" rel="tag"># iOS</a>
+            <a href="/tags/Shell/" rel="tag"># Shell</a>
           
         </div>
       
@@ -442,8 +494,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/03/27/blog8/" rel="next" title="iOS app进入后台毛玻璃效果">
-                <i class="fa fa-chevron-left"></i> iOS app进入后台毛玻璃效果
+              <a href="/2018/03/27/blog3/" rel="next" title="MySQL大数据量分页性能优化">
+                <i class="fa fa-chevron-left"></i> MySQL大数据量分页性能优化
               </a>
             
           </div>
@@ -452,8 +504,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/05/09/blog10/" rel="prev" title="iOS SnapKit源码解析">
-                iOS SnapKit源码解析 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/03/27/blog5/" rel="prev" title="搭建memcached服务器">
+                搭建memcached服务器 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -600,7 +652,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Today-Extension"><span class="nav-number">1.</span> <span class="nav-text">Today Extension</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-点击文件，选择如下图"><span class="nav-number">1.0.1.</span> <span class="nav-text">1.点击文件，选择如下图</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-选择scheme为demo，run之后显示“hello-world”"><span class="nav-number">1.0.2.</span> <span class="nav-text">2.选择scheme为demo，run之后显示“hello world”</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-当需要与主app共享数据时，需配置App-Group，具体如下图"><span class="nav-number">1.0.3.</span> <span class="nav-text">3.当需要与主app共享数据时，需配置App Group，具体如下图</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-当extension需要调用主app的方法时通过URL方式"><span class="nav-number">1.0.4.</span> <span class="nav-text">4.当extension需要调用主app的方法时通过URL方式</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3D-Touch"><span class="nav-number">2.</span> <span class="nav-text">3D Touch</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#安装-EPEL-源"><span class="nav-number">1.</span> <span class="nav-text">安装 EPEL 源</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#安装C"><span class="nav-number">2.</span> <span class="nav-text">安装C</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#安装Redis"><span class="nav-number">3.</span> <span class="nav-text">安装Redis</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#redis-conf-配置项说明如下："><span class="nav-number"></span> <span class="nav-text">redis.conf 配置项说明如下：</span></a></div>
             
 
           </div>
