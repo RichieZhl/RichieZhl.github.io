@@ -818,7 +818,17 @@
 
       
         
-          <h3 id="斐波那契数列及优化（不考虑大数）"><a href="#斐波那契数列及优化（不考虑大数）" class="headerlink" title="斐波那契数列及优化（不考虑大数）"></a>斐波那契数列及优化（不考虑大数）</h3><ul>
+          <p>一只青蛙一次可以跳上1级台阶，也可以跳上2级。求该青蛙跳上一个n级的台阶总共有多少种跳法。</p>
+<p>分析：</p>
+<pre><code>青蛙每次只会跳1级或2级，则跳n级必定是所有的1级和2级之和
+跳上1级只有1种跳法（0-&gt;1） =&gt; f(1)=1
+跳上2级有2种跳法（0-&gt;1-&gt;2,0-&gt;2）=&gt; f(2)=f(1)+f(0)
+跳上3级有3种跳法（0-&gt;1-&gt;2-&gt;3,0-&gt;1-&gt;3,0-&gt;2-&gt;3）=&gt; f(3)=f(2)+f(1)
+跳上4级有5种跳法（0-&gt;1-&gt;2-&gt;3-&gt;4,0-&gt;1-&gt;2-&gt;4,0-&gt;1-&gt;3-&gt;4,0-&gt;2-&gt;3-&gt;4,0-&gt;2-&gt;4）=&gt; f(4)=f(3)+f(2)
+...
+跳上n级有:f(n)=f(n-1)+f(n-2)
+结果是斐波那契数列
+</code></pre><h3 id="斐波那契数列及优化（不考虑大数）"><a href="#斐波那契数列及优化（不考虑大数）" class="headerlink" title="斐波那契数列及优化（不考虑大数）"></a>斐波那契数列及优化（不考虑大数）</h3><ul>
 <li>常见递归实现</li>
 </ul>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">fibon</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (n &lt;= <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> fibon(n<span class="number">-1</span>) + fibon(n<span class="number">-2</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>

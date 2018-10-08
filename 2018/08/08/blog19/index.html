@@ -105,18 +105,18 @@
 
 
 
-<meta name="description" content="斐波那契数列及优化（不考虑大数） 常见递归实现  123456int fibon(int n) &amp;#123;    if (n &amp;lt;= 2) &amp;#123;        return 1;    &amp;#125;    return fibon(n-1) + fibon(n-2);&amp;#125;">
+<meta name="description" content="一只青蛙一次可以跳上1级台阶，也可以跳上2级。求该青蛙跳上一个n级的台阶总共有多少种跳法。 分析： 青蛙每次只会跳1级或2级，则跳n级必定是所有的1级和2级之和 跳上1级只有1种跳法（0-&amp;gt;1） =&amp;gt; f(1)=1 跳上2级有2种跳法（0-&amp;gt;1-&amp;gt;2,0-&amp;gt;2）=&amp;gt; f(2)=f(1)+f(0) 跳上3级有3种跳法（0-&amp;gt;1-&amp;gt;2-&amp;gt;3,">
 <meta name="keywords" content="C&#x2F;C++">
 <meta property="og:type" content="article">
 <meta property="og:title" content="斐波那契数列及优化和计算字符串中最长非重复子串长度">
 <meta property="og:url" content="https://blog.msrily.com/2018/08/08/blog19/index.html">
 <meta property="og:site_name" content="RICHIE">
-<meta property="og:description" content="斐波那契数列及优化（不考虑大数） 常见递归实现  123456int fibon(int n) &amp;#123;    if (n &amp;lt;= 2) &amp;#123;        return 1;    &amp;#125;    return fibon(n-1) + fibon(n-2);&amp;#125;">
+<meta property="og:description" content="一只青蛙一次可以跳上1级台阶，也可以跳上2级。求该青蛙跳上一个n级的台阶总共有多少种跳法。 分析： 青蛙每次只会跳1级或2级，则跳n级必定是所有的1级和2级之和 跳上1级只有1种跳法（0-&amp;gt;1） =&amp;gt; f(1)=1 跳上2级有2种跳法（0-&amp;gt;1-&amp;gt;2,0-&amp;gt;2）=&amp;gt; f(2)=f(1)+f(0) 跳上3级有3种跳法（0-&amp;gt;1-&amp;gt;2-&amp;gt;3,">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-10-08T02:32:38.975Z">
+<meta property="og:updated_time" content="2018-10-08T06:01:25.617Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="斐波那契数列及优化和计算字符串中最长非重复子串长度">
-<meta name="twitter:description" content="斐波那契数列及优化（不考虑大数） 常见递归实现  123456int fibon(int n) &amp;#123;    if (n &amp;lt;= 2) &amp;#123;        return 1;    &amp;#125;    return fibon(n-1) + fibon(n-2);&amp;#125;">
+<meta name="twitter:description" content="一只青蛙一次可以跳上1级台阶，也可以跳上2级。求该青蛙跳上一个n级的台阶总共有多少种跳法。 分析： 青蛙每次只会跳1级或2级，则跳n级必定是所有的1级和2级之和 跳上1级只有1种跳法（0-&amp;gt;1） =&amp;gt; f(1)=1 跳上2级有2种跳法（0-&amp;gt;1-&amp;gt;2,0-&amp;gt;2）=&amp;gt; f(2)=f(1)+f(0) 跳上3级有3种跳法（0-&amp;gt;1-&amp;gt;2-&amp;gt;3,">
 
 
 
@@ -368,7 +368,17 @@
       
 
       
-        <h3 id="斐波那契数列及优化（不考虑大数）"><a href="#斐波那契数列及优化（不考虑大数）" class="headerlink" title="斐波那契数列及优化（不考虑大数）"></a>斐波那契数列及优化（不考虑大数）</h3><ul>
+        <p>一只青蛙一次可以跳上1级台阶，也可以跳上2级。求该青蛙跳上一个n级的台阶总共有多少种跳法。</p>
+<p>分析：</p>
+<pre><code>青蛙每次只会跳1级或2级，则跳n级必定是所有的1级和2级之和
+跳上1级只有1种跳法（0-&gt;1） =&gt; f(1)=1
+跳上2级有2种跳法（0-&gt;1-&gt;2,0-&gt;2）=&gt; f(2)=f(1)+f(0)
+跳上3级有3种跳法（0-&gt;1-&gt;2-&gt;3,0-&gt;1-&gt;3,0-&gt;2-&gt;3）=&gt; f(3)=f(2)+f(1)
+跳上4级有5种跳法（0-&gt;1-&gt;2-&gt;3-&gt;4,0-&gt;1-&gt;2-&gt;4,0-&gt;1-&gt;3-&gt;4,0-&gt;2-&gt;3-&gt;4,0-&gt;2-&gt;4）=&gt; f(4)=f(3)+f(2)
+...
+跳上n级有:f(n)=f(n-1)+f(n-2)
+结果是斐波那契数列
+</code></pre><h3 id="斐波那契数列及优化（不考虑大数）"><a href="#斐波那契数列及优化（不考虑大数）" class="headerlink" title="斐波那契数列及优化（不考虑大数）"></a>斐波那契数列及优化（不考虑大数）</h3><ul>
 <li>常见递归实现</li>
 </ul>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">fibon</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (n &lt;= <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> fibon(n<span class="number">-1</span>) + fibon(n<span class="number">-2</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -386,6 +396,17 @@
 </ul>
 <p>是优化2的递归版本</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">fibonac</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b, <span class="keyword">int</span> n)</span> </span>&#123; <span class="comment">// a、b都取1</span></span><br><span class="line">    <span class="keyword">if</span> (n &gt; <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> fibonac(a+b, a, n<span class="number">-1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> a;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><em>拓展：</em> 一只青蛙一次可以跳上1级台阶，也可以跳上2级……它也可以跳上n级。求该青蛙跳上一个n级的台阶总共有多少种跳法。</p>
+<p>分析：</p>
+<pre><code>设f(0)=1
+跳上1级只有1种跳法（0-&gt;1） =&gt; f(1)=1
+跳上2级有2种跳法（0-&gt;1-&gt;2,0-&gt;2）=&gt; f(2)=f(1)+f(0) =&gt; f(2)=2*f(1)
+跳上3级有4种跳法（0-&gt;1-&gt;2-&gt;3,0-&gt;1-&gt;3,0-&gt;2-&gt;3,0-&gt;3）=&gt; f(3)=f(2)+f(1)+f(0) =&gt; f(3)=2*f(2)
+跳上4级有8种跳法（0-&gt;1-&gt;2-&gt;3-&gt;4,0-&gt;1-&gt;2-&gt;4,0-&gt;1-&gt;3-&gt;4,0-&gt;1-&gt;4,0-&gt;2-&gt;3-&gt;4,0-&gt;2-&gt;4,0-&gt;3-&gt;4,0-&gt;4）=&gt; f(4)=f(3)+f(2)+f(1)+f(0) =&gt; f(4)=2*f(3)
+...
+跳上n级有:f(n)=f(n-1)+f(n-2)+...+f(0) =&gt; f(n)=2*f(n-1)
+</code></pre><p>解法：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 递归方式</span></span><br><span class="line"><span class="function"><span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="title">f</span><span class="params">(<span class="keyword">unsigned</span> <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (n &lt;= <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> n;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">2</span> * f(n<span class="number">-1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 递推方式</span></span><br><span class="line"><span class="function"><span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="title">f1</span><span class="params">(<span class="keyword">unsigned</span> <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (n &lt;= <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> n;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> res = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">unsigned</span> <span class="keyword">int</span> i = <span class="number">2</span>; i &lt;= n; ++i) &#123;</span><br><span class="line">        res = <span class="number">2</span> * res;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h3 id="计算字符串中最长非重复子串长度"><a href="#计算字符串中最长非重复子串长度" class="headerlink" title="计算字符串中最长非重复子串长度"></a>计算字符串中最长非重复子串长度</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> 题目</span></span><br><span class="line"><span class="comment"> 给定一个字符串，找到最长子串的长度，而不重复字符。</span></span><br><span class="line"><span class="comment"> 例子</span></span><br><span class="line"><span class="comment"> 给定“abcabcbb”，答案是“abc”，长度为3。</span></span><br><span class="line"><span class="comment"> 给定“bbbbb”，答案是“b”，长度为1。</span></span><br><span class="line"><span class="comment"> 给定“pwwkew”，答案是“wke”，长度为3.请注意，答案必须是子字符串，“pwke”是子序列而不是子字符串。</span></span><br><span class="line"><span class="comment"> */</span></span><br></pre></td></tr></table></figure>
 <ul>
 <li>正常解法</li>
