@@ -128,7 +128,7 @@
 <meta property="og:image" content="https://blog.msrily.com/images/20181229112902.png">
 <meta property="og:image" content="https://blog.msrily.com/images/20181229111856.png">
 <meta property="og:image" content="https://blog.msrily.com/images/20181229114252.png">
-<meta property="og:updated_time" content="2018-12-29T06:17:02.497Z">
+<meta property="og:updated_time" content="2019-01-16T05:56:38.262Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="算法集">
 <meta name="twitter:description" content="字符串最长公共前缀编写一个函数来查找字符串数组中的最长公共前缀。  如果不存在公共前缀，返回空字符串 &amp;quot;&amp;quot;。  示例 1:  输入: [&amp;quot;flower&amp;quot;,&amp;quot;flow&amp;quot;,&amp;quot;flight&amp;quot;] 输出: &amp;quot;fl&amp;quot; 示例 2:  输入: [&amp;quot;dog&amp;quot;,&amp;quot;racecar&amp;quot;">
@@ -1296,8 +1296,7 @@ p、q 为不同节点且均存在于给定的二叉树中。
     &quot;()(())&quot;,
     &quot;()()()&quot;
 ]
-</code></pre><h5 id="代码-52"><a href="#代码-52" class="headerlink" title="代码"></a>代码</h5><p>void dfsgen_parenthesis(int left, int right, vector<string>&amp; res, string test) {<br>    if (left &gt; right) return;<br>    if (left == 0 &amp;&amp; right == 0) {<br>        res.push_back(test);<br>        return;<br>    }<br>    if (left &gt; 0) dfsgen_parenthesis(left - 1, right, res, test + ‘(‘);<br>    if (right &gt; 0) dfsgen_parenthesis(left, right - 1, res, test + ‘)’);<br>}</string></p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; generateParenthesis(<span class="keyword">int</span> n) &#123;</span><br><span class="line">    <span class="keyword">int</span> left = n, right = n;</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; result;</span><br><span class="line">    dfsgen_parenthesis(left, right, result, <span class="string">""</span>);</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</code></pre><h5 id="代码-52"><a href="#代码-52" class="headerlink" title="代码"></a>代码</h5><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dfsgen_parenthesis</span><span class="params">(<span class="keyword">int</span> left, <span class="keyword">int</span> right, <span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt;&amp; res, <span class="built_in">string</span> test)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (left &gt; right) <span class="keyword">return</span>;</span><br><span class="line">    <span class="keyword">if</span> (left == <span class="number">0</span> &amp;&amp; right == <span class="number">0</span>) &#123;</span><br><span class="line">        res.push_back(test);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (left &gt; <span class="number">0</span>) dfsgen_parenthesis(left - <span class="number">1</span>, right, res, test + <span class="string">'('</span>);</span><br><span class="line">    <span class="keyword">if</span> (right &gt; <span class="number">0</span>) dfsgen_parenthesis(left, right - <span class="number">1</span>, res, test + <span class="string">')'</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; generateParenthesis(<span class="keyword">int</span> n) &#123;</span><br><span class="line">    <span class="keyword">int</span> left = n, right = n;</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; result;</span><br><span class="line">    dfsgen_parenthesis(left, right, result, <span class="string">""</span>);</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h4 id="子集"><a href="#子集" class="headerlink" title="子集"></a>子集</h4><pre><code>给定一组不含重复元素的整数数组 nums，返回该数组所有可能的子集（幂集）。
 
 说明：解集不能包含重复的子集。
@@ -1831,7 +1830,7 @@ data = [235, 140, 4], 表示 8 位的序列: 11101011 10001100 00000100.
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
