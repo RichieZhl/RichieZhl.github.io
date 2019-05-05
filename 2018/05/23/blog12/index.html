@@ -119,7 +119,7 @@
 <meta property="og:image" content="https://blog.msrily.com/images/bd433383032dc994207a34067e49ed56.jpg">
 <meta property="og:image" content="https://blog.msrily.com/images/af0fde43e13bae32e1dd12e3a913213a.png">
 <meta property="og:image" content="https://blog.msrily.com/images/8f899651-b423-4683-8579-01d6b82b9265.png">
-<meta property="og:updated_time" content="2019-05-05T03:07:02.590Z">
+<meta property="og:updated_time" content="2019-05-05T03:10:24.682Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS 知识点整理">
 <meta name="twitter:description" content="iOS App 安全本地数据安全  对于主动存储在app内的重要的、有价值的、涉及隐私的信息需要加密处理，增加攻击者破解难度。 对于一些非主动的存储行为如网络缓存，涉及重要信息，做到用完即删。 Sqlite敏感数据要么对数据加密（优：使用简单，无需三方库支持;缺：每次存储都有加密解密过程，增加APP资源消耗），要么对整库加密（优：对数据库整体操作，减少资源消耗。缺：需要使用第三库），如SQLCip">
@@ -603,7 +603,7 @@ delegate方法最典型的特征是往往需要关注返回值。
 <p>  跟用户互动相关事件的Mode</p>
 </li>
 <li><p>NSRunLoopCommonModes(kCFRunLoopCommonModes)（公开）</p>
-<p>  Mode组，包括除Coonection外的其它四个Mode（Default、Modal、Event tracking）</p>
+<p>  Mode组，包括除Coonection外的其它三个Mode（Default、Modal、Event tracking）</p>
 </li>
 </ul>
 <p>每个 Mode 都包含 Source0（只包含了一个回调（函数指针），它并不能主动触发事件），Source1（包含了一个 mach_port 和一个回调（函数指针），被用于通过内核和其他线程相互发送消息），Observers，Timers 四个Item，一个Item可以被同时加入多个 Mode。但一个 item 被重复加入同一个 mode 时是不会有效果的。如果一个 mode 中一个 item 都没有，则 RunLoop 会直接退出，不进入循环。</p>
