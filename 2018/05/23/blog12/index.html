@@ -105,22 +105,25 @@
 
 
 
-<meta name="description" content="Persion类">
+<meta name="description" content="iOS App 安全本地数据安全  对于主动存储在app内的重要的、有价值的、涉及隐私的信息需要加密处理，增加攻击者破解难度。 对于一些非主动的存储行为如网络缓存，涉及重要信息，做到用完即删。 Sqlite敏感数据要么对数据加密（优：使用简单，无需三方库支持;缺：每次存储都有加密解密过程，增加APP资源消耗），要么对整库加密（优：对数据库整体操作，减少资源消耗。缺：需要使用第三库），如SQLCip">
 <meta name="keywords" content="iOS">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Objective C 类crash预防">
+<meta property="og:title" content="iOS 知识点整理">
 <meta property="og:url" content="https://blog.msrily.com/2018/05/23/blog12/index.html">
 <meta property="og:site_name" content="RICHIE">
-<meta property="og:description" content="Persion类">
+<meta property="og:description" content="iOS App 安全本地数据安全  对于主动存储在app内的重要的、有价值的、涉及隐私的信息需要加密处理，增加攻击者破解难度。 对于一些非主动的存储行为如网络缓存，涉及重要信息，做到用完即删。 Sqlite敏感数据要么对数据加密（优：使用简单，无需三方库支持;缺：每次存储都有加密解密过程，增加APP资源消耗），要么对整库加密（优：对数据库整体操作，减少资源消耗。缺：需要使用第三库），如SQLCip">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://blog.msrily.com/images/16a7155c-f0ff-47e9-bdca-47f517b30d1d.png">
-<meta property="og:image" content="https://blog.msrily.com/images/0235ad78-fb93-420a-9acf-b7f7076dfd46.png">
-<meta property="og:image" content="https://blog.msrily.com/images/93af98b9-0108-4069-a18b-579723fb30e7.png">
-<meta property="og:updated_time" content="2018-09-26T09:27:49.280Z">
+<meta property="og:image" content="https://blog.msrily.com/images/1556611441.png">
+<meta property="og:image" content="https://blog.msrily.com/images/1556611529.png">
+<meta property="og:image" content="https://blog.msrily.com/images/3e3f4ece1d2e9ed670b00b1f24bf7f78.jpg">
+<meta property="og:image" content="https://blog.msrily.com/images/bd433383032dc994207a34067e49ed56.jpg">
+<meta property="og:image" content="https://blog.msrily.com/images/af0fde43e13bae32e1dd12e3a913213a.png">
+<meta property="og:image" content="https://blog.msrily.com/images/8f899651-b423-4683-8579-01d6b82b9265.png">
+<meta property="og:updated_time" content="2019-05-05T02:18:10.084Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Objective C 类crash预防">
-<meta name="twitter:description" content="Persion类">
-<meta name="twitter:image" content="https://blog.msrily.com/images/16a7155c-f0ff-47e9-bdca-47f517b30d1d.png">
+<meta name="twitter:title" content="iOS 知识点整理">
+<meta name="twitter:description" content="iOS App 安全本地数据安全  对于主动存储在app内的重要的、有价值的、涉及隐私的信息需要加密处理，增加攻击者破解难度。 对于一些非主动的存储行为如网络缓存，涉及重要信息，做到用完即删。 Sqlite敏感数据要么对数据加密（优：使用简单，无需三方库支持;缺：每次存储都有加密解密过程，增加APP资源消耗），要么对整库加密（优：对数据库整体操作，减少资源消耗。缺：需要使用第三库），如SQLCip">
+<meta name="twitter:image" content="https://blog.msrily.com/images/1556611441.png">
 
 
 
@@ -156,7 +159,7 @@
 
 
 
-  <title>Objective C 类crash预防 | RICHIE</title>
+  <title>iOS 知识点整理 | RICHIE</title>
   
 
 
@@ -300,7 +303,7 @@
 
         
         
-          <h2 class="post-title" itemprop="name headline">Objective C 类crash预防</h2>
+          <h2 class="post-title" itemprop="name headline">iOS 知识点整理</h2>
         
 
         <div class="post-meta">
@@ -372,12 +375,498 @@
       
 
       
-        <p>Persion类</p>
-<p><img src="/images/16a7155c-f0ff-47e9-bdca-47f517b30d1d.png" alt=""><br><a id="more"></a><br><img src="/images/0235ad78-fb93-420a-9acf-b7f7076dfd46.png" alt=""></p>
-<p><img src="/images/93af98b9-0108-4069-a18b-579723fb30e7.png" alt=""></p>
-<p>运行结果：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">2018-09-17 18:07:47.368888+0800 demo11[30894:402677] 20</span><br><span class="line">2018-09-17 18:07:47.369026+0800 demo11[30894:402677] ---eat----</span><br><span class="line">2018-09-17 18:07:47.369233+0800 demo11[30894:402677] ---crash----</span><br></pre></td></tr></table></figure></p>
-<p>第三副图调用objc_msgSend方法直接绕过了这个预防机制。</p>
-<p>使用<code>[persion setValue:@(4) forKey:@&quot;_count&quot;];</code>可以给存在的属性赋值<b>（无论其属性是否可读或隐藏）</b>，走的消息转发。</p>
+        <h4 id="iOS-App-安全"><a href="#iOS-App-安全" class="headerlink" title="iOS App 安全"></a>iOS App 安全</h4><p>本地数据安全</p>
+<ul>
+<li>对于主动存储在app内的重要的、有价值的、涉及隐私的信息需要加密处理，增加攻击者破解难度。</li>
+<li>对于一些非主动的存储行为如网络缓存，涉及重要信息，做到用完即删。</li>
+<li>Sqlite敏感数据要么对数据加密（优：使用简单，无需三方库支持;缺：每次存储都有加密解密过程，增加APP资源消耗），要么对整库加密（优：对数据库整体操作，减少资源消耗。缺：需要使用第三库），如SQLCipher</li>
+<li>KeyChain数据的读取。Keychain是一个拥有有限访问权限的SQLite数据库（AES256加密），可以为多种应用程序或网络服务存储少量的敏感数据（如用户名、密码、加密密钥等）。可以在越狱的设备上使用keychain_dumper来解密。</li>
+<li>剪切板的缓存要及时清理</li>
+</ul>
+<p>网络请求使用https，防止http劫持或使用httpdns</p>
+<p>尽量使用WKWebView代替UIWebView</p>
+<p>加大反编译的难度</p>
+<ul>
+<li>字符串加密</li>
+<li>类名方法名混淆</li>
+<li>反调试<br><img src="/images/1556611441.png" alt=""></li>
+</ul>
+<p>防止抓包</p>
+<ul>
+<li>判断是否设置了代理<br><img src="/images/1556611529.png" alt=""></li>
+<li>数据加密</li>
+</ul>
+<h4 id="断点续传怎么实现？需要设置什么？"><a href="#断点续传怎么实现？需要设置什么？" class="headerlink" title="断点续传怎么实现？需要设置什么？"></a>断点续传怎么实现？需要设置什么？</h4><p>所谓断点续传，就是要从文件已经下载的地方开始继续下载。所以在客户端/浏览器传给Web服务器的时候要多加一条信息–从哪里开始。下面是用自己编的一个”浏览器”来传递请求信息给Web服务器，要求从2000070字节开始。</p>
+<pre><code>GET /down.zip HTTP/1.1
+User-Agent: NetFox
+RANGE: bytes=2000070-
+Accept: text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2
+</code></pre><p>仔细看一下就会发现多了一行RANGE: bytes=2000070-这一行的意思就是告诉服务器down.zip这个文件从2000070字节开始传，前面的字节不用传了。服务器收到这个请求以后，返回的信息如下：</p>
+<pre><code>206
+Content-Length=106786028
+Content-Range=bytes 2000070-106786027/106786028
+Date=Mon, 30 Apr 2001 12:55:20 GMT
+ETag=W/&quot;02ca57e173c11:95b&quot;
+Content-Type=application/octet-stream
+Server=Microsoft-IIS/5.0
+Last-Modified=Mon, 30 Apr 2001 12:55:20 GMT
+</code></pre><p>和前面服务器返回的信息比较一下，就会发现增加了一行：Content-Range=bytes 2000070-106786027/106786028返回的代码也改为206了，而不再是200了。<br><a id="more"></a></p>
+<h4 id="HTTP请求的哪些方法用过？什么时候选择get、post、put、delete？"><a href="#HTTP请求的哪些方法用过？什么时候选择get、post、put、delete？" class="headerlink" title="HTTP请求的哪些方法用过？什么时候选择get、post、put、delete？"></a>HTTP请求的哪些方法用过？什么时候选择get、post、put、delete？</h4><p>http本质上就是应用层的一套协议，制定之初就考虑到增删改查这样的应用场景，预设了几个method（get post put delete …）用来区别资源的执行动作。只要双方使用http协议，对一个url使用某个method访问，服务器就知道对应什么逻辑。只是一直以来没那么严格的使用而已。</p>
+<p>get最常用，通常向Web服务器发请求“获取”资源;post则是向Web服务器传输一些数据包来获取资源;两者方法严格来说都是“索取”行为。</p>
+<p>delete通过http请求删除指定的url上资源;put通过http请求创建资源。</p>
+<h4 id="TCP-三次握手和四次挥手"><a href="#TCP-三次握手和四次挥手" class="headerlink" title="TCP 三次握手和四次挥手"></a>TCP 三次握手和四次挥手</h4><h5 id="三次握手"><a href="#三次握手" class="headerlink" title="三次握手"></a>三次握手</h5><p>所谓三次握手（Three-Way Handshake）即建立TCP连接，就是指建立一个TCP连接时，需要客户端和服务端总共发送3个包以确认连接的建立。在socket编程中，这一过程由客户端执行connect来触发，整个流程如下图所示：</p>
+<p><img src="/images/3e3f4ece1d2e9ed670b00b1f24bf7f78.jpg" alt=""></p>
+<p>（1）第一次握手：Client将标志位SYN置为1，随机产生一个值seq=J，并将该数据包发送给Server，Client进入SYN_SENT状态，等待Server确认。</p>
+<p>（2）第二次握手：Server收到数据包后由标志位SYN=1知道Client请求建立连接，Server将标志位SYN和ACK都置为1，ack=J+1，随机产生一个值seq=K，并将该数据包发送给Client以确认连接请求，Server进入SYN_RCVD状态。</p>
+<p>（3）第三次握手：Client收到确认后，检查ack是否为J+1，ACK是否为1，如果正确则将标志位ACK置为1，ack=K+1，并将该数据包发送给Server，Server检查ack是否为K+1，ACK是否为1，如果正确则连接建立成功，Client和Server进入ESTABLISHED状态，完成三次握手，随后Client与Server之间可以开始传输数据了。</p>
+<h5 id="四次挥手"><a href="#四次挥手" class="headerlink" title="四次挥手"></a>四次挥手</h5><p>三次握手耳熟能详，所谓四次挥手（Four-Way Wavehand）即终止TCP连接，就是指断开一个TCP连接时，需要客户端和服务端总共发送4个包以确认连接的断开。在socket编程中，这一过程由客户端或服务端任一方执行close来触发，整个流程如下图所示：</p>
+<p><img src="/images/bd433383032dc994207a34067e49ed56.jpg" alt=""></p>
+<p>由于TCP连接时全双工的，因此，每个方向都必须要单独进行关闭，这一原则是当一方完成数据发送任务后，发送一个FIN来终止这一方向的连接，收到一个FIN只是意味着这一方向上没有数据流动了，即不会再收到数据了，但是在这个TCP连接上仍然能够发送数据，直到这一方向也发送了FIN。首先进行关闭的一方将执行主动关闭，而另一方则执行被动关闭，上图描述的即是如此。</p>
+<p>（1）第一次挥手：Client发送一个FIN，用来关闭Client到Server的数据传送，Client进入FIN_WAIT_1状态。</p>
+<p>（2）第二次挥手：Server收到FIN后，发送一个ACK给Client，确认序号为收到序号+1（与SYN相同，一个FIN占用一个序号），Server进入CLOSE_WAIT状态。</p>
+<p>（3）第三次挥手：Server发送一个FIN，用来关闭Server到Client的数据传送，Server进入LAST_ACK状态。</p>
+<p>（4）第四次挥手：Client收到FIN后，Client进入TIME_WAIT状态，接着发送一个ACK给Server，确认序号为收到序号+1，Server进入CLOSED状态，完成四次挥手。</p>
+<p>上面是一方主动关闭，另一方被动关闭的情况，实际中还会出现同时发起主动关闭的情况，具体流程如下图</p>
+<p><img src="/images/af0fde43e13bae32e1dd12e3a913213a.png" alt=""></p>
+<h4 id="iOS里面有哪些数据存储方法"><a href="#iOS里面有哪些数据存储方法" class="headerlink" title="iOS里面有哪些数据存储方法"></a>iOS里面有哪些数据存储方法</h4><h5 id="NSUserDefaults类"><a href="#NSUserDefaults类" class="headerlink" title="NSUserDefaults类"></a>NSUserDefaults类</h5><p>一般用于一些基本的用户设置，数据量很小数据存储。</p>
+<p>NSUserDefaults类除了可以存储数组、字典、NSdata外，还可以直接存储OC基本类型属性。</p>
+<h5 id="Plist文件"><a href="#Plist文件" class="headerlink" title="Plist文件"></a>Plist文件</h5><p>类似NSUserDefaults类</p>
+<h5 id="归档"><a href="#归档" class="headerlink" title="归档"></a>归档</h5><p>能对自定义的对象进行存储，可用于较大数据存储</p>
+<h5 id="数据库（Sqlite、Core-Data、Realm-…）"><a href="#数据库（Sqlite、Core-Data、Realm-…）" class="headerlink" title="数据库（Sqlite、Core Data、Realm …）"></a>数据库（Sqlite、Core Data、Realm …）</h5><p>对于大型的数据存储，再使用上面的方法显然不适用了，该使用数据库了，但不适合直接存储图片、文件或二进制数据。</p>
+<h5 id="手动存放沙盒"><a href="#手动存放沙盒" class="headerlink" title="手动存放沙盒"></a>手动存放沙盒</h5><p>高度可定制化，可存储任意数据</p>
+<h4 id="MVVM如何实现绑定"><a href="#MVVM如何实现绑定" class="headerlink" title="MVVM如何实现绑定"></a>MVVM如何实现绑定</h4><h5 id="KVO"><a href="#KVO" class="headerlink" title="KVO"></a>KVO</h5><p>键值观察Key-Value-Observer就是观察者模式。</p>
+<p>观察者模式的定义：一个目标对象管理所有依赖于它的观察者对象，并在它自身的状态改变时主动通知观察者对象。这个主动通知通常是通过调用各观察者对象所提供的接口方法来实现的。观察者模式较完美地将目标对象与观察者对象解耦。</p>
+<p>KVO同KVC一样，通过 isa-swizzling 技术来实现。当观察者被注册为一个对象的属性的观察对象的isa指针被修改，指向一个中间类，而不是在真实的类。其结果是，isa指针的值并不一定反映实例的实际类。</p>
+<p>所以不能依靠isa指针来确定对象是否是一个类的成员。应该使用class方法来确定对象实例的类。</p>
+<h5 id="Delegate"><a href="#Delegate" class="headerlink" title="Delegate"></a>Delegate</h5><p>Delegate本质是一种程序设计模型，iOS中使用Delegate主要用于两个页面之间的数据传递</p>
+<h5 id="Block"><a href="#Block" class="headerlink" title="Block"></a>Block</h5><p>Block本质是一种程序设计模型，可以代替delegate</p>
+<h5 id="Notification"><a href="#Notification" class="headerlink" title="Notification"></a>Notification</h5><p>NSNotification是用来在类之间传递消息参数的。</p>
+<p>block与protocol相比的优点</p>
+<pre><code>block的作用：保存一段代码，到恰当的时候调用,很多时候block是代理的一种优化方案
+
+1、block比protocol更灵活，更高聚合，低耦合。
+例如AFN的网络框架中，就可以将“准备请求参数”的代码和“处理后台返回数据”的代码放在一起。
+
+2、block的灵活还体现在他可以当作方法参数以及返回值。
+Block可以作为函数参数或者函数的返回值，而其本身又可以带输入参数或返回值。
+
+在OC中，｀()｀block是以()的形式去执行的，猜想如果返回一个block的话，那么我就可以用()来实现链式编程这种效果了吧！
+</code></pre><p>Delegate 、NSNotification 、KVO之间的联系及其区别</p>
+<pre><code>区别：
+
+delegate方法往往需要关注返回值， 也就是delegate方法的结果。
+
+delegate只是一对一，而NSNotification、KVO可以一对多，两者都没有返回值。
+
+各自特点：
+
+NSNotification的特点，就是需要被观察者先主动发出通知，然后观察者注册监听后再来进行响应，比KVO多了发送通知的一步，但是其优点是监听不局限于属性的变化，还可以对多种多样的状态变化进行监听，监听范围广，使用也更灵活。
+
+KVO只能检测类中的属性，并且属性名都是通过NSString来查找，编译器不会帮你检错和补全，所以比较容易出错。
+
+delegate方法最典型的特征是往往需要关注返回值。
+</code></pre><h4 id="进程和线程的区别"><a href="#进程和线程的区别" class="headerlink" title="进程和线程的区别"></a>进程和线程的区别</h4><p>进程：是并发执行的程序在执行过程中分配和管理资源的基本单位，是一个动态概念，竞争计算机系统资源的基本单位。</p>
+<p>线程：是进程的一个执行单元，是进程内调度实体。比进程更小的独立运行的基本单位。线程也被称为轻量级进程。</p>
+<p>一个程序至少一个进程，一个进程至少一个线程。</p>
+<p>进程线程的区别：</p>
+<pre><code>地址空间：同一进程的线程共享本进程的地址空间，而进程之间则是独立的地址空间。
+资源拥有：同一进程内的线程共享本进程的资源如内存、I/O、cpu等，但是进程之间的资源是独立的。
+　　　　　一个进程崩溃后，在保护模式下不会对其他进程产生影响，但是一个线程崩溃整个进程都死掉。所以多进程要比多线程健壮。
+
+　　　　　进程切换时，消耗的资源大，效率高。所以涉及到频繁的切换时，使用线程要好于进程。同样如果要求同时进行并且又要共享某些变量的并发操作，只能用线程不能用进程
+
+执行过程：每个独立的进程程有一个程序运行的入口、顺序执行序列和程序入口。但是线程不能独立执行，必须依存在应用程序中，由应用程序提供多个线程执行控制。
+线程是处理器调度的基本单位，但是进程不是。
+两者均可并发执行。
+</code></pre><p>优缺点：</p>
+<pre><code>线程执行开销小，但是不利于资源的管理和保护。线程适合在SMP机器（多CPU系统）上运行。
+进程执行开销大，但是能够很好的进行资源管理和保护。进程可以跨机器前移。
+</code></pre><h4 id="进程间通信的方式"><a href="#进程间通信的方式" class="headerlink" title="进程间通信的方式"></a>进程间通信的方式</h4><ol>
+<li>管道pipe：管道是一种半双工的通信方式，数据只能单向流动，而且只能在具有亲缘关系的进程间使用。进程的亲缘关系通常是指父子进程关系。命名管道FIFO：有名管道也是半双工的通信方式，但是它允许无亲缘关系进程间的通信。</li>
+<li>消息队列MessageQueue：消息队列是由消息的链表，存放在内核中并由消息队列标识符标识。消息队列克服了信号传递信息少、管道只能承载无格式字节流以及缓冲区大小受限等缺点。</li>
+<li>共享内存SharedMemory：共享内存就是映射一段能被其他进程所访问的内存，这段共享内存由一个进程创建，但多个进程都可以访问。共享内存是最快的 IPC 方式，它是针对其他进程间通信方式运行效率低而专门设计的。它往往与其他通信机制，如信号两，配合使用，来实现进程间的同步和通信。</li>
+<li>信号量Semaphore：信号量是一个计数器，可以用来控制多个进程对共享资源的访问。它常作为一种锁机制，防止某进程正在访问共享资源时，其他进程也访问该资源。因此，主要作为进程间以及同一进程内不同线程之间的同步手段。</li>
+<li>套接字Socket：套接字也是一种进程间通信机制，与其他通信机制不同的是，它可用于不同系统间的进程通信。</li>
+<li>信号 ( sinal ) ： 信号是一种比较复杂的通信方式，用于通知接收进程某个事件已经发生。</li>
+</ol>
+<h4 id="卡顿检测"><a href="#卡顿检测" class="headerlink" title="卡顿检测"></a>卡顿检测</h4><p>为了实现卡顿的检测，首先需要注册RunLoop的监听回调（注册RunLoopObserverCallback函数），保存RunLoop状态；当主线程处在Before Waiting状态的时候，通过派发任务到主线程来设置标记位的方式处理常态下的卡顿检测。</p>
+<h4 id="发布出去的版本，怎么收集crash日志"><a href="#发布出去的版本，怎么收集crash日志" class="headerlink" title="发布出去的版本，怎么收集crash日志"></a>发布出去的版本，怎么收集crash日志</h4><p>三方crash收集系统，bugly等等</p>
+<p>app内监听signal，保存sginal引发的中断错误，并上报</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">signal(SIGHUP, SignalExceptionHandler);</span><br><span class="line">signal(SIGINT, SignalExceptionHandler);</span><br><span class="line">signal(SIGQUIT, SignalExceptionHandler);</span><br><span class="line">signal(SIGABRT, SignalExceptionHandler);</span><br><span class="line">signal(SIGILL, SignalExceptionHandler);</span><br><span class="line">signal(SIGSEGV, SignalExceptionHandler);</span><br><span class="line">signal(SIGFPE, SignalExceptionHandler);</span><br><span class="line">signal(SIGBUS, SignalExceptionHandler);</span><br><span class="line">signal(SIGPIPE, SignalExceptionHandler);</span><br></pre></td></tr></table></figure>
+<p>app内监听exception，保存错误，并上报</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> HandleException(<span class="built_in">NSException</span> *exception) &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">NSSetUncaughtExceptionHandler</span>(&amp;HandleException)</span><br></pre></td></tr></table></figure>
+<h4 id="在block里面使用属性会造成循环引用吗-怎么解决？"><a href="#在block里面使用属性会造成循环引用吗-怎么解决？" class="headerlink" title="在block里面使用属性会造成循环引用吗?怎么解决？"></a>在block里面使用属性会造成循环引用吗?怎么解决？</h4><p>1.self-&gt;属性<br>2.block外弱引用self，block内强引用弱引用后的self</p>
+<h4 id="PING命令使用的是什么协议？"><a href="#PING命令使用的是什么协议？" class="headerlink" title="PING命令使用的是什么协议？"></a>PING命令使用的是什么协议？</h4><p>使用的是ICMP协议，是“Internet Control Message Protocol”（Internet控制消息协议）的缩写，是TCP/IP协议族的一个子协议，用于在IP主机、路由器之间传递控制消息。</p>
+<p>PING命令是用于检测网络连接性、可到达性和名称解析的疑难问题的主要TCP/IP命令.</p>
+<h4 id="MTU"><a href="#MTU" class="headerlink" title="MTU"></a>MTU</h4><p>最大传输单元（Maximum Transmission Unit，MTU）是指一种通信协议的某一层上面所能通过的最大数据包大小（以字节为单位）。最大传输单元这个参数通常与通信接口有关（网络接口卡、串口等）。</p>
+<p>因为协议数据单元的包头和包尾的长度是固定的，MTU越大，则一个协议数据单元的承载的有效数据就越长，通信效率也越高。MTU越大，传送相同的用户数据所需的数据包个数也越低。</p>
+<p>MTU也不是越大越好，因为MTU越大， 传送一个数据包的延迟也越大；并且MTU越大，数据包中 bit位发生错误的概率也越大。</p>
+<p>MTU越大，通信效率越高而传输延迟增大，所以要权衡通信效率和传输延迟选择合适的MTU。</p>
+<h4 id="MRC与ARC区别"><a href="#MRC与ARC区别" class="headerlink" title="MRC与ARC区别"></a>MRC与ARC区别</h4><h5 id="MRC手动内存管理"><a href="#MRC手动内存管理" class="headerlink" title="MRC手动内存管理"></a>MRC手动内存管理</h5><p>引用计数器:在MRC时代，系统判定一个对象是否销毁是根据这个对象的引用计数器来判断的。</p>
+<ol>
+<li>每个对象被创建时引用计数都为1</li>
+<li>每当对象被其他指针引用时，需要手动使用[obj retain];让该对象引用计数+1。</li>
+<li>当指针变量不在使用这个对象的时候，需要手动释放release这个对象。 让其的引用计数-1.</li>
+<li>当一个对象的引用计数为0的时候，系统就会销毁这个对象。</li>
+</ol>
+<p>在MRC模式下必须遵循谁创建，谁释放，谁引用，谁管理</p>
+<p>在MRC下使用ARC,在Build Phases的Compile Sources中选择需要使用MRC方式的.m文件，然后双击该文件在弹出的会话框中输入 -fobjc-arc</p>
+<h5 id="ARC自动内存管理"><a href="#ARC自动内存管理" class="headerlink" title="ARC自动内存管理"></a>ARC自动内存管理</h5><p>WWDC2011和iOS5所引入自动管理机制——自动引用计数（ARC），它不是垃圾回收机制而是编译器的一种特性。ARC管理机制与MRC手动机制差不多，只是不再需要手动调用retain、release、autorelease；当你使用ARC时，编译器会在在适当位置插入release和autorelease；ARC时代引入了strong强引用来带代替retain，引入了weak弱引用。</p>
+<p>在ARC工程中如果要使用MRC的需要在工程的Build Phases的Compile Sources中选择需要使用MRC方式的.m文件，然后双击该文件在弹出的会话框中输入 -fno-objc-arc</p>
+<h4 id="KVC的作用"><a href="#KVC的作用" class="headerlink" title="KVC的作用"></a>KVC的作用</h4><ol>
+<li><p>KVC可以给对象的私有变量赋值(UIPageControl)</p>
+<p> 使用注意:</p>
+<ol>
+<li>设置key/keyPath位置的字符串必须保证有对应的属性(或者_属性)</li>
+<li>setValue:forKey:和setValue:forKeyPath区别</li>
+</ol>
+</li>
+</ol>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Person *p = [[Person alloc] init];</span><br><span class="line">p.book = [[Book alloc] init];</span><br><span class="line">[p setValue:<span class="string">@"18"</span> forKey:<span class="string">@"age”];             //不报错</span></span><br><span class="line"><span class="string">[p setValue:@"</span><span class="number">20</span><span class="string">" forKeyPath:@"</span>age”];         <span class="comment">//不报错</span></span><br><span class="line">[p setValue:<span class="string">@"300"</span> forKey:<span class="string">@"book.price”];     //报错</span></span><br><span class="line"><span class="string">[p setValue:@"</span><span class="number">300</span><span class="string">" forKeyPath:@"</span>book.price”]; <span class="comment">//不报错</span></span><br></pre></td></tr></table></figure>
+<ol>
+<li><p>用于字典转模型(MJExtension框架)</p>
+<p> 使用注意:</p>
+<ol>
+<li>必须保证字典中对应key在模型中能找到对应的属性</li>
+<li>模型中的属性可以在字典中没有对应的Key</li>
+<li>通过KVC取出私有变量的值</li>
+<li>模型对象转字典</li>
+</ol>
+</li>
+</ol>
+<h4 id="使用method-swizzling要注意什么？"><a href="#使用method-swizzling要注意什么？" class="headerlink" title="使用method swizzling要注意什么？"></a>使用method swizzling要注意什么？</h4><p>进行版本迭代的时候需要进行一些检验，防止系统库的函数发生了变化</p>
+<h4 id="一个-objc-对象如何进行内存布局（考虑有父类的情况）？"><a href="#一个-objc-对象如何进行内存布局（考虑有父类的情况）？" class="headerlink" title="一个 objc 对象如何进行内存布局（考虑有父类的情况）？"></a>一个 objc 对象如何进行内存布局（考虑有父类的情况）？</h4><p>每一个对象内部都有一个 isa 指针，指向他的类对象，类对象中存放着本对象的：</p>
+<p>对象方法列表（对象能够接收的消息列表，保存在它所对应的类对象中）。</p>
+<p>成员变量的列表。</p>
+<p>属性列表。</p>
+<p>类对象内部也有一个 isa 指针指向元对象(meta class)，元对象内部存放的是类方法列表。</p>
+<p>类对象内部还有一个 superclass 的指针，指向他的父类对象。</p>
+<p>所有父类的成员变量和自己的成员变量都会存放在该对象所对应的存储空间中。</p>
+<p><img src="https://blog.msrily.com/images/8f899651-b423-4683-8579-01d6b82b9265.png" alt=""></p>
+<h4 id="runtime-如何通过-selector-找到对应的-IMP-地址（分别考虑实例方法和类方法）？Selector、Method-和-IMP-的有什么区别与联系？"><a href="#runtime-如何通过-selector-找到对应的-IMP-地址（分别考虑实例方法和类方法）？Selector、Method-和-IMP-的有什么区别与联系？" class="headerlink" title="runtime 如何通过 selector 找到对应的 IMP 地址（分别考虑实例方法和类方法）？Selector、Method 和 IMP 的有什么区别与联系？"></a>runtime 如何通过 selector 找到对应的 IMP 地址（分别考虑实例方法和类方法）？Selector、Method 和 IMP 的有什么区别与联系？</h4><p>对于实例方法，每个实例的 isa 指针指向着对应类对象，而每一个类对象中都一个对象方法列表。</p>
+<p>对于类方法，每个类对象的 isa 指针都指向着对应的元对象，而每一个元对象中都有一个类方法列表。方法列表中记录着方法的名称，方法实现，以及参数类型，其实 selector 本质就是方法名称，通过这个方法名称就可以在方法列表中找到对应的方法实现。</p>
+<p>Selector、Method 和 IMP 的关系可以这样描述：在运行期分发消息，方法列表中的每一个实体都是一个方法（Method），它的名字叫做选择器（SEL），对应着一种方法实现（IMP）。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/// An opaque type that represents a method in a class definition.</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> objc_method *Method;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> objc_method &#123;</span><br><span class="line">    SEL method_name; <span class="comment">// 方法选择器。</span></span><br><span class="line">    <span class="keyword">char</span> *method_types; <span class="comment">// 存储着方法的参数类型和返回值类型。</span></span><br><span class="line">    IMP method_imp; <span class="comment">// 函数指针。</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="objc-中的类方法和实例方法有什么本质区别和联系？"><a href="#objc-中的类方法和实例方法有什么本质区别和联系？" class="headerlink" title="objc 中的类方法和实例方法有什么本质区别和联系？"></a>objc 中的类方法和实例方法有什么本质区别和联系？</h4><p>类方法：</p>
+<pre><code>类方法是属于类对象的
+类方法只能通过类对象调用
+类方法中的 self 是类对象
+类方法可以调用其他的类方法
+类方法中不能访问成员变量
+类方法中不能直接调用对象方法
+</code></pre><p>实例方法：</p>
+<pre><code>实例方法是属于实例对象的
+实例方法只能通过实例对象调用
+实例方法中的 self 是实例对象
+实例方法中可以访问成员变量
+实例方法中直接调用实例方法
+实例方法中也可以调用类方法（通过类名）
+</code></pre><h4 id="objc-msgSend、-objc-msgForward-都是做什么的？OC-中的消息调用流程是怎样的？"><a href="#objc-msgSend、-objc-msgForward-都是做什么的？OC-中的消息调用流程是怎样的？" class="headerlink" title="objc_msgSend、_objc_msgForward 都是做什么的？OC 中的消息调用流程是怎样的？"></a>objc_msgSend、_objc_msgForward 都是做什么的？OC 中的消息调用流程是怎样的？</h4><p>objc_msgSend 是用来做消息发送的。在 OC 中，对方法的调用都会被转换成内部的消息发送执行对 objc_msgSend 方法的调用</p>
+<p>_objc_msgForward 是 IMP 类型（函数指针），用于消息转发的：当向一个对象发送一条消息，但它并没有实现的时候，_objc_msgForward 会尝试做消息转发。</p>
+<p>在消息调用的过程中，objc_msgSend的动作比较清晰：首先在 Class 中的缓存查找 IMP （没缓存则初始化缓存），如果没找到，则向父类的 Class 查找。如果一直查找到根类仍旧没有实现，则用 _objc_msgForward函数指针代替 IMP。最后，执行这个 IMP。</p>
+<p>当调用一个 NSObject 对象不存在的方法时，并不会马上抛出异常，而是会经过多层转发，层层调用对象的 <code>resolveInstanceMethod:</code>、<code>forwardingTargetForSelector:</code>、<code>methodSignatureForSelector:</code>、<code>forwardInvocation:</code>等方法。其中最后<code>forwardInvocation:</code>是会有一个 NSInvocation 对象，这个 NSInvocation 对象保存了这个方法调用的所有信息，包括 Selector 名，参数和返回值类型，最重要的是有所有参数值，可以从这个 NSInvocation 对象里拿到调用的所有参数值。</p>
+<h4 id="能否向编译后得到的类中增加实例变量？能否向运行时创建的类中添加实例变量？为什么？"><a href="#能否向编译后得到的类中增加实例变量？能否向运行时创建的类中添加实例变量？为什么？" class="headerlink" title="能否向编译后得到的类中增加实例变量？能否向运行时创建的类中添加实例变量？为什么？"></a>能否向编译后得到的类中增加实例变量？能否向运行时创建的类中添加实例变量？为什么？</h4><p>不能向编译后得到的类中增加实例变量,能向运行时创建的类中添加实例变量。</p>
+<p>因为编译后的类已经注册在 runtime 中，类结构体中的 objc_ivar_list 实例变量的链表和 instance_size 实例变量的内存大小已经确定，同时 runtime 会调用 class_setIvarLayout 或 class_setWeakIvarLayout 来处理 strong weak 引用。所以不能向存在的类中添加实例变量。</p>
+<p>运行时创建的类是可以添加实例变量，调用 class_addIvar 函数。但是得在调用 objc_allocateClassPair 之后，objc_registerClassPair 之前，原因同上。</p>
+<h4 id="OC-Runtime"><a href="#OC-Runtime" class="headerlink" title="OC Runtime"></a>OC Runtime</h4><p>OC的反射机制</p>
+<ul>
+<li>对对象进行操作的方法一般以object_开头</li>
+<li>对类进行操作的方法一般以class_开头</li>
+<li>对类或对象的方法进行操作的方法一般以method_开头</li>
+<li>对成员变量进行操作的方法一般以ivar_开头</li>
+<li>对属性进行操作的方法一般以property_开头开头</li>
+<li>对协议进行操作的方法一般以protocol_开头</li>
+</ul>
+<p>OC消息机制和消息转发机制</p>
+<p>objc_msgSend</p>
+<p>当找不到方法时<br><code>resolveInstanceMethod:</code>（加方法<code>class_addMethod([self class], sel, (IMP)speak, &quot;V@:&quot;);</code>）、<code>forwardingTargetForSelector:</code>（重定向Target）、<code>methodSignatureForSelector:</code>、<code>forwardInvocation:</code></p>
+<p>OC关联对象</p>
+<p>给类加属性，在类别中不能直接加属性<br><code>objc_setAssociatedObject(id  _Nonnull object, const void * _Nonnull key, id  _Nullable value, objc_AssociationPolicy policy)</code>、<code>objc_getAssociatedObject(id  _Nonnull object, const void * _Nonnull key)</code></p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> OBJC_ENUM(uintptr_t, objc_AssociationPolicy) &#123;</span><br><span class="line">    OBJC_ASSOCIATION_ASSIGN = <span class="number">0</span>,           <span class="comment">/**&lt; Specifies a weak reference to the associated object. */</span></span><br><span class="line">    OBJC_ASSOCIATION_RETAIN_NONATOMIC = <span class="number">1</span>, <span class="comment">/**&lt; Specifies a strong reference to the associated object. </span></span><br><span class="line"><span class="comment">                                            *   The association is not made atomically. */</span></span><br><span class="line">    OBJC_ASSOCIATION_COPY_NONATOMIC = <span class="number">3</span>,   <span class="comment">/**&lt; Specifies that the associated object is copied. </span></span><br><span class="line"><span class="comment">                                            *   The association is not made atomically. */</span></span><br><span class="line">    OBJC_ASSOCIATION_RETAIN = <span class="number">01401</span>,       <span class="comment">/**&lt; Specifies a strong reference to the associated object.</span></span><br><span class="line"><span class="comment">                                            *   The association is made atomically. */</span></span><br><span class="line">    OBJC_ASSOCIATION_COPY = <span class="number">01403</span>          <span class="comment">/**&lt; Specifies that the associated object is copied.</span></span><br><span class="line"><span class="comment">                                            *   The association is made atomically. */</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>OC isa swizzling</p>
+<p>KVO 系统自动自成NSKVONotifying_XX类，在要观察的属性的SET方法里加入<code>- (void)willChangeValueForKey:(NSString )key;</code>和<code>- (void)didChangeValueForKey:(NSString )key ;</code>两个方法，调用方法<code>- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary&lt;NSKeyValueChangeKey,id&gt; *)change context:(void *)context</code></p>
+<p>OC method swizzling</p>
+<p>替换成自定义的方法，可以在自定义的方法内调用原方法，实现切面编程</p>
+<h4 id="runloop-和线程有什么关系？"><a href="#runloop-和线程有什么关系？" class="headerlink" title="runloop 和线程有什么关系？"></a>runloop 和线程有什么关系？</h4><p>首先，iOS 开发中能遇到两个线程对象: pthread_t 和 NSThread。过去苹果有份文档标明了 NSThread 只是 pthread_t 的封装，但那份文档已经失效了，现在它们也有可能都是直接包装自mach thread (基于pthread_t)。苹果并没有提供这两个对象相互转换的接口，但不管怎么样，可以肯定的是 pthread_t 和 NSThread 是一一对应的。比如，你可以通过 pthread_main_thread_np()或 [NSThread mainThread]来获取主线程；也可以通过 pthread_self()或[NSThread currentThread]来获取当前线程。CFRunLoop 是基于 pthread 来管理的。</p>
+<p>苹果不允许直接创建 RunLoop，它只提供了两个自动获取的函数：CFRunLoopGetMain()和 CFRunLoopGetCurrent()。</p>
+<p>线程和 RunLoop 之间是一一对应的，其关系是保存在一个全局的 Dictionary 里。线程刚创建时并没有 RunLoop，如果你不主动获取，那它一直都不会有。RunLoop 的创建是发生在第一次获取时，RunLoop 的销毁是发生在线程结束时。你只能在一个线程的内部获取其 RunLoop（主线程除外）。</p>
+<h4 id="runloop-的-mode-作用是什么？"><a href="#runloop-的-mode-作用是什么？" class="headerlink" title="runloop 的 mode 作用是什么？"></a>runloop 的 mode 作用是什么？</h4><p>在 CoreFoundation 里面关于 RunLoop 有 5 个类，分别对应不同的概念：</p>
+<p>CFRunLoopRef，对应 runloop。</p>
+<p>CFRunLoopModeRef，对应 runloop mode。CFRunLoopModeRef 类并没有对外暴露，只是通过 CFRunLoopRef 的接口进行了封装</p>
+<p>CFRunLoopSourceRef，对应 source，表示事件产生的地方。Source 有两个版本：Source0 和 Source1。Source0 只包含了一个回调（函数指针），它并不能主动触发事件。使用时，你需要先调用 CFRunLoopSourceSignal(source)，将这个 Source 标记为待处理，然后手动调用 CFRunLoopWakeUp(runloop) 来唤醒 RunLoop，让其处理这个事件。Source1 包含了一个 mach_port 和一个回调（函数指针），被用于通过内核和其他线程相互发送消息。这种 Source 能主动唤醒 RunLoop 的线程。</p>
+<p>CFRunLoopTimerRef，对应 timer，是基于时间的触发器。它和 NSTimer 是 toll-free bridged 的，可以混用。其包含一个时间长度和一个回调（函数指针）。当其加入到 RunLoop 时，RunLoop 会注册对应的时间点，当时间点到时，RunLoop 会被唤醒以执行那个回调。</p>
+<p>CFRunLoopObserverRef，对应 observer，表示观察者。每个 Observer 都包含了一个回调（函数指针），当 RunLoop 的状态发生变化时，观察者就能通过回调接受到这个变化。可以观测的时间点有以下几个：</p>
+<pre><code>kCFRunLoopEntry，即将进入Loop
+kCFRunLoopBeforeTimers，即将处理 Timer
+kCFRunLoopBeforeSources，即将处理 Source
+kCFRunLoopBeforeWaiting，即将进入休眠
+kCFRunLoopAfterWaiting，刚从休眠中唤醒
+kCFRunLoopExit，即将退出Loop
+</code></pre><p>上面的 Source/Timer/Observer 被统称为 mode item，一个 item 可以被同时加入多个 mode。但一个 item 被重复加入同一个 mode 时是不会有效果的。如果一个 mode 中一个 item 都没有，则 RunLoop 会直接退出，不进入循环。</p>
+<p>线程的运行的过程中需要去处理不同情境的不同事件，mode 则是这个情景的标识，告诉当前应该响应哪些事件。一个 RunLoop 包含若干个 Mode，每个 Mode 又包含若干个 Source/Timer/Observer。每次调用 RunLoop 的主函数时，只能指定其中一个 Mode，这个 Mode 被称作 CurrentMode。如果需要切换 Mode，只能退出 Loop，再重新指定一个 Mode 进入。这样做主要是为了分隔开不同组的 Source/Timer/Observer，让其互不影响。</p>
+<h4 id="聊一聊iOS-中的离屏渲染？"><a href="#聊一聊iOS-中的离屏渲染？" class="headerlink" title="聊一聊iOS 中的离屏渲染？"></a>聊一聊iOS 中的离屏渲染？</h4><p>GPU 渲染机制：CPU 计算好显示内容提交到 GPU，GPU 渲染完成后将渲染结果放入帧缓冲区，随后视频控制器会按照 VSync 信号逐行读取帧缓冲区的数据，经过可能的数模转换传递给显示器显示。<br>GPU 屏幕渲染有以下两种方式：</p>
+<pre><code>1）On-Screen Rendering，意为当前屏幕渲染，指的是 GPU 的渲染操作是在当前用于显示的屏幕缓冲区中进行。
+2）Off-Screen Rendering，意为离屏渲染，指的是 GPU 在当前屏幕缓冲区以外新开辟一个缓冲区进行渲染操作。
+</code></pre><p>特殊的离屏渲染：如果将不在 GPU 的当前屏幕缓冲区中进行的渲染都称为离屏渲染，那么就还有另一种特殊的“离屏渲染”方式：CPU 渲染。如果我们重写了 drawRect 方法，并且使用任何 Core Graphics 的技术进行了绘制操作，就涉及到了 CPU 渲染。整个渲染过程由 CPU 在 App 内同步地 完成，渲染得到的 bitmap 最后再交由 GPU 用于显示。</p>
+<p>备注：Core Graphics 通常是线程安全的，所以可以进行异步绘制，显示的时候再放回主线程。</p>
+<p>离屏渲染的触发方式：</p>
+<p>1）shouldRasterize（光栅化），光栅化是比较特别的一种。光栅化概念：将图转化为一个个栅格组成的图象。光栅化特点：每个元素对应帧缓冲区中的一像素。shouldRasterize = YES 在其他属性触发离屏渲染的同时，会将光栅化后的内容缓存起来，如果对应的 layer 及其 sublayers 没有发生改变，在下一帧的时候可以直接复用。shouldRasterize = YES 这将隐式的创建一个位图，各种阴影遮罩等效果也会保存到位图中并缓存起来，从而减少渲染的频度。相当于光栅化是把 GPU 的操作转到 CPU 上了，生成位图缓存，直接读取复用。当你使用光栅化时，你可以开启 Color Hits Green and Misses Red 来检查该场景下光栅化操作是否是一个好的选择。绿色表示缓存被复用，红色表示缓存在被重复创建。如果光栅化的层变红得太频繁那么光栅化对优化可能没有多少用处。位图缓存从内存中删除又重新创建得太过频繁，红色表明缓存重建得太迟。可以针对性的选择某个较小而较深的层结构进行光栅化，来尝试减少渲染时间。对于经常变动的内容，这个时候不要开启，否则会造成性能的浪费。例如经常打交道的 TableViewCell，因为 TableViewCell 的重绘是很频繁的（因为 Cell 的复用），如果 Cell 的内容不断变化，则 Cell 需要不断重绘，如果此时设置了 cell.layer 可光栅化，则会造成大量的离屏渲染，降低图形性能。</p>
+<p>2）masks（遮罩）</p>
+<p>3）shadows（阴影）</p>
+<p>4）edge antialiasing（抗锯齿）</p>
+<p>5）group opacity（不透明）</p>
+<p>6）复杂形状设置圆角等</p>
+<p>7）渐变</p>
+<p>为什么会使用离屏渲染：当使用圆角，阴影，遮罩的时候，图层属性的混合体被指定为在未预合成之前（下一个 VSync 信号开始前）不能直接在屏幕中绘制，所以就需要屏幕外渲染被唤起。屏幕外渲染并不意味着软件绘制，但是它意味着图层必须在被显示之前在一个屏幕外上下文中被渲染（不论 CPU 还是 GPU）。所以当使用离屏渲染的时候会很容易造成性能消耗，因为离屏渲染会单独在内存中创建一个屏幕外缓冲区并进行渲染，而屏幕外缓冲区跟当前屏幕缓冲区上下文切换是很耗性能的。由于垂直同步的机制，如果在一个 VSync 时间内，CPU 或者 GPU 没有完成内容提交，则那一帧就会被丢弃，等待下一次机会再显示，而这时显示屏会保留之前的内容不变。这就是界面卡顿的原因。<br>Instruments 监测离屏渲染：</p>
+<p>1）Color Offscreen-Rendered Yellow，开启后会把那些需要离屏渲染的图层高亮成黄色，这就意味着黄色图层可能存在性能问题。<br>2）Color Hits Green and Misses Red，如果 shouldRasterize 被设置成 YES，对应的渲染结果会被缓存，如果图层是绿色，就表示这些缓存被复用；如果是红色就表示缓存会被重复创建，这就表示该处存在性能问题了。</p>
+<p>iOS 版本上的优化：</p>
+<p>1）iOS 9.0 之前 UIimageView、UIButton 设置圆角都会触发离屏渲染。</p>
+<p>2）iOS 9.0 之后 UIButton 设置圆角会触发离屏渲染，而 UIImageView 里 png 图片设置圆角不会触发离屏渲染了，如果设置其他阴影效果之类的还是会触发离屏渲染的。</p>
+<h4 id="事件传递链，页面上一个按钮，按钮和它的superView有一样的action-为什么只执行button的action"><a href="#事件传递链，页面上一个按钮，按钮和它的superView有一样的action-为什么只执行button的action" class="headerlink" title="事件传递链，页面上一个按钮，按钮和它的superView有一样的action,为什么只执行button的action?"></a>事件传递链，页面上一个按钮，按钮和它的superView有一样的action,为什么只执行button的action?</h4><p>hitTest方法:首先会通过调用自身的 pointInside 方法判断用户触摸的点是否在当前对象的响应范围内,如果 pointInside 方法返回 NO hitTest方法直接返回 nil</p>
+<p>如果 pointInside 方法返回 YES hitTest方法接着会判断自身是否有子视图.如果有则调用顶层子视图的 hitTest 方法 直到有子视图返回 View</p>
+<p>如果所有子视图都返回 nil hitTest 方法返回自身.</p>
+<h4 id="runtime的应用"><a href="#runtime的应用" class="headerlink" title="runtime的应用"></a>runtime的应用</h4><p>拦截系统自带的方法调用（Method Swizzling黑魔法）<br>实现给分类增加属性<br>实现字典的模型和自动转换<br>aspect 切面编程</p>
+<h4 id="iOS应用导航模式有哪些？"><a href="#iOS应用导航模式有哪些？" class="headerlink" title="iOS应用导航模式有哪些？"></a>iOS应用导航模式有哪些？</h4><p>平铺模式，一般由scrollView和pageControl组合而成的展示方式。手机自带的天气比较典型。</p>
+<p>标签模式，tabBar的展示方式，这个比较常见。</p>
+<p>树状模式，tableView的多态展示方式，常见的9宫格、系统自带的邮箱等展现方式。</p>
+<h4 id="iOS单元测试框架有哪些？"><a href="#iOS单元测试框架有哪些？" class="headerlink" title="iOS单元测试框架有哪些？"></a>iOS单元测试框架有哪些？</h4><p>OCUnit 是 OC 官方测试框架， 现在被 XCTest 所取代。</p>
+<p>XCTest 是与 Foundation 框架平行的测试框架。</p>
+<p><a href="https://github.com/gh-unit/gh-unit" target="_blank" rel="noopener">GHUnit</a> 是第三方的测试框架。</p>
+<p><a href="https://github.com/erikdoe/ocmock" target="_blank" rel="noopener">OCMock</a> 都是第三方的测试框架。</p>
+<h4 id="Object-c-的类可以多重继承么-可以实现多个接口么-Category-是什-么-重写一个类的方式用继承好还是分类好-为什么"><a href="#Object-c-的类可以多重继承么-可以实现多个接口么-Category-是什-么-重写一个类的方式用继承好还是分类好-为什么" class="headerlink" title="Object-c 的类可以多重继承么?可以实现多个接口么?Category 是什 么?重写一个类的方式用继承好还是分类好?为什么?"></a>Object-c 的类可以多重继承么?可以实现多个接口么?Category 是什 么?重写一个类的方式用继承好还是分类好?为什么?</h4><p>Object-c 的类不可以多重继承;可以实现多个代理，通过实现多个代理<br>可以完成 C++的多重继承;Category 是类别，一般情况用分类好，用<br>Category 去重写类的方法，仅对本 Category 有效，不会影响到其他<br>类与原有类的关系。</p>
+<h4 id="谈谈对性能优化的看法，如何做？"><a href="#谈谈对性能优化的看法，如何做？" class="headerlink" title="谈谈对性能优化的看法，如何做？"></a>谈谈对性能优化的看法，如何做？</h4><p>1、程序 logging 不要太长</p>
+<p>2、相同数据不做重复获取</p>
+<p>3、昂贵资源要重用（cell、sqlite、date）</p>
+<p>4、良好的编程习惯和程序设计：选择正确的数据结构和算法来进行编程、选择适合的数据存储（plist、SQLite）、优化 SQLite 查询语句 </p>
+<p>5、数据资源方面的优化（缓存和异步加载）</p>
+<p>Profile工具测试，不要猜</p>
+<h4 id="runtime-如何实现-weak-属性"><a href="#runtime-如何实现-weak-属性" class="headerlink" title="runtime 如何实现 weak 属性"></a>runtime 如何实现 weak 属性</h4><p>1、初始化时：runtime 会调用 objc_initWeak 函数，初始化一个新的 weak 指针指向对象的地址。</p>
+<p>2、添加引用时：objc_initWeak 函数会调用 objc_storeWeak() 函数，objc_storeWeak() 的作用是更新指针指向（指针可能原来指向着其他对象，这时候需要将该 weak 指针与旧对象解除绑定，会调用到 weak_unregister_no_lock），如果指针指向的新对象非空，则创建对应的弱引用表，将 weak 指针与新对象进行绑定，会调用到 weak_register_no_lock。在这个过程中，为了防止多线程中竞争冲突，会有一些锁的操作。</p>
+<p>3、释放时：调用 clearDeallocating 函数，clearDeallocating 函数首先根据对象地址获取所有 weak 指针地址的数组，然后遍历这个数组把其中的数据设为 nil，最后把这个 entry 从 weak 表中删除，最后清理对象的记录。</p>
+<h4 id="BAD-ACCESS-在什么情况下出现？"><a href="#BAD-ACCESS-在什么情况下出现？" class="headerlink" title="BAD_ACCESS 在什么情况下出现？"></a>BAD_ACCESS 在什么情况下出现？</h4><p>访问了野指针。比如对一个已经释放的对象执行了 release，访问已经释放对象的成员变量或者发消息。</p>
+<p>死循环。</p>
+<h4 id="聊一聊-TCP-的拥塞控制相关过程？"><a href="#聊一聊-TCP-的拥塞控制相关过程？" class="headerlink" title="聊一聊 TCP 的拥塞控制相关过程？"></a>聊一聊 TCP 的拥塞控制相关过程？</h4><p>TCP 的拥塞控制主要是四个算法：1）慢启动；2）拥塞避免；3）拥塞发生；4）快速恢复。</p>
+<p>慢启动算法</p>
+<p>慢启动的算法如下(cwnd 全称 Congestion Window)：</p>
+<ol>
+<li>连接建好的开始先初始化 cwnd = 1，表明可以传一个 MSS（Max Segment Size）大小的数据。</li>
+<li>每当收到一个 ACK，cwnd++; 呈线性上升。</li>
+<li>每当过了一个 RTT，cwnd = cwnd*2; 呈指数上升。</li>
+<li>还有一个 ssthresh（slow start threshold），是一个上限，当 cwnd &gt;= ssthresh 时，就会进入「拥塞避免算法」。</li>
+</ol>
+<p>所以，我们可以看到，如果网速很快的话，ACK 也会返回得快，RTT 也会短，那么，这个慢启动就一点也不慢。</p>
+<p>拥塞避免算法</p>
+<p>前面说过，还有一个 ssthresh（slow start threshold），是一个上限，当 cwnd &gt;= ssthresh 时，就会进入拥塞避免算法。一般来说 ssthresh 的值是 65535 字节，当 cwnd 达到这个值时后，算法如下：</p>
+<ol>
+<li>收到一个 ACK 时，cwnd = cwnd + 1/cwnd。</li>
+<li>当每过一个 RTT 时，cwnd = cwnd + 1。</li>
+</ol>
+<p>这样就可以避免增长过快导致网络拥塞，慢慢的增加调整到网络的最佳值。很明显，是一个线性上升的算法。</p>
+<p>拥塞状态时的算法</p>
+<p>当丢包的时候，会有两种情况：</p>
+<ol>
+<li><p>等到 RTO 超时，重传数据包。TCP 认为这种情况太糟糕，反应也很强烈。</p>
+<pre><code>sshthresh = cwnd/2。
+cwnd 重置为 1。
+进入慢启动过程。
+</code></pre></li>
+<li><p>快速重传（Fast Retransmit）算法，也就是在收到 3 个 duplicate ACK 时就开启重传，而不用等到 RTO 超时。</p>
+<pre><code>TCP Tahoe 的实现和 RTO 超时一样。
+TCP Reno的实现是：
+
+cwnd = cwnd/2。
+
+sshthresh = cwnd。
+进入快速恢复算法（Fast Recovery）。
+</code></pre></li>
+</ol>
+<p>上面我们可以看到 RTO 超时后，sshthresh 会变成 cwnd 的一半，这意味着，如果 cwnd&lt;=sshthresh 时出现的丢包，那么 TCP 的 sshthresh 就会减了一半，然后等 cwnd 又很快地以指数级增涨爬到这个地方时，就会成慢慢的线性增涨。我们可以看到，TCP 是怎么通过这种强烈地震荡快速而小心得找到网站流量的平衡点的。</p>
+<p>快速恢复算法</p>
+<p>TCP Reno 这个算法定义在 RFC5681。快速重传和快速恢复算法一般同时使用。快速恢复算法是认为，你还有 3 个 Duplicated Acks 说明网络也不那么糟糕，所以没有必要像 RTO 超时那么强烈。注意，正如前面所说，进入 Fast Recovery 之前，cwnd 和 sshthresh 已被更新：</p>
+<pre><code>cwnd = cwnd /2
+sshthresh = cwnd
+</code></pre><p>然后，真正的 Fast Recovery 算法如下：</p>
+<pre><code>cwnd = sshthresh + 3 * MSS （3 的意思是确认有 3 个数据包被收到了）。
+</code></pre><p>重传 Duplicated ACKs 指定的数据包。</p>
+<p>如果再收到 duplicated ACKs，那么 cwnd = cwnd + 1。</p>
+<p>如果收到了新的 ACK，那么 cwnd = sshthresh，然后就进入了拥塞避免的算法了。</p>
+<p>如果你仔细思考一下上面的这个算法，你就会知道，上面这个算法也有问题，那就是它依赖于 3 个重复的 ACKs。注意，3 个重复的 ACKs 并不代表只丢了一个数据包，很有可能是丢了好多包。但这个算法只会重传一个，而剩下的那些包只能等到 RTO 超时。于是，进入了恶梦模式：超时一个窗口就减半一下。多个超时会超成 TCP 的传输速度呈级数下降，而且也不会触发 Fast Recovery 算法了。<br>1995 年，TCP New Reno（参见 RFC 6582 ）算法提出来，主要就是在没有 SACK 的支持下改进 Fast Recovery 算法：</p>
+<p>当 sender 这边收到了 3 个 Duplicated ACKs，进入 Fast Retransimit 模式，开发重传重复 ACKs 指示的那个包。如果只有这一个包丢了，那么，重传这个包后回来的 ACK 会把整个已经被 sender 传输出去的数据 ACK 回来。如果没有的话，说明有多个包丢了。我们叫这个 ACK 为 Partial ACK。</p>
+<p>一旦 Sender 这边发现了 Partial ACK 出现，那么，sender 就可以推理出来有多个包被丢了，于是乎继续重传 sliding window 里未被 ack 的第一个包。直到再也收不到了 Partial ACK，才真正结束 Fast Recovery 这个过程。</p>
+<p>这个 Fast Recovery 的变更是一个非常激进的玩法，他同时延长了 Fast Retransmit 和 Fast Recovery 的过程。</p>
+<h4 id="聊一聊你知道的几种查找树？"><a href="#聊一聊你知道的几种查找树？" class="headerlink" title="聊一聊你知道的几种查找树？"></a>聊一聊你知道的几种查找树？</h4><p>AVL 树：平衡二叉搜索树。它的平衡度也最好，左右高度差可以保证在「-1，0，1」，基于它的平衡性，它的查询时间复杂度可以保证是 O(log(n))。但每个节点要额外保存一个平衡值，或者说是高度差。这种树是二叉树的经典应用，现在最主要是出现在教科书中。AVL 的平衡算法比较麻烦，需要左右两种 rotate 交替使用。</p>
+<p>红黑树：平衡二叉搜索树。也就是说，如果从高度差来说，红黑树是大于 AVL 的，其实也就代表着它的实际查询时间（最坏情况）略逊于 AVL 的。数学证明红黑树的最大深度是 2log(n+1)。其实最差情况它从根到叶子的最长路可以是最短路的两倍，但也不是很差，所以它的查询时间复杂度也是 O(log(n))。从实现角度来说，保存红黑状态，每个节点只需要一位二进制，也就是一个 bit。红黑树是工业界最主要使用的二叉搜索平衡树：Java 用它来实现 TreeMap；C++ 用它来实现 std::set/map/multimap；著名的 Linux 进程调度 Completely Fair Scheduler，用红黑树管理进程控制块；epoll 在内核中的实现，用红黑树管理事件块；nginx 中，用红黑树管理 timer。</p>
+<p>二叉搜索树：查找的时间复杂度是 O(log(n))，最坏情况下的时间复杂度是 O(n)。二叉搜索树有一个缺点就是，树的结构是无法预料的，随意性很大，它只与节点的值和插入的顺序有关系，往往得到的是一个不平衡的二叉树。在最坏的情况下，可能得到的是一个单支二叉树，其高度和节点数相同，相当于一个单链表，对其正常的时间复杂度有 O(log(n)) 变成了 O(n)。</p>
+<p>B/B+ 树：N 叉平衡树。每个节点可以有更多的孩子，新的值可以插在已有的节点里，而不需要改变树的高度，从而大量减少重新平衡和数据迁移的次数，这非常适合做数据库索引这种需要持久化在磁盘，同时需要大量查询和插入操作的应用。</p>
+<p>Trie 树：Trie 树并不是平衡树，也不一定非要有序。查询和插入时间复杂度都是 O(n)。是一种以空间换时间的方法。当节点树较多的时候，Trie 树占用的内存会很大。它主要用于前缀匹配，比如字符串。如果字符串长度是固定或者说有限的，那么 Trie 树的深度是可控制的，你可以得到很好的搜索效果，而且插入新数据后不用平衡。比如 IP 选路，也是前缀匹配，一定程度会用到 Trie 树。</p>
+<h4 id="如何优化-App-的的包大小？"><a href="#如何优化-App-的的包大小？" class="headerlink" title="如何优化 App 的的包大小？"></a>如何优化 App 的的包大小？</h4><ol>
+<li><p>资源优化</p>
+<ol>
+<li>删除无用图片</li>
+<li>删除重复资源</li>
+<li>压缩图片资源</li>
+<li>用 LaunchScreen.storyboard 替换启动图片</li>
+<li>本地大图片都使用 webp</li>
+<li>资源按需加载，非必要资源都等到使用时再从服务端拉取</li>
+</ol>
+</li>
+<li><p>编译选项优化</p>
+<ol>
+<li>Optimization Level 在 release 状态设置为 Fastest/Smallest。</li>
+<li>Strip Debug Symbols During Copy 在 release 状态设置为 YES。</li>
+<li>Strip Linked Product 在 release 状态设为 YES。</li>
+<li>Make String Read-Only 在 release 状态设为 YES。</li>
+<li>Dead Code Stripping 在 release 状态设为 YES。</li>
+<li>Deployment PostProcessing 在 release 状态设为 YES。</li>
+<li>Symbols hidden by default 在 release 状态设为 YES。</li>
+</ol>
+</li>
+<li><p>可执行文件优化</p>
+<ol>
+<li>三方库优化<ol>
+<li>删除不使用的三方库。</li>
+<li>功能用的少但是体积大的三方库可以考虑自己重写。</li>
+<li>合并功能重复的三方库。</li>
+</ol>
+</li>
+<li>代码分析<ol>
+<li>去掉无用的类及文件。</li>
+<li>清理 import。</li>
+<li>去掉空方法。</li>
+<li>去掉无用的 log。</li>
+<li>去掉无用的变量。</li>
+</ol>
+</li>
+</ol>
+</li>
+<li><p>苹果官方的策略</p>
+<ol>
+<li>App Thinning<br> 使用 xcasset 管理图片</li>
+<li>开启 Bitcode</li>
+</ol>
+</li>
+</ol>
+<h4 id="循环引用的产生原因，以及解决方法"><a href="#循环引用的产生原因，以及解决方法" class="headerlink" title="循环引用的产生原因，以及解决方法"></a>循环引用的产生原因，以及解决方法</h4><p>原因：<br>    两个对象相互引用<br>    多个对象的“环”引用</p>
+<p>方法：</p>
+<p>事先知道存在循环引用的地方，在合理的位置主动断开一个引用，是对象回收。</p>
+<p>使用弱引用的方法。</p>
+<h4 id="数据库建表的时候索引有什么用？"><a href="#数据库建表的时候索引有什么用？" class="headerlink" title="数据库建表的时候索引有什么用？"></a>数据库建表的时候索引有什么用？</h4><p>创建索引可以大大提高系统的性能。</p>
+<ol>
+<li>通过创建唯一性索引，可以保证数据库表中每一行数据的唯一性。</li>
+<li>可以大大加快数据的检索速度，这也是创建索引的最主要的原因。</li>
+<li>可以加速表和表之间的连接，特别是在实现数据的参考完整性方面特别有意义。</li>
+<li>在使用分组和排序子句进行数据检索时，同样可以显著减少查询中分组和排序的时间。</li>
+<li>通过使用索引，可以在查询的过程中，使用优化隐藏器，提高系统的性能。</li>
+</ol>
+<h4 id="TCP和UDP的区别于联系"><a href="#TCP和UDP的区别于联系" class="headerlink" title="TCP和UDP的区别于联系"></a>TCP和UDP的区别于联系</h4><p>TCP为传输控制层协议，为面向连接、可靠的、点到点的通信；</p>
+<p>UDP为用户数据报协议，非连接的不可靠的点到多点的通信；</p>
+<p>TCP侧重可靠传输，UDP侧重快速传输。</p>
+<h4 id="App启动过慢，你可能想到的因素有哪些？"><a href="#App启动过慢，你可能想到的因素有哪些？" class="headerlink" title="App启动过慢，你可能想到的因素有哪些？"></a>App启动过慢，你可能想到的因素有哪些？</h4><ol>
+<li><p>App启动过程</p>
+<ol>
+<li>解析Info.plist<ol>
+<li>加载相关信息，例如如闪屏</li>
+<li>沙箱建立、权限检查</li>
+</ol>
+</li>
+<li>Mach-O加载<ol>
+<li>如果是胖二进制文件，寻找合适当前CPU类别的部分</li>
+<li>加载所有依赖的Mach-O文件（递归调用Mach-O加载的方法）</li>
+<li>定位内部、外部指针引用，例如字符串、函数等</li>
+<li>执行声明为attribute((constructor))的C函数</li>
+<li>加载类扩展（Category）中的方法</li>
+<li>C++静态对象加载、调用ObjC的 +load 函数</li>
+</ol>
+</li>
+<li>程序执行<ol>
+<li>调用main()</li>
+<li>调用UIApplicationMain()</li>
+<li>调用applicationWillFinishLaunching</li>
+</ol>
+</li>
+</ol>
+</li>
+<li><p>影响启动性能的因素</p>
+<ol>
+<li><p>main()函数之前耗时的影响因素</p>
+<ol>
+<li>动态库加载越多，启动越慢。</li>
+<li>ObjC类越多，启动越慢</li>
+<li>C的constructor函数越多，启动越慢</li>
+<li>C++静态对象越多，启动越慢</li>
+<li>ObjC的+load越多，启动越慢</li>
+</ol>
+</li>
+<li><p>main()函数之后耗时的影响因素</p>
+<ol>
+<li>执行main()函数的耗时</li>
+<li><p>执行applicationWillFinishLaunching的耗时</p>
+<p> rootViewController及其childViewController的加载、view及其subviews的加载</p>
+</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+<h4 id="七层网络协议"><a href="#七层网络协议" class="headerlink" title="七层网络协议"></a>七层网络协议</h4><ol>
+<li>应用层：<ol>
+<li>用户接口、应用程序；</li>
+<li>Application典型设备：网关；</li>
+<li>典型协议、标准和应用：TELNET、FTP、HTTP</li>
+</ol>
+</li>
+<li>表示层：<ol>
+<li>数据表示、压缩和加密presentation</li>
+<li>典型设备：网关</li>
+<li>典型协议、标准和应用：ASCLL、PICT、TIFF、JPEG|MPEG</li>
+<li>表示层相当于一个东西的表示，表示的一些协议，比如图片、声音和视频MPEG。</li>
+</ol>
+</li>
+<li>会话层：<ol>
+<li>会话的建立和结束；</li>
+<li>典型设备：网关；</li>
+<li>典型协议、标准和应用：RPC、SQL、NFS、X WINDOWS、ASP</li>
+</ol>
+</li>
+<li>传输层：<ol>
+<li>主要功能：端到端控制Transport；</li>
+<li>典型设备：网关；</li>
+<li>典型协议、标准和应用：TCP、UDP、SPX</li>
+</ol>
+</li>
+<li>网络层：<ol>
+<li>主要功能：路由、寻址Network；</li>
+<li>典型设备：路由器；</li>
+<li>典型协议、标准和应用：IP、IPX、APPLETALK、ICMP；</li>
+</ol>
+</li>
+<li>数据链路层：<ol>
+<li>主要功能：保证无差错的疏忽链路的data link；</li>
+<li>典型设备：交换机、网桥、网卡；</li>
+<li>典型协议、标准和应用：802.2、802.3ATM、HDLC、FRAME RELAY；</li>
+</ol>
+</li>
+<li>物理层：<ol>
+<li>主要功能：传输比特流Physical；</li>
+<li>典型设备：集线器、中继器</li>
+<li>典型协议、标准和应用：V.35、EIA/TIA-232.</li>
+</ol>
+</li>
+</ol>
+<h4 id="内存的使用和优化的注意事项"><a href="#内存的使用和优化的注意事项" class="headerlink" title="内存的使用和优化的注意事项"></a>内存的使用和优化的注意事项</h4><p>重用问题</p>
+<p>尽量把views设置为不透明</p>
+<p>不要使用太复杂的XIB/Storyboard</p>
+<p>选择正确的数据结构</p>
+<p>延迟加载</p>
+<p>数据缓存</p>
+<p>处理内存警告</p>
+<p>避免反复处理数据</p>
+<p>使用Autorelease Pool</p>
+<p>正确选择图片加载方式</p>
+<h4 id="与-NSURLConnection-相比，NSURLsession-改进哪些"><a href="#与-NSURLConnection-相比，NSURLsession-改进哪些" class="headerlink" title="与 NSURLConnection 相比，NSURLsession 改进哪些?"></a>与 NSURLConnection 相比，NSURLsession 改进哪些?</h4><p>可以配置每个 session 的缓存，协议，cookie，以及证书策略（credential policy），甚至跨程序共享这些信息</p>
+<p>session task。它负责处理数据的加载以及文件和数据在客户端与服务端之间的上传和下载。NSURLSessionTask 与 NSURLConnection 最大的相似之处在于它也负责数据的加载，最大的不同之处在于所有的 task 共享其创造者 NSURLSession 这一公共委托者（common delegate）</p>
+<h4 id="使用drawRect有什么影响？"><a href="#使用drawRect有什么影响？" class="headerlink" title="使用drawRect有什么影响？"></a>使用drawRect有什么影响？</h4><p>缺点：它处理touch事件时每次按钮被点击后，都会用setNeddsDisplay进行强制重绘；而且不止一次，每次单点事件触发两次执行。这样的话从性能的角度来说，对CPU和内存来说都是欠佳的。特别是如果在我们的界面上有多个这样的UIView实例，那就会很糟糕了</p>
+<p>这个方法的调用机制也是非常特别. 当你调用 setNeedsDisplay 方法时, UIKit 将会把当前图层标记为dirty,但还是会显示原来的内容,直到下一次的视图渲染周期,才会将标记为 dirty 的图层重新建立Core Graphics上下文,然后将内存中的数据恢复出来, 再使用 CGContextRef 进行绘制</p>
 
       
     </div>
@@ -408,7 +897,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://blog.msrily.com/2018/05/23/blog12/" title="Objective C 类crash预防">https://blog.msrily.com/2018/05/23/blog12/</a>
+    <a href="https://blog.msrily.com/2018/05/23/blog12/" title="iOS 知识点整理">https://blog.msrily.com/2018/05/23/blog12/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -500,8 +989,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -575,6 +1073,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#iOS-App-安全"><span class="nav-number">1.</span> <span class="nav-text">iOS App 安全</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#断点续传怎么实现？需要设置什么？"><span class="nav-number">2.</span> <span class="nav-text">断点续传怎么实现？需要设置什么？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#HTTP请求的哪些方法用过？什么时候选择get、post、put、delete？"><span class="nav-number">3.</span> <span class="nav-text">HTTP请求的哪些方法用过？什么时候选择get、post、put、delete？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TCP-三次握手和四次挥手"><span class="nav-number">4.</span> <span class="nav-text">TCP 三次握手和四次挥手</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#三次握手"><span class="nav-number">4.1.</span> <span class="nav-text">三次握手</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#四次挥手"><span class="nav-number">4.2.</span> <span class="nav-text">四次挥手</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#iOS里面有哪些数据存储方法"><span class="nav-number">5.</span> <span class="nav-text">iOS里面有哪些数据存储方法</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#NSUserDefaults类"><span class="nav-number">5.1.</span> <span class="nav-text">NSUserDefaults类</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Plist文件"><span class="nav-number">5.2.</span> <span class="nav-text">Plist文件</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#归档"><span class="nav-number">5.3.</span> <span class="nav-text">归档</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#数据库（Sqlite、Core-Data、Realm-…）"><span class="nav-number">5.4.</span> <span class="nav-text">数据库（Sqlite、Core Data、Realm …）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#手动存放沙盒"><span class="nav-number">5.5.</span> <span class="nav-text">手动存放沙盒</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#MVVM如何实现绑定"><span class="nav-number">6.</span> <span class="nav-text">MVVM如何实现绑定</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#KVO"><span class="nav-number">6.1.</span> <span class="nav-text">KVO</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Delegate"><span class="nav-number">6.2.</span> <span class="nav-text">Delegate</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Block"><span class="nav-number">6.3.</span> <span class="nav-text">Block</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Notification"><span class="nav-number">6.4.</span> <span class="nav-text">Notification</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#进程和线程的区别"><span class="nav-number">7.</span> <span class="nav-text">进程和线程的区别</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#进程间通信的方式"><span class="nav-number">8.</span> <span class="nav-text">进程间通信的方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#卡顿检测"><span class="nav-number">9.</span> <span class="nav-text">卡顿检测</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#发布出去的版本，怎么收集crash日志"><span class="nav-number">10.</span> <span class="nav-text">发布出去的版本，怎么收集crash日志</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#在block里面使用属性会造成循环引用吗-怎么解决？"><span class="nav-number">11.</span> <span class="nav-text">在block里面使用属性会造成循环引用吗?怎么解决？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#PING命令使用的是什么协议？"><span class="nav-number">12.</span> <span class="nav-text">PING命令使用的是什么协议？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#MTU"><span class="nav-number">13.</span> <span class="nav-text">MTU</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#MRC与ARC区别"><span class="nav-number">14.</span> <span class="nav-text">MRC与ARC区别</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#MRC手动内存管理"><span class="nav-number">14.1.</span> <span class="nav-text">MRC手动内存管理</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#ARC自动内存管理"><span class="nav-number">14.2.</span> <span class="nav-text">ARC自动内存管理</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#KVC的作用"><span class="nav-number">15.</span> <span class="nav-text">KVC的作用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#使用method-swizzling要注意什么？"><span class="nav-number">16.</span> <span class="nav-text">使用method swizzling要注意什么？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#一个-objc-对象如何进行内存布局（考虑有父类的情况）？"><span class="nav-number">17.</span> <span class="nav-text">一个 objc 对象如何进行内存布局（考虑有父类的情况）？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#runtime-如何通过-selector-找到对应的-IMP-地址（分别考虑实例方法和类方法）？Selector、Method-和-IMP-的有什么区别与联系？"><span class="nav-number">18.</span> <span class="nav-text">runtime 如何通过 selector 找到对应的 IMP 地址（分别考虑实例方法和类方法）？Selector、Method 和 IMP 的有什么区别与联系？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#objc-中的类方法和实例方法有什么本质区别和联系？"><span class="nav-number">19.</span> <span class="nav-text">objc 中的类方法和实例方法有什么本质区别和联系？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#objc-msgSend、-objc-msgForward-都是做什么的？OC-中的消息调用流程是怎样的？"><span class="nav-number">20.</span> <span class="nav-text">objc_msgSend、_objc_msgForward 都是做什么的？OC 中的消息调用流程是怎样的？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#能否向编译后得到的类中增加实例变量？能否向运行时创建的类中添加实例变量？为什么？"><span class="nav-number">21.</span> <span class="nav-text">能否向编译后得到的类中增加实例变量？能否向运行时创建的类中添加实例变量？为什么？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#OC-Runtime"><span class="nav-number">22.</span> <span class="nav-text">OC Runtime</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#runloop-和线程有什么关系？"><span class="nav-number">23.</span> <span class="nav-text">runloop 和线程有什么关系？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#runloop-的-mode-作用是什么？"><span class="nav-number">24.</span> <span class="nav-text">runloop 的 mode 作用是什么？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#聊一聊iOS-中的离屏渲染？"><span class="nav-number">25.</span> <span class="nav-text">聊一聊iOS 中的离屏渲染？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#事件传递链，页面上一个按钮，按钮和它的superView有一样的action-为什么只执行button的action"><span class="nav-number">26.</span> <span class="nav-text">事件传递链，页面上一个按钮，按钮和它的superView有一样的action,为什么只执行button的action?</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#runtime的应用"><span class="nav-number">27.</span> <span class="nav-text">runtime的应用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#iOS应用导航模式有哪些？"><span class="nav-number">28.</span> <span class="nav-text">iOS应用导航模式有哪些？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#iOS单元测试框架有哪些？"><span class="nav-number">29.</span> <span class="nav-text">iOS单元测试框架有哪些？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Object-c-的类可以多重继承么-可以实现多个接口么-Category-是什-么-重写一个类的方式用继承好还是分类好-为什么"><span class="nav-number">30.</span> <span class="nav-text">Object-c 的类可以多重继承么?可以实现多个接口么?Category 是什 么?重写一个类的方式用继承好还是分类好?为什么?</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#谈谈对性能优化的看法，如何做？"><span class="nav-number">31.</span> <span class="nav-text">谈谈对性能优化的看法，如何做？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#runtime-如何实现-weak-属性"><span class="nav-number">32.</span> <span class="nav-text">runtime 如何实现 weak 属性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#BAD-ACCESS-在什么情况下出现？"><span class="nav-number">33.</span> <span class="nav-text">BAD_ACCESS 在什么情况下出现？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#聊一聊-TCP-的拥塞控制相关过程？"><span class="nav-number">34.</span> <span class="nav-text">聊一聊 TCP 的拥塞控制相关过程？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#聊一聊你知道的几种查找树？"><span class="nav-number">35.</span> <span class="nav-text">聊一聊你知道的几种查找树？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#如何优化-App-的的包大小？"><span class="nav-number">36.</span> <span class="nav-text">如何优化 App 的的包大小？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#循环引用的产生原因，以及解决方法"><span class="nav-number">37.</span> <span class="nav-text">循环引用的产生原因，以及解决方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#数据库建表的时候索引有什么用？"><span class="nav-number">38.</span> <span class="nav-text">数据库建表的时候索引有什么用？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TCP和UDP的区别于联系"><span class="nav-number">39.</span> <span class="nav-text">TCP和UDP的区别于联系</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#App启动过慢，你可能想到的因素有哪些？"><span class="nav-number">40.</span> <span class="nav-text">App启动过慢，你可能想到的因素有哪些？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#七层网络协议"><span class="nav-number">41.</span> <span class="nav-text">七层网络协议</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#内存的使用和优化的注意事项"><span class="nav-number">42.</span> <span class="nav-text">内存的使用和优化的注意事项</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#与-NSURLConnection-相比，NSURLsession-改进哪些"><span class="nav-number">43.</span> <span class="nav-text">与 NSURLConnection 相比，NSURLsession 改进哪些?</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#使用drawRect有什么影响？"><span class="nav-number">44.</span> <span class="nav-text">使用drawRect有什么影响？</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       

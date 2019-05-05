@@ -444,7 +444,7 @@
         
           <h2 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/05/23/blog12/" itemprop="url">Objective C 类crash预防</a></h2>
+                <a class="post-title-link" href="/2018/05/23/blog12/" itemprop="url">iOS 知识点整理</a></h2>
         
 
         <div class="post-meta">
@@ -517,8 +517,42 @@
 
       
         
-          <p>Persion类</p>
-<p><img src="/images/16a7155c-f0ff-47e9-bdca-47f517b30d1d.png" alt=""><br>
+          <h4 id="iOS-App-安全"><a href="#iOS-App-安全" class="headerlink" title="iOS App 安全"></a>iOS App 安全</h4><p>本地数据安全</p>
+<ul>
+<li>对于主动存储在app内的重要的、有价值的、涉及隐私的信息需要加密处理，增加攻击者破解难度。</li>
+<li>对于一些非主动的存储行为如网络缓存，涉及重要信息，做到用完即删。</li>
+<li>Sqlite敏感数据要么对数据加密（优：使用简单，无需三方库支持;缺：每次存储都有加密解密过程，增加APP资源消耗），要么对整库加密（优：对数据库整体操作，减少资源消耗。缺：需要使用第三库），如SQLCipher</li>
+<li>KeyChain数据的读取。Keychain是一个拥有有限访问权限的SQLite数据库（AES256加密），可以为多种应用程序或网络服务存储少量的敏感数据（如用户名、密码、加密密钥等）。可以在越狱的设备上使用keychain_dumper来解密。</li>
+<li>剪切板的缓存要及时清理</li>
+</ul>
+<p>网络请求使用https，防止http劫持或使用httpdns</p>
+<p>尽量使用WKWebView代替UIWebView</p>
+<p>加大反编译的难度</p>
+<ul>
+<li>字符串加密</li>
+<li>类名方法名混淆</li>
+<li>反调试<br><img src="/images/1556611441.png" alt=""></li>
+</ul>
+<p>防止抓包</p>
+<ul>
+<li>判断是否设置了代理<br><img src="/images/1556611529.png" alt=""></li>
+<li>数据加密</li>
+</ul>
+<h4 id="断点续传怎么实现？需要设置什么？"><a href="#断点续传怎么实现？需要设置什么？" class="headerlink" title="断点续传怎么实现？需要设置什么？"></a>断点续传怎么实现？需要设置什么？</h4><p>所谓断点续传，就是要从文件已经下载的地方开始继续下载。所以在客户端/浏览器传给Web服务器的时候要多加一条信息–从哪里开始。下面是用自己编的一个”浏览器”来传递请求信息给Web服务器，要求从2000070字节开始。</p>
+<pre><code>GET /down.zip HTTP/1.1
+User-Agent: NetFox
+RANGE: bytes=2000070-
+Accept: text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2
+</code></pre><p>仔细看一下就会发现多了一行RANGE: bytes=2000070-这一行的意思就是告诉服务器down.zip这个文件从2000070字节开始传，前面的字节不用传了。服务器收到这个请求以后，返回的信息如下：</p>
+<pre><code>206
+Content-Length=106786028
+Content-Range=bytes 2000070-106786027/106786028
+Date=Mon, 30 Apr 2001 12:55:20 GMT
+ETag=W/&quot;02ca57e173c11:95b&quot;
+Content-Type=application/octet-stream
+Server=Microsoft-IIS/5.0
+Last-Modified=Mon, 30 Apr 2001 12:55:20 GMT
+</code></pre><p>和前面服务器返回的信息比较一下，就会发现增加了一行：Content-Range=bytes 2000070-106786027/106786028返回的代码也改为206了，而不再是200了。<br>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2018/05/23/blog12/#more" rel="contents">
